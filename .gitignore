@@ -1,0 +1,11 @@
+anna-2.jar
+.project
+.classpath
+reuters-model-0.0.1-SNAPSHOT-job.jar
+*.prefs
+pawel-core/src/main/resources/models/mate/prs-eng.model
+pawel-core/src/main/resources/models/stanford/german-accurate.tagger
+pawel-core/src/main/resources/models/stanford/left3words-wsj-0-18.tagger
+pawel-core/target
+pawel-model/target
+target

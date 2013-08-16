@@ -1,0 +1,12 @@
+using pawel;
+$text = read from 'pawel_input.json';
+
+$sentences = split_sentences $text;
+$posTags = tag_pos $sentences;
+$timeTags = tag_time $posTags;
+$eventTags = tag_event $timeTags;
+
+$temporal_summary = t_summary $eventTags sentences 3;
+$tsnippets_summary = tsnippets $timeTags sentences 4 alpha 0.5;
+
+write $temporal_summary to 'temporal_summary_result.json';

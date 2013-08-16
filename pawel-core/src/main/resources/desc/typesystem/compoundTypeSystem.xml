@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<name>compoundTypeSystem</name>
+<description></description>
+<version>1.0</version>
+<vendor></vendor>
+<imports>
+<import location="dimaTextminingTypes.xml"/>
+<import location="../heideltime/HeidelTime_TypeSystem.xml"/>
+<import location="TimespanType.xml"/>
+<import location="gigawordMetadataType.xml"/>
+</imports>
+</typeSystemDescription>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<implementationName>de.dima.textmining.uima.reader.GigawordIndexReader</implementationName>
+<processingResourceMetaData>
+<name>GigawordIndexReader</name>
+<description></description>
+<version>1.0</version>
+<vendor></vendor>
+<configurationParameters>
+<configurationParameter>
+<name>GigaIndexDirectory</name>
+<description>Path to the gigaword index</description>
+<type>String</type>
+<multiValued>false</multiValued>
+<mandatory>true</mandatory>
+</configurationParameter>
+</configurationParameters>
+<configurationParameterSettings/>
+<typeSystemDescription>
+<imports>
+<import location="../typesystem/gigawordMetadataType.xml"/>
+</imports>
+</typeSystemDescription>
+<typePriorities/>
+<fsIndexCollection/>
+<capabilities>
+<capability>
+<inputs/>
+<outputs/>
+<languagesSupported/>
+</capability>
+</capabilities>
+<operationalProperties>
+<modifiesCas>true</modifiesCas>
+<multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+<outputsNewCASes>true</outputsNewCASes>
+</operationalProperties>
+</processingResourceMetaData>
+<resourceManagerConfiguration/>
+</collectionReaderDescription>

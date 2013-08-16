@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<name>Timespan</name>
+<description></description>
+<version>1.0</version>
+<vendor></vendor>
+<imports>
+<import location="../heideltime/HeidelTime_TypeSystem.xml"/>
+</imports>
+<types>
+<typeDescription>
+<name>de.dima.textmining.types.Timespan</name>
+<description></description>
+<supertypeName>uima.tcas.Annotation</supertypeName>
+<features>
+<featureDescription>
+<name>startTime</name>
+<description></description>
+<rangeTypeName>de.unihd.dbs.uima.types.heideltime.Timex3</rangeTypeName>
+</featureDescription>
+<featureDescription>
+<name>EndTime</name>
+<description></description>
+<rangeTypeName>de.unihd.dbs.uima.types.heideltime.Timex3</rangeTypeName>
+</featureDescription>
+</features>
+</typeDescription>
+</types>
+</typeSystemDescription>

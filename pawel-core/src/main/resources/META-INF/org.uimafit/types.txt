@@ -1,0 +1,5 @@
+classpath*:desc/typesystem/dimaTextminingTypes.xml
+classpath*:desc/heideltime/HeidelTime_TypeSystem.xml
+classpath*:desc/typesystem/TimespanType.xml
+classpath*:desc/typesystem/gigawordMetadataType.xml
+classpath*:desc/pawel/Pawel_TypeSystem.xml

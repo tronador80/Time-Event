@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<name>GigawordMetadataType</name>
+<description></description>
+<version>1.0</version>
+<vendor></vendor>
+<types>
+<typeDescription>
+<name>de.dima.textmining.types.GigawordMetadata</name>
+<description>Metadata from Gigaword Article</description>
+<supertypeName>uima.tcas.Annotation</supertypeName>
+<features>
+<featureDescription>
+<name>gigawordId</name>
+<description>Article id from gigaword corpus.</description>
+<rangeTypeName>uima.cas.String</rangeTypeName>
+</featureDescription>
+<featureDescription>
+<name>yearPublished</name>
+<description></description>
+<rangeTypeName>uima.cas.Short</rangeTypeName>
+</featureDescription>
+<featureDescription>
+<name>monthPublished</name>
+<description></description>
+<rangeTypeName>uima.cas.Short</rangeTypeName>
+</featureDescription>
+<featureDescription>
+<name>dayPublished</name>
+<description></description>
+<rangeTypeName>uima.cas.Short</rangeTypeName>
+</featureDescription>
+<featureDescription>
+<name>city</name>
+<description/>
+<rangeTypeName>uima.cas.String</rangeTypeName>
+</featureDescription>
+<featureDescription>
+<name>publisher</name>
+<description>Publisher of the article
+</description>
+<rangeTypeName>uima.cas.String</rangeTypeName>
+</featureDescription>
+</features>
+</typeDescription>
+</types>
+</typeSystemDescription>

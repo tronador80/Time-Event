@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.dima.textmining.uima.annotators.NounPhraseStatisticsAE</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>NounPhraseStatisticsAE</name>
+    <description/>
+    <version>1.0</version>
+    <vendor/>
+    <configurationParameters>
+      <configurationParameter>
+        <name>statisticStoreType</name>
+        <description>cassandra: StatisticsStoreCassandra
+serialized: StatisticsStoreSerialized</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>statisticSource</name>
+        <description>Name of keyspace, when statisticStoreType = cassandra.
+Path to serialized file, when statisticStoreType = serialized.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>statisticSource</name>
+        <value>
+          <string>/home/user0/docs/uni/scape/dima_repository3/staff-alan-akbik/DimaTextminingCore/npcandidates.ser</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>statisticStoreType</name>
+        <value>
+          <string>serialized</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import location="../typesystem/dimaTextminingTypes.xml"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>

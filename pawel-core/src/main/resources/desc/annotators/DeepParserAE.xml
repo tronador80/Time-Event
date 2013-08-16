@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.dima.textmining.uima.annotators.DeepParserAE</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>DeepParserAE</name>
+    <description/>
+    <version>1.0</version>
+    <vendor/>
+    <configurationParameters>
+      <configurationParameter>
+        <name>Max_sentence_length</name>
+        <description>Maximum length a sentence may have to be parsed</description>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>WriteCoNLL</name>
+        <description>If set to true, parses are serialized as conlls</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>OutputFile</name>
+        <description>Output file for parsed sentences</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>Max_sentence_length</name>
+        <value>
+          <integer>200</integer>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>WriteCoNLL</name>
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>OutputFile</name>
+        <value>
+          <string>/home/pawel/git/time/src/dima-uima/data/output.txt</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="desc.typesystem.dimaTextminingTypes"/>
+        <import name="desc.typesystem.TimespanType"/>
+        <import location="/home/pawel/git/time/src/dima-uima/src/main/resources/desc/typesystem/gigawordMetadataType.xml"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>

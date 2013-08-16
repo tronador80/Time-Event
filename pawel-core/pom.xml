@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>pawel</artifactId>
+		<groupId>eu.stratosphere</groupId>
+		<version>0.2.1</version>
+	</parent>
+
+	<artifactId>pawel-core</artifactId>
+	<packaging>jar</packaging>
+
+	<developers>
+		<developer>
+			<id>ptondryk</id>
+			<name>Pawel Tondryk</name>
+			<email>ptondryk@mailbox.tu-berlin.de</email>
+			<organization>Technical University of Berlin</organization>
+		</developer>
+	</developers>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<forkMode>pertest</forkMode>
+					<argLine>-Xms2G -Xmx2G</argLine>
+					<testFailureIgnore>false</testFailureIgnore>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>nl.jqno.equalsverifier</groupId>
+			<artifactId>equalsverifier</artifactId>
+			<version>1.0.1</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.stratosphere</groupId>
+			<artifactId>sopremo-common</artifactId>
+			<type>jar</type>
+			<version>0.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>4.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.stratosphere</groupId>
+			<artifactId>pawel-model</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-common</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.opennlp</groupId>
+			<artifactId>opennlp-tools</artifactId>
+			<version>1.5.3</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>3.2.0</version>
+			<classifier>models</classifier>
+		</dependency>
+		<dependency>
+			<groupId>se.lth.cs.mate-tools</groupId>
+			<artifactId>anna</artifactId>
+			<version>2</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/anna-2.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>de.tu_berlin.dima.mia</groupId>
+			<artifactId>reuters-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/reuters-model-0.0.1-SNAPSHOT-job.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>de.tu_berlin.dima.mia</groupId>
+			<artifactId>reuters-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/index-import.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.jvnet.jaxb2_commons</groupId>
+			<artifactId>jaxb2-basics-runtime</artifactId>
+			<version>0.6.4</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>equalsverifier-repository</id>
+			<url>http://equalsverifier.googlecode.com/svn/maven/</url>
+		</repository>
+
+	</repositories>
+
+</project>
