@@ -111,43 +111,87 @@ public class JsonArrayReader extends JCasCollectionReader_ImplBase {
 
 							} else if (annotation.has("Timex3")) {
 								Timex3 t = new Timex3(jcas);
-								t.setBegin(annotation.getInt("begin"));
-								t.setEnd(annotation.getInt("end"));
-								t.setAllTokIds(annotation
-										.getString("allTokIds"));
-								t.setFilename("");
-								t.setFirstTokId(annotation.getInt("firstTokId"));
-								t.setFoundByRule(annotation
-										.getString("foundByRule"));
-								t.setSentId(annotation.getInt("sentId"));
-								t.setTimexFreq(annotation
-										.getString("timexFreq"));
-								t.setTimexId(annotation.getString("timexId"));
-								t.setTimexInstance(annotation
-										.getInt("timexInstance"));
-								t.setTimexMod(annotation.getString("timexMod"));
-								t.setTimexQuant(annotation
-										.getString("timexQuant"));
-								t.setTimexType(annotation
-										.getString("timexType"));
-								t.setTimexValue(annotation
-										.getString("timexValue"));
+								if (annotation.has("begin")) {
+									t.setBegin(annotation.getInt("begin"));
+								}
+								if (annotation.has("end")) {
+									t.setEnd(annotation.getInt("end"));
+								}
+								if (annotation.has("allTokIds")) {
+									t.setAllTokIds(annotation
+											.getString("allTokIds"));
+								}
+								if (annotation.has("firstTokId")) {
+									t.setFilename("");
+									t.setFirstTokId(annotation
+											.getInt("firstTokId"));
+								}
+								if (annotation.has("foundByRule")) {
+									t.setFoundByRule(annotation
+											.getString("foundByRule"));
+								}
+								if (annotation.has("sentId")) {
+									t.setSentId(annotation.getInt("sentId"));
+								}
+								if (annotation.has("timexFreq")) {
+									t.setTimexFreq(annotation
+											.getString("timexFreq"));
+								}
+								if (annotation.has("timexId")) {
+									t.setTimexId(annotation
+											.getString("timexId"));
+								}
+								if (annotation.has("timexInstance")) {
+									t.setTimexInstance(annotation
+											.getInt("timexInstance"));
+								}
+								if (annotation.has("timexMod")) {
+									t.setTimexMod(annotation
+											.getString("timexMod"));
+								}
+								if (annotation.has("timexQuant")) {
+									t.setTimexQuant(annotation
+											.getString("timexQuant"));
+								}
+								if (annotation.has("timexType")) {
+									t.setTimexType(annotation
+											.getString("timexType"));
+								}
+								if (annotation.has("timexValue")) {
+									t.setTimexValue(annotation
+											.getString("timexValue"));
+								}
 								t.addToIndexes();
 
 							} else if (annotation.has("Token")) {
 								Token token = new Token(jcas);
-								token.setBegin(annotation.getInt("begin"));
-								token.setEnd(annotation.getInt("end"));
 
-								token.setValue(annotation.getString("value"));
-								token.setToken(annotation.getString("Token"));
-								token.setOriginalText(annotation
-										.getString("originalText"));
-
-								token.setBeforeToken(annotation
-										.getString("beforeToken"));
-								token.setAfterToken(annotation
-										.getString("afterToken"));
+								if (annotation.has("begin")) {
+									token.setBegin(annotation.getInt("begin"));
+								}
+								if (annotation.has("end")) {
+									token.setEnd(annotation.getInt("end"));
+								}
+								if (annotation.has("value")) {
+									token.setValue(annotation
+											.getString("value"));
+								}
+								if (annotation.has("Token")) {
+									token.setToken(annotation
+											.getString("Token"));
+								}
+								if (annotation.has("originalText")) {
+									token.setOriginalText(annotation
+											.getString("originalText"));
+								}
+								if (annotation.has("beforeToken")) {
+									token.setBeforeToken(annotation
+											.getString("beforeToken"));
+								}
+								if (annotation.has("afterToken")) {
+									token.setAfterToken(annotation
+											.getString("afterToken"));
+								}
 
 								if (annotation.has("pos")) {
 									if ("NN".equals(annotation.getString("pos"))) {

@@ -21,6 +21,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -40,10 +42,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import pawel.types.pawel.Text;
 import de.dima.textmining.conll.CoNLLNode;
 import de.dima.textmining.events.EventExtractor;
 import de.dima.textmining.timeindex.TimelineResult;
-import de.dima.textmining.types.GigawordMetadata;
 import de.dima.textmining.types.Sentence;
 import de.dima.textmining.types.Timespan;
 import de.unihd.dbs.uima.types.heideltime.Timex3;
@@ -98,13 +100,11 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 				.getAnnotationIndex(Timex3.type);
 		AnnotationIndex<Annotation> sentIndex = jcas
 				.getAnnotationIndex(Sentence.type);
-		AnnotationIndex<Annotation> MetaIndex = jcas
-				.getAnnotationIndex(GigawordMetadata.type);
+		AnnotationIndex<Annotation> text = jcas.getAnnotationIndex(Text.type);
 
-		// TODO set correct meta data...
-		GigawordMetadata meta = null;
+		Text meta = null;
 		try {
-			meta = (GigawordMetadata) MetaIndex.iterator().next();
+			meta = (Text) text.iterator().next();
 		} catch (NoSuchElementException nsee) {
 			log.warn(nsee.getMessage());
 		}
@@ -115,19 +115,19 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 		String metaCity = null;
 		String metaPublisher = null;
 		if (meta != null) {
-			metaDay = Short.toString(meta.getDayPublished());
-			metaMonth = Short.toString(meta.getMonthPublished());
-			metaYear = Short.toString(meta.getYearPublished());
-			metaSourceID = meta.getGigawordId();
-			metaCity = meta.getCity();
-			metaPublisher = meta.getPublisher();
-		} else {
-			metaDay = "14";
-			metaMonth = "03";
-			metaYear = "2013";
-			metaSourceID = "input";
-			metaCity = "Berlin";
-			metaPublisher = "pawel";
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+			try {
+				Date date = sdf.parse(meta.getDate());
+				Calendar c = new GregorianCalendar();
+				c.setTime(date);
+
+				metaDay = (new Integer(c.get(Calendar.DAY_OF_MONTH)))
+						.toString();
+				metaMonth = (new Integer(c.get(Calendar.MONTH))).toString();
+				metaYear = (new Integer(c.get(Calendar.YEAR))).toString();
+			} catch (ParseException e) {
+				log.warn(e.getMessage());
+			}
 		}
 
 		HashMap<String, Integer> week = initWeek();
@@ -152,7 +152,8 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 				continue;
 			}
 
-			FSIterator<Annotation> timeSpanIter = timeSpanIndex.subiterator(sent);
+			FSIterator<Annotation> timeSpanIter = timeSpanIndex
+					.subiterator(sent);
 			FSIterator<Annotation> timeIter = timeIndex.subiterator(sent);
 
 			// map found all found timex to tokens
