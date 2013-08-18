@@ -45,19 +45,15 @@ public class SentenceSplitterSopremoOperator extends
 		protected void map(final IJsonNode value, final JsonCollector out) {
 			if (value instanceof ObjectNode) {
 				ObjectNode object = (ObjectNode) value;
-				IJsonNode node = object.get("text");
-				if (node != null && node.isTextual()) {
-					SentenceSplitterAnalysisComponent mt = new SentenceSplitterAnalysisComponent();
-					try {
-						out.collect(Xmi2Json.xmi2Json(mt.tokenize(JsonConverter
-								.json2String(object))));
-					} catch (UIMAException e) {
-						log.error(e.getMessage());
-					} catch (IOException e) {
-						log.error(e.getMessage());
-					}
-				} else {
-					log.error("Error: No \'text\' property, or \'text\' is not of type textual!");
+				SentenceSplitterAnalysisComponent mt = new SentenceSplitterAnalysisComponent();
+
+				try {
+					out.collect(Xmi2Json.xmi2Json(mt.tokenize(JsonConverter
+							.json2String(object))));
+				} catch (UIMAException e) {
+					log.error(e.getMessage());
+				} catch (IOException e) {
+					log.error(e.getMessage());
 				}
 
 			} else {

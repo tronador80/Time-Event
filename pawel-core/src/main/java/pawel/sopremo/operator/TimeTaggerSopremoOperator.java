@@ -82,7 +82,8 @@ public class TimeTaggerSopremoOperator extends
 
 					if (this.getEngine().contains("sutime")) {
 						SuTimeAnalysisComponent stac = new SuTimeAnalysisComponent();
-						stac.tagTime(JsonConverter.json2String(object));
+						out.collect(Xmi2Json.xmi2Json(stac
+								.tagTime(JsonConverter.json2String(object))));
 
 					} else if (this.getEngine().contains("heideltime")) {
 						HeidelTimeAnalysisComponent htac = new HeidelTimeAnalysisComponent();

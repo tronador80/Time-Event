@@ -14,7 +14,6 @@ import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.store.FSDirectory;
 
 import pawel.model.sopremo.io.LuceneIndexInputSplit;
-
 import eu.stratosphere.nephele.configuration.Configuration;
 import eu.stratosphere.nephele.template.GenericInputSplit;
 import eu.stratosphere.pact.common.contract.GenericDataSource;
@@ -30,6 +29,8 @@ import eu.stratosphere.sopremo.operator.OutputCardinality;
 import eu.stratosphere.sopremo.operator.Property;
 import eu.stratosphere.sopremo.pact.SopremoUtil;
 import eu.stratosphere.sopremo.serialization.Schema;
+import eu.stratosphere.sopremo.type.ArrayNode;
+import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 import eu.stratosphere.sopremo.type.TextNode;
 
@@ -120,15 +121,26 @@ public class LuceneIndexAccess extends ElementaryOperator<LuceneIndexAccess> {
 			}
 
 			ObjectNode res = new ObjectNode();
+			ArrayNode<IJsonNode> annotations = new ArrayNode<IJsonNode>();
+
+			ObjectNode text = new ObjectNode();
 			Document doc = this.getIndexReader().document(this.docId++);
 			if (doc != null) {
 				Iterator<IndexableField> iter = doc.iterator();
 				while (iter.hasNext()) {
 					IndexableField field = iter.next();
-					res.put(field.name(), new TextNode(field.stringValue()
-							.replace("\"", " ")));
+					if ("text".equalsIgnoreCase(field.name())) {
+						text.put("Text", new TextNode(field.stringValue()
+								.replace("\"", "'")));
+					} else {
+						text.put(field.name(), new TextNode(field.stringValue()
+								.replace("\"", "'")));
+					}
 				}
 			}
+
+			annotations.add(text);
+			res.put("annotations", annotations);
 
 			if (this.getIndexReader().numDocs() <= this.docId
 					|| this.docId >= this.lastDocId) {

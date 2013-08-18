@@ -34,6 +34,7 @@ import eu.stratosphere.sopremo.operator.OutputCardinality;
 import eu.stratosphere.sopremo.operator.Property;
 import eu.stratosphere.sopremo.pact.SopremoUtil;
 import eu.stratosphere.sopremo.serialization.Schema;
+import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 import eu.stratosphere.sopremo.type.TextNode;
@@ -132,16 +133,26 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			this.docName = (String) SopremoUtil.getObject(parameters,
 					DOCUMENT_NAME, null);
 			this.docId = Integer.parseInt((String) SopremoUtil.getObject(
-					parameters, ID_FIRST_DOCUMENT, null));
+					parameters, ID_FIRST_DOCUMENT, "-1"));
 			this.lastDocId = Integer.parseInt((String) SopremoUtil.getObject(
-					parameters, ID_LAST_DOCUMENT, null));
+					parameters, ID_LAST_DOCUMENT, "-1"));
 			this.hdfsConfPath = (String) SopremoUtil.getObject(parameters,
 					HDFS_CONF_PATH, null);
+
+			// if not set which files read -> read all
+			if (this.docId == -1 || this.lastDocId == -1) {
+				this.docId = 0;
+				this.lastDocId = -1;
+			}
 		}
 
 		@Override
 		public boolean reachedEnd() throws IOException {
-			return this.docId == lastDocId;
+			if (lastDocId != -1) {
+				return this.docId > lastDocId;
+			} else {
+				return this.docId > (new File(this.docName)).list().length;
+			}
 		}
 
 		@Override
@@ -191,8 +202,12 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		 * @return name of file
 		 */
 		private String nextName() {
-			return this.docName.replace("XYZ",
-					(new Integer(this.docId++).toString()));
+			if (this.lastDocId != -1) {
+				return this.docName.replace("XYZ",
+						(new Integer(this.docId++).toString()));
+			} else {
+				return (new File(this.docName)).list()[this.docId++];
+			}
 		}
 
 		/**
@@ -220,14 +235,15 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		private IJsonNode xmlReutersNewsFile2jsonObjectNode(
 				String reutersNewsFileName) {
 
-			ObjectNode res = null;
+			ObjectNode res = new ObjectNode();
+			ArrayNode<IJsonNode> annotations = new ArrayNode<IJsonNode>();
 
 			try {
 
 				ReutersUnmarshaller ru = ReutersUnmarshaller.getInstance();
 				Newsitem news = null;
 
-				res = new ObjectNode();
+				ObjectNode text = new ObjectNode();
 
 				if (reutersNewsFileName.startsWith("hdfs")) {
 					FileSystem fileSystem;
@@ -236,7 +252,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 
 						Path path = new Path(reutersNewsFileName);
 						if (!fileSystem.exists(path)) {
-							return res;
+							return text;
 						}
 
 						FSDataInputStream in = fileSystem.open(path);
@@ -244,7 +260,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 						news = ru.unmarshall(in);
 					} catch (IOException e) {
 						log.error(e.getMessage(), e);
-						return res;
+						return text;
 					}
 
 				} else {
@@ -253,35 +269,43 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 				}
 
 				if (news == null) {
-					return res;
+					return text;
 				}
 
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
-				res.put("title", this.string2TextNode(news.getTitle()));
-				res.put("byline", this.string2TextNode(news.getByline()));
-				res.put("copyright", this.string2TextNode(news.getCopyright()));
-				res.put("dateline", this.string2TextNode(news.getDateline()));
-				res.put("headline", this.string2TextNode(news.getHeadline()));
-				res.put("id", this.string2TextNode(news.getId()));
-				res.put("lang", this.string2TextNode(news.getLang()));
-				res.put("date",
+				text.put("title", this.string2TextNode(news.getTitle()));
+				text.put("byline", this.string2TextNode(news.getByline()));
+				text.put("copyright", this.string2TextNode(news.getCopyright()));
+				text.put("dateline", this.string2TextNode(news.getDateline()));
+				text.put("headline", this.string2TextNode(news.getHeadline()));
+				text.put("id", this.string2TextNode(news.getId()));
+				text.put("lang", this.string2TextNode(news.getLang()));
+				text.put(
+						"date",
 						this.string2TextNode(sdf.format(news.getDate()
 								.toGregorianCalendar().getTime())));
-				res.put("itemId",
+				text.put("itemId",
 						this.string2TextNode(news.getItemid().toString()));
 
 				StringBuilder textBuilder = new StringBuilder();
 				for (String p : news.getText().getP()) {
+					if(textBuilder.length() > 0) {
+						textBuilder.append(" ");
+					}
 					textBuilder.append(p);
 				}
-				res.put("text", this.string2TextNode(textBuilder.toString()));
+				text.put("Text", this.string2TextNode(textBuilder.toString()));
+
+				annotations.add(text);
 
 			} catch (JAXBException e) {
 				log.error(e.getMessage(), e);
 			} catch (FileNotFoundException e) {
 				log.error(e.getMessage(), e);
 			}
+
+			res.put("annotations", annotations);
 
 			return res;
 		}
@@ -292,7 +316,8 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		 * @return
 		 */
 		private TextNode string2TextNode(String string) {
-			return string != null ? new TextNode(string) : new TextNode("");
+			return string != null ? new TextNode(string.replace("\"", "'"))
+					: new TextNode("");
 		}
 
 		/**

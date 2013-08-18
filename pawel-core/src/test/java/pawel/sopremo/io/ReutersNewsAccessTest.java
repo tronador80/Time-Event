@@ -5,6 +5,7 @@ package pawel.sopremo.io;
 
 import org.junit.Test;
 
+import pawel.sopremo.io.reutersnews.ReutersUnmarshaller;
 import eu.stratosphere.sopremo.expressions.ConstantExpression;
 import eu.stratosphere.sopremo.testing.SopremoTestPlan;
 import eu.stratosphere.sopremo.type.ObjectNode;
@@ -34,17 +35,6 @@ public class ReutersNewsAccessTest {
 				.setIdOfLastDocuemtnToProcess(new ConstantExpression("10003"));
 
 		sopremoPlan.getOutputOperator(0).setInputs(reutersNews);
-
-		// prepare expected output
-		ObjectNode node1 = new ObjectNode();
-		node1.put("text", new TextNode("Pawel Example Text First"));
-		node1.put("info", new TextNode("blablabla"));
-
-		ObjectNode node2 = new ObjectNode();
-		node2.put("text", new TextNode("Second irrelevant text."));
-		node2.put("info", new TextNode("hahahahaha"));
-
-		sopremoPlan.getExpectedOutput(0).add(node1).add(node2);
 
 		sopremoPlan.run();
 	}

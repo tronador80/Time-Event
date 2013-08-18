@@ -9,3 +9,7 @@ pawel-core/src/main/resources/models/stanford/left3words-wsj-0-18.tagger
 pawel-core/target
 pawel-model/target
 target
+pawel-model/src/main/resources/models/mate/prs-eng.model
+pawel-model/src/main/resources/models/stanford/german-accurate.tagger
+pawel-model/src/main/resources/models/stanford/left3words-wsj-0-18.tagger
+anna-2.0.jar

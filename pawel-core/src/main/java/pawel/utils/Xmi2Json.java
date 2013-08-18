@@ -16,6 +16,7 @@ import org.w3c.dom.Node;
 
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
+import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 import eu.stratosphere.sopremo.type.TextNode;
 
@@ -82,7 +83,10 @@ public class Xmi2Json {
 											.getAttribute(attrName)));
 						}
 					}
-					array.add(outputObject);
+
+					if (!outputObject.isMissing()) {
+						array.add(outputObject);
+					}
 				}
 			}
 

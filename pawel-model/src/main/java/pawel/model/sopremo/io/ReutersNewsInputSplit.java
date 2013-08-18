@@ -27,6 +27,13 @@ public class ReutersNewsInputSplit extends GenericInputSplit {
 	private String docName;
 
 	/**
+	 * empty construtor
+	 */
+	public ReutersNewsInputSplit() {
+		super();
+	}
+
+	/**
 	 * constructor
 	 * 
 	 * @param splitId

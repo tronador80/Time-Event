@@ -11,7 +11,7 @@
 
 	<modules>
 		<module>pawel-model</module>
-		<module>pawel-sutime-uima</module>
+		
 		<module>pawel-core</module>
 	</modules>
 
