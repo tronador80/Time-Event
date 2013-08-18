@@ -42,7 +42,6 @@ public class Xmi2Json {
 		ObjectNode res = new ObjectNode();
 		ArrayNode<ObjectNode> array = new ArrayNode<ObjectNode>();
 
-		res.put("annotations", array);
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 					.newInstance();
@@ -92,6 +91,9 @@ public class Xmi2Json {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+
+		res.put("annotations", array);
+
 		return res;
 	}
 }

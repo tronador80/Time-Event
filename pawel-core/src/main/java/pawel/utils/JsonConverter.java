@@ -380,7 +380,10 @@ public class JsonConverter {
 						resultObject
 								.put("text", new TextNode(jsonObject
 										.get("text").toString()));
-						array.add(resultObject);
+
+						if (!resultObject.isMissing()) {
+							array.add(resultObject);
+						}
 					}
 				}
 			}

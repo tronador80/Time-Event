@@ -62,7 +62,7 @@ public class EventAnalysisComponent {
 
 		AnalysisEngineDescription deepParse = createPrimitiveDescription(
 				DeepParserAE.class, "Max_sentence_length", 300, "WriteCoNLL",
-				true, "OutputFile", "test.txt");
+				false);
 
 		AnalysisEngineDescription dest = createPrimitiveDescription(
 				JsonWriter.class, JsonWriter.PARAM_OUTFILE,

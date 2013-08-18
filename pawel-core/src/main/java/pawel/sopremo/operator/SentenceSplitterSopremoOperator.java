@@ -45,10 +45,10 @@ public class SentenceSplitterSopremoOperator extends
 		protected void map(final IJsonNode value, final JsonCollector out) {
 			if (value instanceof ObjectNode) {
 				ObjectNode object = (ObjectNode) value;
-				SentenceSplitterAnalysisComponent mt = new SentenceSplitterAnalysisComponent();
+				SentenceSplitterAnalysisComponent ssac = new SentenceSplitterAnalysisComponent();
 
 				try {
-					out.collect(Xmi2Json.xmi2Json(mt.tokenize(JsonConverter
+					out.collect(Xmi2Json.xmi2Json(ssac.tokenize(JsonConverter
 							.json2String(object))));
 				} catch (UIMAException e) {
 					log.error(e.getMessage());

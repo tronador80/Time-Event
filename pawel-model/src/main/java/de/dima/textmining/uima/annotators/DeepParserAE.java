@@ -73,10 +73,12 @@ public class DeepParserAE extends org.uimafit.component.JCasAnnotator_ImplBase {
 
 		parser = new MateParser(LanguageType.ENGLISH);
 
-		try {
-			this.openOutputFiles(this.outputFileName);
-		} catch (final FileNotFoundException e) {
-			throw new ResourceInitializationException(e);
+		if (writeCoNLL) {
+			try {
+				this.openOutputFiles(this.outputFileName);
+			} catch (final FileNotFoundException e) {
+				throw new ResourceInitializationException(e);
+			}
 		}
 	}
 
