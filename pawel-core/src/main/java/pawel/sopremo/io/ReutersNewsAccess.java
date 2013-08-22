@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import pawel.model.sopremo.io.ReutersNewsInputSplit;
 import pawel.sopremo.io.reutersnews.ReutersUnmarshaller;
 import de.tu_berlin.dima.mia.reuters_model.jaxb2.Newsitem;
-import eu.stratosphere.nephele.configuration.Configuration;
 import eu.stratosphere.nephele.template.GenericInputSplit;
 import eu.stratosphere.pact.common.contract.GenericDataSource;
 import eu.stratosphere.pact.common.io.GenericInputFormat;
@@ -124,18 +123,31 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		 */
 		private String hdfsConfPath;
 
+		/**
+		 * the number of news that should be analyzed
+		 */
+		private long amountOfNews = -1;
+
 		@Override
-		public void configure(Configuration parameters) {
+		public void configure(
+				eu.stratosphere.nephele.configuration.Configuration parameters) {
 			super.configure(parameters);
 			this.context = (EvaluationContext) SopremoUtil.getObject(
 					parameters, SopremoUtil.CONTEXT, null);
 			this.schema = this.context.getOutputSchema(0);
 			this.docName = (String) SopremoUtil.getObject(parameters,
 					DOCUMENT_NAME, null);
-			this.docId = Integer.parseInt((String) SopremoUtil.getObject(
-					parameters, ID_FIRST_DOCUMENT, "-1"));
-			this.lastDocId = Integer.parseInt((String) SopremoUtil.getObject(
-					parameters, ID_LAST_DOCUMENT, "-1"));
+
+			try {
+				this.docId = Integer.parseInt((String) SopremoUtil.getObject(
+						parameters, ID_FIRST_DOCUMENT, "-1"));
+				this.lastDocId = Integer.parseInt((String) SopremoUtil
+						.getObject(parameters, ID_LAST_DOCUMENT, "-1"));
+			} catch (Exception e) {
+				this.docId = -1;
+				this.lastDocId = -1;
+			}
+
 			this.hdfsConfPath = (String) SopremoUtil.getObject(parameters,
 					HDFS_CONF_PATH, null);
 
@@ -151,16 +163,20 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			if (lastDocId != -1) {
 				return this.docId > lastDocId;
 			} else {
-				return this.docId > (new File(this.docName)).list().length;
+				return this.docId >= this.getAmountOfNews();
 			}
 		}
 
 		@Override
 		public boolean nextRecord(PactRecord record) throws IOException {
-			this.schema.jsonToRecord(
-					this.xmlReutersNewsFile2jsonObjectNode(this.nextName()),
-					record);
-			return true;
+			IJsonNode newNode = this.xmlReutersNewsFile2jsonObjectNode(this
+					.nextName());
+
+			if (newNode != null) {
+				this.schema.jsonToRecord(newNode, record);
+				return true;
+			}
+			return false;
 		}
 
 		@Override
@@ -196,21 +212,6 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		}
 
 		/**
-		 * this method returns name of next reuters news file that should be
-		 * processed
-		 * 
-		 * @return name of file
-		 */
-		private String nextName() {
-			if (this.lastDocId != -1) {
-				return this.docName.replace("XYZ",
-						(new Integer(this.docId++).toString()));
-			} else {
-				return (new File(this.docName)).list()[this.docId++];
-			}
-		}
-
-		/**
 		 * getter for HDFS configuration object
 		 * 
 		 * @return hdfs configuration object
@@ -226,6 +227,58 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		}
 
 		/**
+		 * @return the amountOfNews
+		 */
+		private long getAmountOfNews() {
+			if (this.amountOfNews == -1) {
+				if (this.docName.startsWith("hdfs")) {
+					try {
+						FileSystem fileSystem = FileSystem.get(this
+								.getConfiguration());
+						this.amountOfNews = fileSystem.listStatus(new Path(
+								this.docName)).length;
+					} catch (IOException e) {
+						log.error(e.getMessage(), e);
+						this.amountOfNews = 0;
+					}
+				} else {
+					this.amountOfNews = (new File(this.docName)).list().length;
+				}
+			}
+
+			return this.amountOfNews;
+		}
+
+		/**
+		 * this method returns name of next reuters news file that should be
+		 * processed
+		 * 
+		 * @return name of file
+		 */
+		private String nextName() {
+			if (this.lastDocId != -1) {
+				return this.docName.replace("XYZ",
+						(new Integer(this.docId++).toString()));
+			} else {
+				if (this.docName.startsWith("hdfs")) {
+					FileSystem fileSystem;
+					try {
+						fileSystem = FileSystem.get(this.getConfiguration());
+						return fileSystem.listStatus(new Path(this.docName))[this.docId++]
+								.getPath().toString();
+					} catch (IOException e) {
+						log.error(e.getMessage(), e);
+						return null;
+					}
+
+				} else {
+					return (new File(this.docName)).listFiles()[this.docId++]
+							.getAbsolutePath();
+				}
+			}
+		}
+
+		/**
 		 * this method parse the reuters news file given by
 		 * <b>reutersNewsFileName</b> and creates an json object from it
 		 * 
@@ -234,6 +287,10 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		 */
 		private IJsonNode xmlReutersNewsFile2jsonObjectNode(
 				String reutersNewsFileName) {
+
+			if (reutersNewsFileName == null) {
+				return null;
+			}
 
 			ObjectNode res = new ObjectNode();
 			ArrayNode<IJsonNode> annotations = new ArrayNode<IJsonNode>();
@@ -290,13 +347,14 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 
 				StringBuilder textBuilder = new StringBuilder();
 				for (String p : news.getText().getP()) {
-					if(textBuilder.length() > 0) {
+					if (textBuilder.length() > 0) {
 						textBuilder.append(" ");
 					}
 					textBuilder.append(p);
 				}
 				text.put("Text", this.string2TextNode(textBuilder.toString()));
 
+				System.out.println(text);
 				annotations.add(text);
 
 			} catch (JAXBException e) {

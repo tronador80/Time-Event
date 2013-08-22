@@ -5,11 +5,8 @@ package pawel.sopremo.io;
 
 import org.junit.Test;
 
-import pawel.sopremo.io.reutersnews.ReutersUnmarshaller;
 import eu.stratosphere.sopremo.expressions.ConstantExpression;
 import eu.stratosphere.sopremo.testing.SopremoTestPlan;
-import eu.stratosphere.sopremo.type.ObjectNode;
-import eu.stratosphere.sopremo.type.TextNode;
 
 /**
  * Test class for {@link ReutersNewsAccess}.
@@ -25,14 +22,11 @@ public class ReutersNewsAccessTest {
 		final SopremoTestPlan sopremoPlan = new SopremoTestPlan(0, 1);
 
 		final ReutersNewsAccess reutersNews = new ReutersNewsAccess();
-		reutersNews.setDocumentName(new ConstantExpression(System
-				.getProperty("user.dir")
-				+ "/src/test/resources/test_reuters_news/XYZnewsML.xml"));
+		reutersNews.setDocumentName(new ConstantExpression(
+				"hdfs://localhost:9000/selected_news/")); // /home/ptondryk/Development/DATA/test_reuters_news/
 
-		reutersNews.setIdOfFirstDocumentToProcess(new ConstantExpression(
-				"10000"));
-		reutersNews
-				.setIdOfLastDocuemtnToProcess(new ConstantExpression("10003"));
+		reutersNews.setHdfsConfPath(new ConstantExpression(
+				"/home/ptondryk/Development/hadoop-2.0.5-alpha/etc/hadoop/"));
 
 		sopremoPlan.getOutputOperator(0).setInputs(reutersNews);
 
