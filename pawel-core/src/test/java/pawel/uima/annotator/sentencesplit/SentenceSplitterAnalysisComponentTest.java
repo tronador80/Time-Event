@@ -1,8 +1,10 @@
 package pawel.uima.annotator.sentencesplit;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.uima.UIMAException;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,6 +13,8 @@ import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 import pawel.uima.annotator.sentencesplit.SentenceSplitterAnalysisComponent;
+import pawel.utils.JsonConverter;
+import pawel.utils.OutputHandler;
 import pawel.utils.Xmi2Json;
 
 /**
@@ -20,6 +24,18 @@ import pawel.utils.Xmi2Json;
  * @see SentenceSplitterAnalysisComponent
  */
 public class SentenceSplitterAnalysisComponentTest {
+
+	/**
+	 * this method checks whether the temporal directory is empty after each
+	 * operator call
+	 */
+	@After
+	public void testIsTmpDirEmpty() {
+		File tmpDir = new File(OutputHandler.DEFAULT_TMP_DIR);
+		if (tmpDir.exists() && tmpDir.isDirectory()) {
+			Assert.assertEquals(0, tmpDir.list().length);
+		}
+	}
 
 	@Test
 	public void testSingleSentence() {
@@ -148,7 +164,7 @@ public class SentenceSplitterAnalysisComponentTest {
 		Assert.assertNotNull(tokensAsXml);
 
 		IJsonNode result = Xmi2Json.xmi2Json(tokensAsXml);
-
+		System.out.println(JsonConverter.json2String(result));
 		Assert.assertTrue(result instanceof ObjectNode);
 
 		ObjectNode resultObject = (ObjectNode) result;

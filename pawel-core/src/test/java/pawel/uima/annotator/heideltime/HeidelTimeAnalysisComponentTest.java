@@ -3,27 +3,40 @@
  */
 package pawel.uima.annotator.heideltime;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.UIMAException;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import pawel.utils.OutputHandler;
+import pawel.utils.Xmi2Json;
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
-import pawel.uima.annotator.heideltime.HeidelTimeAnalysisComponent;
-import pawel.utils.JsonConverter;
-import pawel.utils.Xmi2Json;
 
 /**
  * @author pawel
  * 
  */
 public class HeidelTimeAnalysisComponentTest {
+
+	/**
+	 * this method checks whether the temporal directory is empty after each
+	 * operator call
+	 */
+	@After
+	public void testIsTmpDirEmpty() {
+		File tmpDir = new File(OutputHandler.DEFAULT_TMP_DIR);
+		if (tmpDir.exists() && tmpDir.isDirectory()) {
+			Assert.assertEquals(0, tmpDir.list().length);
+		}
+	}
 
 	@Test
 	public void testHeidelTime() {
@@ -114,5 +127,55 @@ public class HeidelTimeAnalysisComponentTest {
 				sentencesText.replace(" ", ""));
 		Assert.assertEquals(text.replace(" ", ""), tokenAnnotationsText);
 
+	}
+
+	/**
+	 * this test checks whether the relative time expressions (like 'today' or
+	 * 'tomorrow') are correctly evaluated in relation to document timestamp
+	 */
+	@Test
+	public void testHeidelTimeWithTimeStamp() {
+		HeidelTimeAnalysisComponent htac = new HeidelTimeAnalysisComponent();
+
+		String exampleInput = "[{\"annotations\":[{\"Text\":\"Tomorrow I go to school.\",\"begin\":\"0\",\"date\":\"20130713000000\",\"end\":\"0\"},{\"Sentence\":\"Tomorrow I go to school.\",\"begin\":\"0\",\"end\":\"24\",\"sentenceIndex\":\"0\",\"tokenBegin\":\"0\",\"tokenEnd\":\"6\"},{\"Token\":\"Tomorrow\",\"afterToken\":\" \",\"beforeToken\":\"\",\"begin\":\"0\",\"end\":\"8\",\"originalText\":\"Tomorrow\",\"pos\":\"NN\",\"value\":\"Tomorrow\"},{\"Token\":\"I\",\"afterToken\":\" \",\"beforeToken\":\" \",\"begin\":\"9\",\"end\":\"10\",\"originalText\":\"I\",\"pos\":\"PRP\",\"value\":\"I\"},{\"Token\":\"go\",\"afterToken\":\" \",\"beforeToken\":\" \",\"begin\":\"11\",\"end\":\"13\",\"originalText\":\"go\",\"pos\":\"VBP\",\"value\":\"go\"},{\"Token\":\"to\",\"afterToken\":\" \",\"beforeToken\":\" \",\"begin\":\"14\",\"end\":\"16\",\"originalText\":\"to\",\"pos\":\"TO\",\"value\":\"to\"},{\"Token\":\"school\",\"afterToken\":\"\",\"beforeToken\":\" \",\"begin\":\"17\",\"end\":\"23\",\"originalText\":\"school\",\"pos\":\"NN\",\"value\":\"school\"},{\"Token\":\".\",\"afterToken\":\"\",\"beforeToken\":\"\",\"begin\":\"23\",\"end\":\"24\",\"originalText\":\".\",\"pos\":\".\",\"value\":\".\"}]}]";
+
+		String tokensAsXml = null;
+		try {
+			tokensAsXml = htac.tagTime(exampleInput, "news");
+		} catch (UIMAException e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		} catch (IOException e) {
+			Assert.fail(e.getMessage());
+		}
+		Assert.assertNotNull(tokensAsXml);
+
+		IJsonNode result = Xmi2Json.xmi2Json(tokensAsXml);
+
+		Assert.assertNotNull(result);
+
+		Assert.assertTrue(result instanceof ObjectNode);
+		ObjectNode resultObject = (ObjectNode) result;
+
+		Assert.assertTrue(resultObject.get("annotations") instanceof ArrayNode<?>);
+
+		ArrayNode<?> annotationsArray = (ArrayNode<?>) resultObject
+				.get("annotations");
+
+		List<String> expectedTimexAnnotations = new ArrayList<String>();
+		expectedTimexAnnotations.add("2013-07-14");
+
+		for (int i = 0; i < annotationsArray.size(); i++) {
+			Assert.assertTrue(annotationsArray.get(i) instanceof ObjectNode);
+			ObjectNode annotationObject = (ObjectNode) annotationsArray.get(i);
+
+			if (!(annotationObject.get("Timex3") instanceof MissingNode)
+					&& annotationObject.get("Timex3").isTextual()) {
+				Assert.assertTrue(expectedTimexAnnotations
+						.remove(annotationObject.get("timexValue").toString()));
+			}
+		}
+
+		Assert.assertTrue(expectedTimexAnnotations.isEmpty());
 	}
 }
