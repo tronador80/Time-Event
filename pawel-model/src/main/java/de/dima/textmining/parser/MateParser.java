@@ -66,43 +66,38 @@ public class MateParser implements de.dima.textmining.parser.Parser {
 			return;
 		}
 
-		String parserModelPath = "";
-		try {
-			parserModelPath = ResourceManager.getResourcePath(resourcePath);
-		} catch (IOException e) {
-			logger.error("Error while loading model for Mate Parser.");
-			// TODO: Exception werfen?
-		}
+		String parserModelPath = ResourceManager.getResourcePath(resourcePath);
 
 		Options optsParser = new Options(new String[] { "-model",
 				parserModelPath });
 
-		// TODO: in manchen Situationen treten hier Probleme auf, weil er das Model nicht Laden kann.
-		// Evt. wird es manchen Situationen bei Hadoop zu schnell geloescht.  
-		
+		// TODO: in manchen Situationen treten hier Probleme auf, weil er das
+		// Model nicht Laden kann.
+		// Evt. wird es manchen Situationen bei Hadoop zu schnell geloescht.
+
 		parser = new Parser(optsParser);
 	}
 
 	@Override
-	public CoNLLNode parse(List<ShallowToken> shallowSentence){
-		
-		List<String> tokens = new ArrayList<String>(); 
+	public CoNLLNode parse(List<ShallowToken> shallowSentence) {
+
+		List<String> tokens = new ArrayList<String>();
 		List<String> postags = new ArrayList<String>();
-		
+
 		for (ShallowToken shallowToken : shallowSentence) {
-			
+
 			tokens.add(shallowToken.getText());
 			postags.add(shallowToken.getTag());
-			
+
 		}
-		
+
 		return this.parse(tokens, postags);
 	}
-	
+
 	@Override
 	public CoNLLNode parse(List<String> tokens, List<String> postags) {
 		logger.debug("parsing tokens: " + tokens + " postags: " + postags);
-		
+
 		if (tokens.isEmpty() || postags.isEmpty()) {
 			// if sentence was empty, return null
 			logger.info("parser got empty sentence. returning null.\n");

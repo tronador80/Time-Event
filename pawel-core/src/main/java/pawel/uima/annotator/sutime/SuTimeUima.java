@@ -113,7 +113,9 @@ public class SuTimeUima extends org.uimafit.component.JCasAnnotator_ImplBase {
 		for (CoreMap timexAnnotation : annotations
 				.get(TimeAnnotations.TimexAnnotations.class)) {
 			Timex3 timex = this.timexAnnotation2timex3(timexAnnotation, jcas);
-			timex.addToIndexes();
+			if (timex != null) {
+				timex.addToIndexes();
+			}
 
 		}
 	}
@@ -136,7 +138,14 @@ public class SuTimeUima extends org.uimafit.component.JCasAnnotator_ImplBase {
 		res.setEnd(timexAnnotation
 				.get(CoreAnnotations.CharacterOffsetEndAnnotation.class));
 
-		res.setTimexValue(timex.value());
+		if (timex.value() != null && !timex.value().isEmpty()) {
+			res.setTimexValue(timex.value());
+		} else if (timex.altVal() != null && !timex.altVal().isEmpty()) {
+			res.setTimexValue(timex.altVal());
+		} else {
+			return null;
+		}
+
 		res.setTimexType(timex.timexType());
 		res.setTimexId(timex.tid());
 
@@ -218,4 +227,5 @@ public class SuTimeUima extends org.uimafit.component.JCasAnnotator_ImplBase {
 
 		return sentenceAnnotation;
 	}
+
 }

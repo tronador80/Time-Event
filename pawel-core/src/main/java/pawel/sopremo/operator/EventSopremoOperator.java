@@ -17,8 +17,11 @@ import eu.stratosphere.sopremo.operator.Name;
 import eu.stratosphere.sopremo.operator.OutputCardinality;
 import eu.stratosphere.sopremo.pact.JsonCollector;
 import eu.stratosphere.sopremo.pact.SopremoMap;
+import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
+import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
+import eu.stratosphere.sopremo.type.TextNode;
 
 /**
  * Sopremo operator that allows events tagging. Input of this operator is result
@@ -45,11 +48,32 @@ public class EventSopremoOperator extends
 			if (value instanceof ObjectNode) {
 				ObjectNode object = (ObjectNode) value;
 
+				if (!(object.get("annotations") instanceof ArrayNode<?>)) {
+					log.error("Given object has no annotations attribute.");
+					return;
+				}
+
+				// find annotated text
+				String analyzedText = "";
+				String timestamp = "";
+				for (Object annotation : ((ArrayNode) object.get("annotations"))) {
+					if (annotation instanceof ObjectNode
+							&& !(((ObjectNode) annotation).get("Text") instanceof MissingNode)) {
+						analyzedText = ((ObjectNode) annotation).get("Text")
+								.toString();
+						timestamp = ((ObjectNode) annotation).get("date")
+								.toString();
+					}
+				}
+
 				EventAnalysisComponent eac = new EventAnalysisComponent();
 
 				try {
-					out.collect(JsonConverter.string2Json(eac
-							.tagEvent(JsonConverter.json2String(object))));
+					ObjectNode res = (ObjectNode) JsonConverter.string2Json(eac
+							.tagEvent(JsonConverter.json2String(object)));
+					res.put("analyzedText", new TextNode(analyzedText));
+					res.put("timestamp", new TextNode(timestamp));
+					out.collect(res);
 				} catch (UIMAException e) {
 					log.error(e.getMessage(), e);
 				} catch (IOException e) {
@@ -59,7 +83,6 @@ public class EventSopremoOperator extends
 				log.error("Root element must be object!");
 			}
 		}
-
 	}
 
 }

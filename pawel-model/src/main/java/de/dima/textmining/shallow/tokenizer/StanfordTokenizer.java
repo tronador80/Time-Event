@@ -7,15 +7,14 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import de.dima.textmining.shallow.postagger.StanfordPOSTagger;
-
 import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
 public class StanfordTokenizer implements Tokenizer {
-		
+
 	/** The logger. */
 	Logger logger = Logger.getLogger(StanfordPOSTagger.class);
-	
+
 	@Override
 	public List<String> tokenize(String sentence) {
 
@@ -41,5 +40,4 @@ public class StanfordTokenizer implements Tokenizer {
 		return tokens;
 	}
 
-	
 }

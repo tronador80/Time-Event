@@ -49,18 +49,25 @@ public class SentenceSplitterAnalysisComponent {
 		String outputDirName = "/sentence_splitter_"
 				+ Math.abs((new Random()).nextLong());
 
-		CollectionReader source = createCollectionReader(JsonArrayReader.class,
-				"PARAM_INPUT", new String[] { inputText });
+		try {
+			CollectionReader source = createCollectionReader(
+					JsonArrayReader.class, "PARAM_INPUT",
+					new String[] { inputText });
 
-		AnalysisEngineDescription splitter = createPrimitiveDescription(
-				SentenceSplitter.class,
-				TypeSystemDescriptionFactory.createTypeSystemDescription());
+			AnalysisEngineDescription splitter = createPrimitiveDescription(
+					SentenceSplitter.class,
+					TypeSystemDescriptionFactory.createTypeSystemDescription());
 
-		AnalysisEngineDescription dest = createPrimitiveDescription(
-				XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
-				OutputHandler.DEFAULT_TMP_DIR + outputDirName);
+			AnalysisEngineDescription dest = createPrimitiveDescription(
+					XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
+					OutputHandler.DEFAULT_TMP_DIR + outputDirName);
 
-		runPipeline(source, splitter, dest);
+			runPipeline(source, splitter, dest);
+			
+		} catch (Exception e) {
+			OutputHandler.removeOutputDirectory(outputDirName);
+			throw e;
+		}
 
 		return OutputHandler
 				.readOutputFromExtendedDefaultTmpDirectory(outputDirName);

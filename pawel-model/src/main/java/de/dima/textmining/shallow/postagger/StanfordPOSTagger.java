@@ -84,8 +84,12 @@ public class StanfordPOSTagger implements POSTagger {
 		} else if (language.equals(LanguageType.ENGLISH)) {
 			/* TODO which model should be used ? */
 			logger.debug("initializing english stanford postagger");
-			resourcePath = "/models/stanford/bidirectional-distsim-wsj-0-18.tagger";
-			resourcePath = "/models/stanford/left3words-wsj-0-18.tagger";
+
+			// TODO pawel
+			resourcePath = "/edu/stanford/nlp/models/pos-tagger/wsj-bidirectional/wsj-0-18-bidirectional-distsim.tagger";
+			// resourcePath =
+			// "/models/stanford/bidirectional-distsim-wsj-0-18.tagger";
+			// resourcePath = "/models/stanford/left3words-wsj-0-18.tagger";
 
 		} else {
 			logger.error("Unsupported language requested for this POSTagger: "
@@ -93,15 +97,9 @@ public class StanfordPOSTagger implements POSTagger {
 			return;
 		}
 
-		try {
-			String taggerModelPath = ResourceManager
-					.getResourcePath(resourcePath);
+		String taggerModelPath = ResourceManager.getResourcePath(resourcePath);
 
-			tagger = new MaxentTagger(taggerModelPath);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		tagger = new MaxentTagger(taggerModelPath);
 	}
 
 	/**

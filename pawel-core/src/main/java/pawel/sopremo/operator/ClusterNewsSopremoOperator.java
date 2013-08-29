@@ -31,7 +31,7 @@ import eu.stratosphere.sopremo.type.TextNode;
  * similarity measure cosine similarity is used. Algorithm uses the shortest
  * linkage variant.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 @InputCardinality(1)

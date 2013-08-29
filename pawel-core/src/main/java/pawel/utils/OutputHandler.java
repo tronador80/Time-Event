@@ -25,7 +25,9 @@ public class OutputHandler {
 	private static Logger log = Logger.getLogger(OutputHandler.class);
 
 	public static final String DEFAULT_TMP_DIR = System
-			.getProperty("user.home") + "/default_tmp_dir";
+			.getProperty("java.io.tmpdir")
+			+ File.separator
+			+ "default_pawel_sopremo_tmp_dir";
 
 	/**
 	 * 
@@ -53,6 +55,27 @@ public class OutputHandler {
 			log.error(e.getMessage(), e);
 		}
 		return res;
+	}
+
+	/**
+	 * remove given temporal output directory
+	 * 
+	 * @param outputDir
+	 *            directory to remove
+	 * @return true if remove was successful
+	 */
+	public static boolean removeOutputDirectory(String outputDir) {
+		File dir = new File(outputDir);
+		if (dir.exists() && dir.isDirectory()) {
+			try {
+				OutputHandler.delete(dir);
+				return true;
+			} catch (IOException e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+		return false;
+
 	}
 
 	/**

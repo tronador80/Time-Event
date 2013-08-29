@@ -194,11 +194,7 @@ public class JsonArrayReader extends JCasCollectionReader_ImplBase {
 								}
 
 								if (annotation.has("pos")) {
-									if ("NN".equals(annotation.getString("pos"))) {
-										token.setPos("NNP");
-									} else
-										token.setPos(annotation
-												.getString("pos"));
+									token.setPos(annotation.getString("pos"));
 								}
 
 								token.addToIndexes();

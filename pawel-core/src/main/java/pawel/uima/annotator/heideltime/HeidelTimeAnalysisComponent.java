@@ -7,6 +7,7 @@ import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescripti
 import static org.uimafit.factory.CollectionReaderFactory.createCollectionReader;
 import static org.uimafit.pipeline.SimplePipeline.runPipeline;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
@@ -54,31 +55,38 @@ public class HeidelTimeAnalysisComponent {
 		String outputDirName = "/heideltime_tagger_"
 				+ Math.abs((new Random()).nextLong());
 
-		CollectionReader source = createCollectionReader(JsonArrayReader.class,
-				"PARAM_INPUT", new String[] { inputText });
+		try {
+			CollectionReader source = createCollectionReader(
+					JsonArrayReader.class, "PARAM_INPUT",
+					new String[] { inputText });
 
-		TypeSystemDescriptionFactory.forceTypeDescriptorsScan();
+			TypeSystemDescriptionFactory.forceTypeDescriptorsScan();
 
-		AnalysisEngineDescription heidelTimeTranslatorBefore = createPrimitiveDescription(
-				HeidelTranslatorBefore.class,
-				TypeSystemDescriptionFactory.createTypeSystemDescription());
+			AnalysisEngineDescription heidelTimeTranslatorBefore = createPrimitiveDescription(
+					HeidelTranslatorBefore.class,
+					TypeSystemDescriptionFactory.createTypeSystemDescription());
 
-		AnalysisEngineDescription heidelTime = createPrimitiveDescription(
-				HeidelTime.class, HeidelTime.PARAM_DATE, true,
-				HeidelTime.PARAM_DURATION, true, HeidelTime.PARAM_TIME, true,
-				HeidelTime.PARAM_SET, true, HeidelTime.PARAM_LANGUAGE,
-				"english", HeidelTime.PARAM_TYPE_TO_PROCESS, typeToProcess);
+			AnalysisEngineDescription heidelTime = createPrimitiveDescription(
+					HeidelTime.class, HeidelTime.PARAM_DATE, true,
+					HeidelTime.PARAM_DURATION, true, HeidelTime.PARAM_TIME,
+					true, HeidelTime.PARAM_SET, true,
+					HeidelTime.PARAM_LANGUAGE, "english",
+					HeidelTime.PARAM_TYPE_TO_PROCESS, typeToProcess);
 
-		AnalysisEngineDescription heidelTimeTranslatorAfter = createPrimitiveDescription(
-				HeidelTranslatorAfter.class,
-				TypeSystemDescriptionFactory.createTypeSystemDescription());
+			AnalysisEngineDescription heidelTimeTranslatorAfter = createPrimitiveDescription(
+					HeidelTranslatorAfter.class,
+					TypeSystemDescriptionFactory.createTypeSystemDescription());
 
-		AnalysisEngineDescription dest = createPrimitiveDescription(
-				XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
-				OutputHandler.DEFAULT_TMP_DIR + outputDirName);
+			AnalysisEngineDescription dest = createPrimitiveDescription(
+					XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
+					OutputHandler.DEFAULT_TMP_DIR + outputDirName);
 
-		runPipeline(source, heidelTimeTranslatorBefore, heidelTime,
-				heidelTimeTranslatorAfter, dest);
+			runPipeline(source, heidelTimeTranslatorBefore, heidelTime,
+					heidelTimeTranslatorAfter, dest);
+		} catch (Exception e) {
+			OutputHandler.removeOutputDirectory(outputDirName);
+			throw e;
+		}
 
 		return OutputHandler
 				.readOutputFromExtendedDefaultTmpDirectory(outputDirName);

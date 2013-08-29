@@ -241,8 +241,11 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 						log.error(e.getMessage(), e);
 						this.amountOfNews = 0;
 					}
-				} else {
+				} else if ((new File(this.docName)).exists()) {
 					this.amountOfNews = (new File(this.docName)).list().length;
+				} else {
+					log.warn("No Reuters News found.");
+					this.amountOfNews = 0;
 				}
 			}
 
@@ -354,7 +357,6 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 				}
 				text.put("Text", this.string2TextNode(textBuilder.toString()));
 
-				System.out.println(text);
 				annotations.add(text);
 
 			} catch (JAXBException e) {

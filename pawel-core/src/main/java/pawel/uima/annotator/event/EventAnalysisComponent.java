@@ -51,28 +51,34 @@ public class EventAnalysisComponent {
 		String outputDirName = "/event_tagger_"
 				+ Math.abs((new Random()).nextLong());
 
-		CollectionReader source = createCollectionReader(JsonArrayReader.class,
-				"PARAM_INPUT", new String[] { inputText });
-
-		TypeSystemDescriptionFactory.forceTypeDescriptorsScan();
-
-		AnalysisEngineDescription eventTranslator = createPrimitiveDescription(
-				EventTranslator.class,
-				TypeSystemDescriptionFactory.createTypeSystemDescription());
-
-		AnalysisEngineDescription deepParse = createPrimitiveDescription(
-				DeepParserAE.class, "Max_sentence_length", 300, "WriteCoNLL",
-				false);
-
-		AnalysisEngineDescription dest = createPrimitiveDescription(
-				JsonWriter.class, JsonWriter.PARAM_OUTFILE,
-				OutputHandler.DEFAULT_TMP_DIR + outputDirName);
-
 		try {
+			CollectionReader source = createCollectionReader(
+					JsonArrayReader.class, "PARAM_INPUT",
+					new String[] { inputText });
+
+			TypeSystemDescriptionFactory.forceTypeDescriptorsScan();
+
+			AnalysisEngineDescription eventTranslator = createPrimitiveDescription(
+					EventTranslator.class,
+					TypeSystemDescriptionFactory.createTypeSystemDescription());
+
+			AnalysisEngineDescription deepParse = createPrimitiveDescription(
+					DeepParserAE.class, "Max_sentence_length", 300,
+					"WriteCoNLL", false);
+
+			AnalysisEngineDescription dest = createPrimitiveDescription(
+					JsonWriter.class, JsonWriter.PARAM_OUTFILE,
+					OutputHandler.DEFAULT_TMP_DIR + outputDirName);
+
 			runPipeline(source, eventTranslator, deepParse, dest);
+
 		} catch (OutOfMemoryError ome) {
 			System.err.println(ome.getMessage());
+			OutputHandler.removeOutputDirectory(outputDirName);
 			return "[]";
+		} catch (Exception e) {
+			OutputHandler.removeOutputDirectory(outputDirName);
+			throw e;
 		}
 
 		String res = OutputHandler

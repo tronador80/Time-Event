@@ -50,6 +50,7 @@ public class PosTaggerAnalysisComponent {
 		String outputDirName = "/pos_tagger_"
 				+ Math.abs((new Random()).nextLong());
 
+		try {
 		CollectionReader source = createCollectionReader(JsonArrayReader.class,
 				"PARAM_INPUT", new String[] { inputText });
 
@@ -61,7 +62,11 @@ public class PosTaggerAnalysisComponent {
 				XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
 				OutputHandler.DEFAULT_TMP_DIR + outputDirName);
 
-		runPipeline(source, tokens, dest);
+			runPipeline(source, tokens, dest);
+		} catch (Exception e) {
+			OutputHandler.removeOutputDirectory(outputDirName);
+			throw e;
+		}
 
 		return OutputHandler
 				.readOutputFromExtendedDefaultTmpDirectory(outputDirName);
