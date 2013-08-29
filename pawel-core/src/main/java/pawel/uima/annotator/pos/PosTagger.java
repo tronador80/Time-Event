@@ -11,6 +11,7 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.uimafit.component.JCasAnnotator_ImplBase;
 
+import de.dima.textmining.resources.ResourceManager;
 import pawel.types.pawel.Sentence;
 import pawel.types.pawel.Token;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -18,6 +19,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.AnnotationPipeline;
 import edu.stanford.nlp.pipeline.POSTaggerAnnotator;
+import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.util.CoreMap;
 
 /**
@@ -41,8 +43,10 @@ public class PosTagger extends JCasAnnotator_ImplBase {
 
 		// prepare the pipeline for part-of-speech tagging
 		AnnotationPipeline pipeline = new AnnotationPipeline();
-		pipeline.addAnnotator(new POSTaggerAnnotator(false));
-
+		pipeline.addAnnotator(new POSTaggerAnnotator(
+				new MaxentTagger(
+						ResourceManager
+								.getResourcePath("/edu/stanford/nlp/models/pos-tagger/wsj-left3words/wsj-0-18-left3words-distsim.tagger"))));
 		Annotation annotations = new Annotation(text);
 
 		// create Token annotations
