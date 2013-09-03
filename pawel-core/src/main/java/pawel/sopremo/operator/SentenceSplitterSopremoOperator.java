@@ -34,7 +34,7 @@ public class SentenceSplitterSopremoOperator extends
 		ElementaryOperator<SentenceSplitterSopremoOperator> {
 
 	private static Logger log = Logger
-			.getLogger(SentenceSplitterSopremoOperatorTest.class);
+			.getLogger(SentenceSplitterSopremoOperator.class);
 
 	public static class Implementation extends SopremoMap {
 

@@ -16,7 +16,7 @@ import org.apache.uima.collection.CollectionReader;
 import org.uimafit.component.xwriter.XWriter;
 import org.uimafit.factory.TypeSystemDescriptionFactory;
 
-import pawel.sopremo.operator.SentenceSplitterSopremoOperatorTest;
+import pawel.sopremo.operator.SentenceSplitterSopremoOperator;
 import pawel.uima.reader.JsonArrayReader;
 import pawel.utils.OutputHandler;
 
@@ -40,7 +40,7 @@ public class PosTaggerAnalysisComponent {
 	 * 
 	 * @param inputText
 	 *            json string containing output of
-	 *            {@link SentenceSplitterSopremoOperatorTest}.
+	 *            {@link SentenceSplitterSopremoOperator}.
 	 * @return json string containing pos tags
 	 * @throws UIMAException
 	 * @throws IOException
@@ -51,16 +51,17 @@ public class PosTaggerAnalysisComponent {
 				+ Math.abs((new Random()).nextLong());
 
 		try {
-		CollectionReader source = createCollectionReader(JsonArrayReader.class,
-				"PARAM_INPUT", new String[] { inputText });
+			CollectionReader source = createCollectionReader(
+					JsonArrayReader.class, "PARAM_INPUT",
+					new String[] { inputText });
 
-		AnalysisEngineDescription tokens = createPrimitiveDescription(
-				PosTagger.class,
-				TypeSystemDescriptionFactory.createTypeSystemDescription());
+			AnalysisEngineDescription tokens = createPrimitiveDescription(
+					PosTagger.class,
+					TypeSystemDescriptionFactory.createTypeSystemDescription());
 
-		AnalysisEngineDescription dest = createPrimitiveDescription(
-				XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
-				OutputHandler.DEFAULT_TMP_DIR + outputDirName);
+			AnalysisEngineDescription dest = createPrimitiveDescription(
+					XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
+					OutputHandler.DEFAULT_TMP_DIR + outputDirName);
 
 			runPipeline(source, tokens, dest);
 		} catch (Exception e) {
