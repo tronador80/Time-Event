@@ -73,6 +73,32 @@ public class JsonConverterTest {
 	}
 
 	@Test
+	public void testJson2StringWithMissingNodes() {
+		ObjectNode testNode = new ObjectNode();
+		ArrayNode<IJsonNode> testArrayNode = new ArrayNode<IJsonNode>();
+
+		ObjectNode testNode1 = new ObjectNode();
+		testNode1.put("key1", new TextNode("value1"));
+		ObjectNode testNode2 = new ObjectNode();
+		testNode2.put("key2", new TextNode("value2"));
+		ObjectNode testNode3 = new ObjectNode();
+		testNode3.put("key3", new TextNode("value3"));
+		IJsonNode testNode4 = new MissingNode();
+
+		testArrayNode.add(testNode1);
+		testArrayNode.add(testNode2);
+		testArrayNode.add(testNode4);
+		testArrayNode.add(testNode3);
+
+		testNode.put("annotations", testArrayNode);
+
+		Assert.assertEquals(
+				"{\"annotations\" : [{\"key1\" : \"value1\"},{\"key2\" : \"value2\"},{\"key3\" : \"value3\"}]}",
+				JsonConverter.json2String(testNode));
+
+	}
+
+	@Test
 	public void testString2Json() {
 		String exampleInput = "[{ \"start\": \"2013-2-14 00,00,00\", \"end\": \"2013-2-14 23,59,59\", \"timeSpan\": \"false\", \"personalTime\": \"false\", \"content\": \"Today is\", \"text\": \"Today is Monday. \" }]";
 
@@ -219,5 +245,22 @@ public class JsonConverterTest {
 		Timex3 t = s.getTimexs().get(0);
 		Assert.assertEquals("Thu Feb 14 23:59:59 CET 2013", t.getDate()
 				.toString());
+	}
+
+	@Test
+	public void testString2JsonNode() {
+		String input = "[{\"key11\":\"value11\", \"key12\":\"value12\"},"
+				+ "{\"key21\":\"value21\", \"key22\":\"value22\"}]";
+		ArrayNode<IJsonNode> expectedResult = new ArrayNode<>();
+		ObjectNode node1 = new ObjectNode();
+		node1.put("key11", new TextNode("value11"));
+		node1.put("key12", new TextNode("value12"));
+		ObjectNode node2 = new ObjectNode();
+		node2.put("key21", new TextNode("value21"));
+		node2.put("key22", new TextNode("value22"));
+		expectedResult.add(node1).add(node2);
+
+		Assert.assertEquals(expectedResult,
+				JsonConverter.string2JsonNode(input));
 	}
 }

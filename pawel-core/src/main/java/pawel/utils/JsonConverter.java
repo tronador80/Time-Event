@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 
 import pawel.model.Sentence2;
 import pawel.model.Timex3;
 import pawel.model.Token;
-
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.MissingNode;
@@ -46,7 +46,11 @@ public class JsonConverter {
 			return JsonConverter.jsonObject2String((ObjectNode) json);
 		} else if (json.isTextual()) {
 			return JsonConverter.jsonText2String((TextNode) json);
+		} else if (json.isMissing()) {
+			log.warn("Received missing node as input. Ignoring...");
+			return null;
 		} else {
+			log.warn("Received unknown node as input. Ignoring...");
 			return null;
 		}
 	}
@@ -79,8 +83,12 @@ public class JsonConverter {
 			} else if (objectNode.get(field).isTextual()) {
 				res += JsonConverter.jsonText2String((TextNode) objectNode
 						.get(field));
+			} else if (objectNode.get(field).isMissing()) {
+				log.warn("Received missing node as input. Ignoring...");
+				res = res.substring(0, res.lastIndexOf(","));
 			} else {
-				res += "\"\"";
+				log.warn("Received unknown node as input. Ignoring...");
+				res = res.substring(0, res.lastIndexOf(","));
 			}
 		}
 
@@ -124,8 +132,12 @@ public class JsonConverter {
 				res += JsonConverter.jsonObject2String((ObjectNode) node);
 			} else if (node.isTextual()) {
 				res += JsonConverter.jsonText2String((TextNode) node);
+			} else if (node.isMissing()) {
+				log.warn("Received missing node as input. Ignoring...");
+				res = res.substring(0, res.lastIndexOf(","));
 			} else {
-				res += "\"\"";
+				log.warn("Received unknown node as input. Ignoring...");
+				res = res.substring(0, res.lastIndexOf(","));
 			}
 		}
 		return res + "]";
@@ -357,38 +369,128 @@ public class JsonConverter {
 		ArrayNode<ObjectNode> array = new ArrayNode<ObjectNode>();
 		res.put("events", array);
 
+		JSONParser jsonParser = new JSONParser();
+		JSONArray jsonArray = null;
+		Object object = null;
 		try {
-			JSONArray jsonArray = new JSONArray(eventsAsString);
-			if (jsonArray != null) {
-				for (int i = 0; i < jsonArray.length(); i++) {
-					Object o = jsonArray.get(i);
-					if (o != null && o instanceof JSONObject) {
-						JSONObject jsonObject = (JSONObject) o;
-						ObjectNode resultObject = new ObjectNode();
-						resultObject
-								.put("start",
-										new TextNode(jsonObject.get("start")
-												.toString()));
-						resultObject.put("end",
-								new TextNode(jsonObject.get("end").toString()));
-						resultObject.put("timeSpan", new TextNode(jsonObject
-								.get("timeSpan").toString()));
-						resultObject.put("personalTime", new TextNode(
-								jsonObject.get("personalTime").toString()));
-						resultObject.put("content", new TextNode(jsonObject
-								.get("content").toString()));
-						resultObject
-								.put("text", new TextNode(jsonObject
-										.get("text").toString()));
+			object = jsonParser.parse(eventsAsString);
+		} catch (org.json.simple.parser.ParseException e) {
+			log.error(e.getMessage(), e);
+			return null;
+		}
+		if (object instanceof JSONArray) {
+			jsonArray = (JSONArray) object;
+		} else {
+			log.error("Given string does not json array!");
+			return null;
+		}
 
-						if (!resultObject.isMissing()) {
-							array.add(resultObject);
-						}
+		if (jsonArray != null) {
+			for (Object o : jsonArray) {
+				if (o != null && o instanceof JSONObject) {
+					JSONObject jsonObject = (JSONObject) o;
+					ObjectNode resultObject = new ObjectNode();
+					resultObject.put("start",
+							new TextNode(jsonObject.get("start").toString()));
+					resultObject.put("end", new TextNode(jsonObject.get("end")
+							.toString()));
+					resultObject
+							.put("timeSpan",
+									new TextNode(jsonObject.get("timeSpan")
+											.toString()));
+					resultObject.put("personalTime", new TextNode(jsonObject
+							.get("personalTime").toString()));
+					resultObject.put("content",
+							new TextNode(jsonObject.get("content").toString()));
+					resultObject.put("text", new TextNode(jsonObject
+							.get("text").toString()));
+
+					if (!resultObject.isMissing()) {
+						array.add(resultObject);
 					}
 				}
 			}
-		} catch (JSONException e) {
+		}
+
+		return res;
+	}
+
+	/**
+	 * This method parse (json-) string into stratosphere json object.
+	 * 
+	 * @param jsonAsString
+	 *            string to parse
+	 * @return {@link IJsonNode}
+	 */
+	public static IJsonNode string2JsonNode(String jsonAsString) {
+		JSONParser jsonParser = new JSONParser();
+		Object o = null;
+
+		try {
+			o = jsonParser.parse(jsonAsString);
+		} catch (org.json.simple.parser.ParseException e) {
 			log.error(e.getMessage(), e);
+			return null;
+		}
+
+		return JsonConverter.parseJson(o);
+	}
+
+	/**
+	 * 
+	 * This method converts given json object given as {@link org.json.simple}
+	 * object into {@link eu.stratosphere.sopremo.type.IJsonNode}.
+	 * 
+	 * @param jsonObject
+	 * @return
+	 */
+	private static IJsonNode parseJson(Object jsonObject) {
+		IJsonNode res = null;
+
+		if (jsonObject instanceof JSONObject) {
+			res = JsonConverter.parseJsonObject((JSONObject) jsonObject);
+
+		} else if (jsonObject instanceof JSONArray) {
+			res = JsonConverter.parseJsonArray((JSONArray) jsonObject);
+
+		} else if (jsonObject instanceof JSONValue
+				|| jsonObject instanceof String) {
+			res = new TextNode(jsonObject.toString());
+		}
+
+		return res;
+	}
+
+	/**
+	 * This method converts given {@link org.json.simple.JSONObject} into
+	 * {@link eu.stratosphere.sopremo.type.ObjectNode}.
+	 * 
+	 * @param jsonObject
+	 * @return
+	 */
+	private static ObjectNode parseJsonObject(JSONObject jsonObject) {
+		ObjectNode res = new ObjectNode();
+
+		for (Object key : jsonObject.keySet()) {
+			res.put(key.toString(),
+					JsonConverter.parseJson(jsonObject.get(key)));
+		}
+
+		return res;
+	}
+
+	/**
+	 * This method converts given {@link org.json.simple.JSONArray} into
+	 * {@link eu.stratosphere.sopremo.type.ArrayNode}.
+	 * 
+	 * @param jsonArray
+	 * @return
+	 */
+	private static IJsonNode parseJsonArray(JSONArray jsonArray) {
+		ArrayNode<IJsonNode> res = new ArrayNode<>();
+
+		for (Object arrayElement : jsonArray) {
+			res.add(JsonConverter.parseJson(arrayElement));
 		}
 
 		return res;

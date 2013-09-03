@@ -16,7 +16,7 @@ import org.apache.uima.collection.CollectionReader;
 import org.uimafit.component.xwriter.XWriter;
 import org.uimafit.factory.TypeSystemDescriptionFactory;
 
-import pawel.sopremo.operator.SentenceSplitterSopremoOperator;
+import pawel.sopremo.operator.SentenceSplitterSopremoOperatorTest;
 import pawel.uima.reader.JsonArrayReader;
 import pawel.utils.OutputHandler;
 
@@ -40,7 +40,7 @@ public class PosTaggerAnalysisComponent {
 	 * 
 	 * @param inputText
 	 *            json string containing output of
-	 *            {@link SentenceSplitterSopremoOperator}.
+	 *            {@link SentenceSplitterSopremoOperatorTest}.
 	 * @return json string containing pos tags
 	 * @throws UIMAException
 	 * @throws IOException

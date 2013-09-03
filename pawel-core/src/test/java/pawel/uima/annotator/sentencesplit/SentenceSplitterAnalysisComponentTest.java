@@ -8,14 +8,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import pawel.utils.OutputHandler;
+import pawel.utils.Xmi2Json;
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
-import pawel.uima.annotator.sentencesplit.SentenceSplitterAnalysisComponent;
-import pawel.utils.JsonConverter;
-import pawel.utils.OutputHandler;
-import pawel.utils.Xmi2Json;
 
 /**
  * Test class for class {@link SentenceSplitterAnalysisComponent}
@@ -154,6 +152,7 @@ public class SentenceSplitterAnalysisComponentTest {
 				+ "we will refer to this user as nephele. Using the super user root "
 				+ "is highly discouraged for security reasons.\", \"date\": \"200704121412\"}]} ";
 		String tokensAsXml = null;
+
 		try {
 			tokensAsXml = tac.tokenize(exampleText);
 		} catch (UIMAException e) {
@@ -164,7 +163,6 @@ public class SentenceSplitterAnalysisComponentTest {
 		Assert.assertNotNull(tokensAsXml);
 
 		IJsonNode result = Xmi2Json.xmi2Json(tokensAsXml);
-		System.out.println(JsonConverter.json2String(result));
 		Assert.assertTrue(result instanceof ObjectNode);
 
 		ObjectNode resultObject = (ObjectNode) result;

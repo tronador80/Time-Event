@@ -7,7 +7,6 @@ import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescripti
 import static org.uimafit.factory.CollectionReaderFactory.createCollectionReader;
 import static org.uimafit.pipeline.SimplePipeline.runPipeline;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 

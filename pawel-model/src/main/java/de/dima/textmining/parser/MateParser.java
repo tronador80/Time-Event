@@ -117,7 +117,7 @@ public class MateParser implements de.dima.textmining.parser.Parser {
 		// Provide the sentence
 		sen.init(tokensN.toArray(new String[0]));
 		sen.setPPos(postagsN.toArray(new String[0]));
-		System.out.println(sen.printSem());
+		// System.out.println(sen.printSem());
 
 		sen = parser.parse(sen);
 
@@ -143,7 +143,7 @@ public class MateParser implements de.dima.textmining.parser.Parser {
 			e.printStackTrace();
 		}
 
-		logger.info("parsing result:\n" + node);
+		logger.debug("parsing result:\n" + node);
 
 		return node;
 	}

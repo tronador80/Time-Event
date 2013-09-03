@@ -81,13 +81,6 @@
 			<artifactId>reuters-model</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/lib/reuters-model-0.0.1-SNAPSHOT-job.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>de.tu_berlin.dima.mia</groupId>
-			<artifactId>reuters-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>system</scope>
 			<systemPath>${basedir}/lib/index-import.jar</systemPath>
 		</dependency>
 		<dependency>

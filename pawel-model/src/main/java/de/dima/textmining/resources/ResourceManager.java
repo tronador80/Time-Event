@@ -29,26 +29,28 @@ public class ResourceManager {
 		String[] path = resource.split(File.separator);
 		String fileName = path[path.length - 1];
 
-		File r = new File(extractedResourceDir + File.separator + fileName);
+		File resourceLocation = new File(extractedResourceDir + File.separator
+				+ fileName);
 
-		// TODO: beim Entpacken Pfad von resource mit einbeziehen, dass es auch
-		// moeglich ist Dateien mit dem selben Namen zu haben?
-
-		// copy data
-		try {
-			InputStream is = ResourceManager.class
-					.getResourceAsStream(resource);
-			FileOutputStream fos = new FileOutputStream(r.getAbsolutePath());
-			byte[] buffer = new byte[4096];
-			int bytesRead = 0;
-			while ((bytesRead = is.read(buffer)) != -1) {
-				fos.write(buffer, 0, bytesRead);
+		if (!resourceLocation.exists()) {
+			// copy data
+			FileOutputStream fos = null;
+			try {
+				InputStream is = ResourceManager.class
+						.getResourceAsStream(resource);
+				fos = new FileOutputStream(resourceLocation.getAbsolutePath());
+				byte[] buffer = new byte[4096];
+				int bytesRead = 0;
+				while ((bytesRead = is.read(buffer)) != -1) {
+					fos.write(buffer, 0, bytesRead);
+				}
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
-		return r.getAbsolutePath();
+		return resourceLocation.getAbsolutePath();
 	}
 
 	public static String getWorkingDir() {

@@ -34,7 +34,7 @@ public class SentenceSplitterSopremoOperator extends
 		ElementaryOperator<SentenceSplitterSopremoOperator> {
 
 	private static Logger log = Logger
-			.getLogger(SentenceSplitterSopremoOperator.class);
+			.getLogger(SentenceSplitterSopremoOperatorTest.class);
 
 	public static class Implementation extends SopremoMap {
 
@@ -48,8 +48,9 @@ public class SentenceSplitterSopremoOperator extends
 				SentenceSplitterAnalysisComponent ssac = new SentenceSplitterAnalysisComponent();
 
 				try {
-					out.collect(Xmi2Json.xmi2Json(ssac.tokenize(JsonConverter
-							.json2String(object))));
+					ObjectNode result = (ObjectNode) Xmi2Json.xmi2Json(ssac
+							.tokenize(JsonConverter.json2String(object)));
+					out.collect(result);
 				} catch (UIMAException e) {
 					log.error(e.getMessage());
 				} catch (IOException e) {
