@@ -3,6 +3,8 @@
  */
 package pawel.model.sopremo.io;
 
+import java.util.List;
+
 import eu.stratosphere.nephele.template.GenericInputSplit;
 
 /**
@@ -12,19 +14,15 @@ import eu.stratosphere.nephele.template.GenericInputSplit;
 public class ReutersNewsInputSplit extends GenericInputSplit {
 
 	/**
-	 * 
+	 * this list contains names of files that should be processed within this
+	 * inputsplit
 	 */
-	private int startDocId;
+	private List<String> filesToProcess;
 
 	/**
 	 * 
 	 */
-	private int endDocId;
-
-	/**
-	 * 
-	 */
-	private String docName;
+	private Boolean big;
 
 	/**
 	 * empty construtor
@@ -41,57 +39,41 @@ public class ReutersNewsInputSplit extends GenericInputSplit {
 	 * @param endDocId
 	 * @param docName
 	 */
-	public ReutersNewsInputSplit(int splitId, String docName, int startDocId,
-			int endDocId) {
+	public ReutersNewsInputSplit(int splitId, List<String> filesToProcess,
+			Boolean big) {
 		super(splitId);
-		this.startDocId = startDocId;
-		this.endDocId = endDocId;
-		this.docName = docName;
+		this.setFilesToProcess(filesToProcess);
+		this.setBig(big);
 	}
 
 	/**
-	 * @return the startDocId
+	 * @return the filesToProcess
 	 */
-	public int getStartDocId() {
-		return startDocId;
+	public List<String> getFilesToProcess() {
+		return filesToProcess;
 	}
 
 	/**
-	 * @param startDocId
-	 *            the startDocId to set
+	 * @param filesToProcess
+	 *            the filesToProcess to set
 	 */
-	public void setStartDocId(int startDocId) {
-		this.startDocId = startDocId;
+	public void setFilesToProcess(List<String> filesToProcess) {
+		this.filesToProcess = filesToProcess;
 	}
 
 	/**
-	 * @return the endDocId
+	 * @return the big
 	 */
-	public int getEndDocId() {
-		return endDocId;
+	public Boolean getBig() {
+		return big;
 	}
 
 	/**
-	 * @param endDocId
-	 *            the endDocId to set
+	 * @param big
+	 *            the big to set
 	 */
-	public void setEndDocId(int endDocId) {
-		this.endDocId = endDocId;
-	}
-
-	/**
-	 * @return the docName
-	 */
-	public String getDocName() {
-		return docName;
-	}
-
-	/**
-	 * @param docName
-	 *            the docName to set
-	 */
-	public void setDocName(String docName) {
-		this.docName = docName;
+	public void setBig(Boolean big) {
+		this.big = big;
 	}
 
 }

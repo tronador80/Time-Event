@@ -47,6 +47,18 @@
 			<artifactId>pawel-model</artifactId>
 			<version>1.0b</version>
 		</dependency>
+		<dependency>
+			<groupId>eu.stratosphere</groupId>
+			<artifactId>sopremo-common</artifactId>
+			<type>jar</type>
+			<version>0.2.1</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>okkam-entity-manager</artifactId>
+					<groupId>okkam-entity-manager</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 
 </project>

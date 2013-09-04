@@ -8,10 +8,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
@@ -52,9 +56,8 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 	private static Logger log = Logger.getLogger(ReutersNewsAccess.class);
 
 	protected static final String DOCUMENT_NAME = "document_id";
-	protected static final String ID_FIRST_DOCUMENT = "id_first_document";
-	protected static final String ID_LAST_DOCUMENT = "id_last_document";
 	protected static final String HDFS_CONF_PATH = "hdfs_conf_path";
+	protected static final String BIG = "big";
 
 	/**
 	 * name containing substring XYZ that will be replaced with
@@ -63,19 +66,15 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 	private String documentName;
 
 	/**
-	 * 
-	 */
-	private String idOfFirstDocumentToProcess;
-
-	/**
-	 * 
-	 */
-	private String idOfLastDocuemtnToProcess;
-
-	/**
 	 * path to hdfs configuration files
 	 */
 	private String hdfsConfPath;
+
+	/**
+	 * this variable indicates whether the input files are composition of many
+	 * news (true) or single news (false)
+	 */
+	private boolean big;
 
 	/**
 	 * 
@@ -85,23 +84,16 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 	public static class ReutersNewsInputFormat extends GenericInputFormat {
 
 		/**
-		 * name of the files containing reuters news (file name should contain
-		 * XYZ string at position where the document id should be inserted)
-		 * starting with: file:// or hdfs://
+		 * Name of the files containing reuters news. Starting with: file:// or
+		 * hdfs://
 		 */
 		private String docName;
 
 		/**
-		 * Id of document that should be read from index in next
-		 * <code>nextRecord</code> call.
+		 * id of document that is currently processed (it refers to the list
+		 * <code>filesToProcess</code>)
 		 */
 		private int docId;
-
-		/**
-		 * Id of last document that should be processed within currently
-		 * processed split.
-		 */
-		private int lastDocId;
 
 		/**
 		 * 
@@ -124,9 +116,21 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		private String hdfsConfPath;
 
 		/**
-		 * the number of news that should be analyzed
+		 * this list contains names of all files that should be processed
 		 */
-		private long amountOfNews = -1;
+		private List<String> filesToProcess;
+
+		/**
+		 * this variable indicates whether the input files are composition of
+		 * many news (true) or single news (false)
+		 */
+		private boolean big;
+
+		/**
+		 * this list contains content of all news that belong to currently
+		 * processed file
+		 */
+		private List<String> newsToProcess;
 
 		@Override
 		public void configure(
@@ -137,40 +141,49 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			this.schema = this.context.getOutputSchema(0);
 			this.docName = (String) SopremoUtil.getObject(parameters,
 					DOCUMENT_NAME, null);
+			this.big = (Boolean) SopremoUtil.getObject(parameters, BIG, false);
 
-			try {
-				this.docId = Integer.parseInt((String) SopremoUtil.getObject(
-						parameters, ID_FIRST_DOCUMENT, "-1"));
-				this.lastDocId = Integer.parseInt((String) SopremoUtil
-						.getObject(parameters, ID_LAST_DOCUMENT, "-1"));
-			} catch (Exception e) {
-				this.docId = -1;
-				this.lastDocId = -1;
-			}
-
+			// set the hadoop installation path
 			this.hdfsConfPath = (String) SopremoUtil.getObject(parameters,
 					HDFS_CONF_PATH, null);
+			if (this.hdfsConfPath == null || this.hdfsConfPath.isEmpty()) {
+				this.hdfsConfPath = System.getenv().get("HADOOP_HOME");
+			}
 
-			// if not set which files read -> read all
-			if (this.docId == -1 || this.lastDocId == -1) {
-				this.docId = 0;
-				this.lastDocId = -1;
+			if (big) {
+				this.newsToProcess = new ArrayList<String>();
 			}
 		}
 
 		@Override
 		public boolean reachedEnd() throws IOException {
-			if (lastDocId != -1) {
-				return this.docId > lastDocId;
-			} else {
-				return this.docId >= this.getAmountOfNews();
-			}
+			return (this.docId >= this.getFilesToPorcess().size() && (this.newsToProcess == null || this.newsToProcess
+					.isEmpty()));
 		}
 
 		@Override
 		public boolean nextRecord(PactRecord record) throws IOException {
-			IJsonNode newNode = this.xmlReutersNewsFile2jsonObjectNode(this
-					.nextName());
+			IJsonNode newNode = null;
+			if (this.big) {
+				if (this.newsToProcess.isEmpty()) {
+					String contentOfNextBigFile = this.getFileContent(this
+							.nextName());
+					String[] splitsOfBigFile = contentOfNextBigFile
+							.split("ABCDEFGHIJKSPLIT");
+					for (String contentOfSingleNews : splitsOfBigFile) {
+						if (contentOfSingleNews != null
+								&& !contentOfSingleNews.isEmpty()) {
+							this.newsToProcess.add(contentOfSingleNews);
+						}
+					}
+				}
+				newNode = this
+						.xmlReutersNewsFile2jsonObjectNode(this.newsToProcess
+								.remove(0));
+			} else {
+				newNode = this.xmlReutersNewsFile2jsonObjectNode(this
+						.getFileContent(this.nextName()));
+			}
 
 			if (newNode != null) {
 				this.schema.jsonToRecord(newNode, record);
@@ -189,10 +202,15 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			log.debug("Open new split (splitNumber = " + split.getSplitNumber()
 					+ ").");
 			if (split instanceof ReutersNewsInputSplit) {
-				ReutersNewsInputSplit indexSplit = (ReutersNewsInputSplit) split;
+				ReutersNewsInputSplit reutersNewsSplit = (ReutersNewsInputSplit) split;
 
-				this.docId = indexSplit.getStartDocId();
-				this.lastDocId = indexSplit.getEndDocId();
+				this.docId = 0;
+				this.getFilesToPorcess().addAll(
+						reutersNewsSplit.getFilesToProcess());
+				this.big = reutersNewsSplit.getBig();
+				if (big && this.newsToProcess == null) {
+					this.newsToProcess = new ArrayList<String>();
+				}
 
 			} else {
 				log.warn("Received split is not ReutersNewsInputSplit... This split will be ignored.");
@@ -220,36 +238,61 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			if (this.conf == null) {
 				this.conf = new org.apache.hadoop.conf.Configuration();
 
-				conf.addResource(new Path(hdfsConfPath + "core-site.xml"));
-				conf.addResource(new Path(hdfsConfPath + "hdfs-site.xml"));
+				conf.addResource(new Path(hdfsConfPath
+						+ "/etc/hadoop/core-site.xml"));
+				conf.addResource(new Path(hdfsConfPath
+						+ "/etc/hadoop/hdfs-site.xml"));
 			}
 			return conf;
 		}
 
 		/**
-		 * @return the amountOfNews
+		 * this method returns the names of files that should be processed
+		 * 
+		 * @return list of file names
 		 */
-		private long getAmountOfNews() {
-			if (this.amountOfNews == -1) {
-				if (this.docName.startsWith("hdfs")) {
-					try {
-						FileSystem fileSystem = FileSystem.get(this
-								.getConfiguration());
-						this.amountOfNews = fileSystem.listStatus(new Path(
-								this.docName)).length;
-					} catch (IOException e) {
-						log.error(e.getMessage(), e);
-						this.amountOfNews = 0;
+		private List<String> getFilesToPorcess() {
+			if (this.filesToProcess == null) {
+				this.filesToProcess = new ArrayList<String>();
+			}
+			return this.filesToProcess;
+		}
+
+		/**
+		 * this method reads content of file given by <b>fileName</b>.
+		 * 
+		 * @param fileName
+		 * @return content of file as string
+		 */
+		private String getFileContent(String fileName) {
+			String fileContent = null;
+
+			if (fileName.startsWith("hdfs")) {
+				FileSystem fileSystem;
+				try {
+					fileSystem = FileSystem.get(this.getConfiguration());
+
+					Path path = new Path(fileName);
+					if (!fileSystem.exists(path)) {
+						return null;
 					}
-				} else if ((new File(this.docName)).exists()) {
-					this.amountOfNews = (new File(this.docName)).list().length;
-				} else {
-					log.warn("No Reuters News found.");
-					this.amountOfNews = 0;
+
+					FSDataInputStream in = fileSystem.open(path);
+					fileContent = IOUtils.toString(in);
+
+				} catch (IOException e) {
+					log.error(e.getMessage(), e);
+				}
+			} else {
+				try {
+					FileInputStream fos = new FileInputStream(fileName);
+					fileContent = IOUtils.toString(fos);
+					fos.close();
+				} catch (IOException e) {
+					log.error(e.getMessage(), e);
 				}
 			}
-
-			return this.amountOfNews;
+			return fileContent;
 		}
 
 		/**
@@ -259,39 +302,20 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		 * @return name of file
 		 */
 		private String nextName() {
-			if (this.lastDocId != -1) {
-				return this.docName.replace("XYZ",
-						(new Integer(this.docId++).toString()));
-			} else {
-				if (this.docName.startsWith("hdfs")) {
-					FileSystem fileSystem;
-					try {
-						fileSystem = FileSystem.get(this.getConfiguration());
-						return fileSystem.listStatus(new Path(this.docName))[this.docId++]
-								.getPath().toString();
-					} catch (IOException e) {
-						log.error(e.getMessage(), e);
-						return null;
-					}
-
-				} else {
-					return (new File(this.docName)).listFiles()[this.docId++]
-							.getAbsolutePath();
-				}
-			}
+			return this.getFilesToPorcess().get(this.docId++);
 		}
 
 		/**
-		 * this method parse the reuters news file given by
+		 * this method parse the reuters news content given in
 		 * <b>reutersNewsFileName</b> and creates an json object from it
 		 * 
-		 * @param reutersNewsFileName
+		 * @param reutersNewsFileContent
 		 * @return {@link IJsonNode} instance
 		 */
 		private IJsonNode xmlReutersNewsFile2jsonObjectNode(
-				String reutersNewsFileName) {
+				String reutersNewsFileContent) {
 
-			if (reutersNewsFileName == null) {
+			if (reutersNewsFileContent == null) {
 				return null;
 			}
 
@@ -299,34 +323,11 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			ArrayNode<IJsonNode> annotations = new ArrayNode<IJsonNode>();
 
 			try {
-
-				ReutersUnmarshaller ru = ReutersUnmarshaller.getInstance();
-				Newsitem news = null;
-
 				ObjectNode text = new ObjectNode();
 
-				if (reutersNewsFileName.startsWith("hdfs")) {
-					FileSystem fileSystem;
-					try {
-						fileSystem = FileSystem.get(this.getConfiguration());
-
-						Path path = new Path(reutersNewsFileName);
-						if (!fileSystem.exists(path)) {
-							return text;
-						}
-
-						FSDataInputStream in = fileSystem.open(path);
-
-						news = ru.unmarshall(in);
-					} catch (IOException e) {
-						log.error(e.getMessage(), e);
-						return text;
-					}
-
-				} else {
-					news = ru.unmarshall(new FileInputStream(new File(
-							reutersNewsFileName)));
-				}
+				ReutersUnmarshaller ru = ReutersUnmarshaller.getInstance();
+				Newsitem news = ru.unmarshall(IOUtils
+						.toInputStream(reutersNewsFileContent));
 
 				if (news == null) {
 					return text;
@@ -361,8 +362,6 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 
 			} catch (JAXBException e) {
 				log.error(e.getMessage(), e);
-			} catch (FileNotFoundException e) {
-				log.error(e.getMessage(), e);
 			}
 
 			res.put("annotations", annotations);
@@ -394,19 +393,44 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 
 			GenericInputSplit[] splits = new ReutersNewsInputSplit[minNumSplits];
 
-			int numberOfDocumentsToProcess = lastDocId - docId;
+			List<String> allFilesToProcess = new ArrayList<String>();
+			if (this.docName.startsWith("hdfs")) {
+				FileSystem fileSystem;
+				try {
+					fileSystem = FileSystem.get(this.getConfiguration());
+					FileStatus[] fileStates = fileSystem.listStatus(new Path(
+							this.docName));
+					for (FileStatus fileStatus : fileStates) {
+						allFilesToProcess.add(fileStatus.getPath().toString());
+					}
+
+				} catch (IOException e) {
+					log.error(e.getMessage(), e);
+					return null;
+				}
+
+			} else {
+				File[] files = (new File(this.docName)).listFiles();
+				for (File file : files) {
+					allFilesToProcess.add(file.getAbsolutePath());
+				}
+			}
+
+			int numberOfDocumentsToProcess = allFilesToProcess.size();
 
 			for (int i = 0; i < minNumSplits; i++) {
-				splits[i] = new ReutersNewsInputSplit(
-						i,
-						this.docName,
-						this.docId + i
-								* (numberOfDocumentsToProcess / minNumSplits),
-						this.docId
-								+ Math.min(
-										(i + 1)
+				List<String> filesToProcessWithinThisSplit = new ArrayList<String>(
+						allFilesToProcess
+								.subList(
+										i
 												* (numberOfDocumentsToProcess / minNumSplits),
-										numberOfDocumentsToProcess));
+										Math.min(
+												(i + 1)
+														* (numberOfDocumentsToProcess / minNumSplits),
+												numberOfDocumentsToProcess)));
+				splits[i] = new ReutersNewsInputSplit(i,
+						filesToProcessWithinThisSplit, this.big);
+
 			}
 
 			return splits;
@@ -424,12 +448,9 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 				context);
 		SopremoUtil.setObject(contract.getParameters(), DOCUMENT_NAME,
 				this.documentName);
-		SopremoUtil.setObject(contract.getParameters(), ID_FIRST_DOCUMENT,
-				this.idOfFirstDocumentToProcess);
-		SopremoUtil.setObject(contract.getParameters(), ID_LAST_DOCUMENT,
-				this.idOfLastDocuemtnToProcess);
 		SopremoUtil.setObject(contract.getParameters(), HDFS_CONF_PATH,
 				this.hdfsConfPath);
+		SopremoUtil.setObject(contract.getParameters(), BIG, this.big);
 		pactModule.getOutput(0).setInput(contract);
 		return pactModule;
 	}
@@ -442,26 +463,16 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 	}
 
 	@Property(flag = false, expert = true, preferred = true)
-	@Name(noun = "start")
-	public void setIdOfFirstDocumentToProcess(
-			EvaluationExpression idOfFirstDocumentToProcess) {
-		this.idOfFirstDocumentToProcess = idOfFirstDocumentToProcess.toString()
-				.replace("\"", "").replace("\'", "");
-	}
-
-	@Property(flag = false, expert = true, preferred = true)
-	@Name(noun = "end")
-	public void setIdOfLastDocuemtnToProcess(
-			EvaluationExpression idOfLastDocuemtnToProcess) {
-		this.idOfLastDocuemtnToProcess = idOfLastDocuemtnToProcess.toString()
-				.replace("\"", "").replace("\'", "");
-	}
-
-	@Property(flag = false, expert = true, preferred = true)
-	@Name(noun = "hdfsConfPath")
+	@Name(noun = "hadoop_home")
 	public void setHdfsConfPath(EvaluationExpression hdfsConfPath) {
 		this.hdfsConfPath = hdfsConfPath.toString().replace("\"", "")
 				.replace("\'", "");
+	}
+
+	@Property(flag = true)
+	@Name(noun = "big")
+	public void setBig() {
+		this.big = true;
 	}
 
 }
