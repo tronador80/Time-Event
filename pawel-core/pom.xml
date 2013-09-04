@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>pawel</artifactId>
 		<groupId>eu.stratosphere</groupId>
-		<version>0.2.1</version>
+		<version>1.0b</version>
 	</parent>
 
 	<artifactId>pawel-core</artifactId>
@@ -27,7 +27,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<forkMode>pertest</forkMode>
-					<argLine>-Xms2G -Xmx2G</argLine>
+					<argLine>-Xms2G -Xmx2560m</argLine>
 					<testFailureIgnore>false</testFailureIgnore>
 				</configuration>
 			</plugin>
@@ -43,59 +43,10 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>nl.jqno.equalsverifier</groupId>
-			<artifactId>equalsverifier</artifactId>
-			<version>1.0.1</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.stratosphere</groupId>
-			<artifactId>sopremo-common</artifactId>
-			<type>jar</type>
-			<version>0.2.1</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>okkam-entity-manager</artifactId>
-					<groupId>okkam-entity-manager</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>4.3.0</version>
-		</dependency>
-		<dependency>
 			<groupId>eu.stratosphere</groupId>
 			<artifactId>pawel-model</artifactId>
-			<version>0.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers-common</artifactId>
-			<version>4.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>de.tu_berlin.dima.mia</groupId>
-			<artifactId>reuters-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/index-import.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>org.jvnet.jaxb2_commons</groupId>
-			<artifactId>jaxb2-basics-runtime</artifactId>
-			<version>0.6.4</version>
+			<version>1.0b</version>
 		</dependency>
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>equalsverifier-repository</id>
-			<url>http://equalsverifier.googlecode.com/svn/maven/</url>
-		</repository>
-
-	</repositories>
 
 </project>

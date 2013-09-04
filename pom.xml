@@ -8,10 +8,12 @@
 	</parent>
 	<artifactId>pawel</artifactId>
 	<packaging>pom</packaging>
+	<version>1.0b</version>
 
 	<modules>
 		<module>pawel-model</module>
 		<module>pawel-core</module>
+		<module>pawel-dist</module>
 	</modules>
 
 	<dependencies>

@@ -23,6 +23,8 @@ import org.junit.Test;
 
 import eu.stratosphere.sopremo.expressions.ConstantExpression;
 import eu.stratosphere.sopremo.testing.SopremoTestPlan;
+import eu.stratosphere.sopremo.type.ArrayNode;
+import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 import eu.stratosphere.sopremo.type.TextNode;
 
@@ -65,15 +67,23 @@ public class LuceneIndexAccessTest {
 		sopremoPlan.getOutputOperator(0).setInputs(luceneIndex);
 
 		// prepare expected output
+		ObjectNode output1 = new ObjectNode();
+		ArrayNode<IJsonNode> annotations1 = new ArrayNode<>();
 		ObjectNode node1 = new ObjectNode();
-		node1.put("text", new TextNode("Pawel Example Text First"));
+		node1.put("Text", new TextNode("Pawel Example Text First"));
 		node1.put("info", new TextNode("blablabla"));
+		annotations1.add(node1);
+		output1.put("annotations", annotations1);
 
+		ObjectNode output2 = new ObjectNode();
+		ArrayNode<IJsonNode> annotations2 = new ArrayNode<>();
 		ObjectNode node2 = new ObjectNode();
-		node2.put("text", new TextNode("Second irrelevant text."));
+		node2.put("Text", new TextNode("Second irrelevant text."));
 		node2.put("info", new TextNode("hahahahaha"));
+		annotations2.add(node2);
+		output2.put("annotations", annotations2);
 
-		sopremoPlan.getExpectedOutput(0).add(node1).add(node2);
+		sopremoPlan.getExpectedOutput(0).add(output1).add(output2);
 
 		sopremoPlan.run();
 	}
