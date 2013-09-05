@@ -105,7 +105,7 @@ public class ReutersNewsAccessTest {
 		reutersNews.setDocumentName(new ConstantExpression(System
 				.getProperty("user.dir")
 				+ "/src/test/resources/test_reuters_news_big"));
-		reutersNews.setBig();
+		reutersNews.setBig(new ConstantExpression("true"));
 
 		sopremoPlan.getOutputOperator(0).setInputs(reutersNews);
 

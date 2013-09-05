@@ -5,7 +5,6 @@ package pawel.sopremo.io;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,6 +83,12 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 	public static class ReutersNewsInputFormat extends GenericInputFormat {
 
 		/**
+		 * This constant represents the split marker that is used to mark where
+		 * one news ends and next starts.
+		 */
+		private static final String SPLIT_MARKER = "ABCDEFGHIJKSPLIT";
+
+		/**
 		 * Name of the files containing reuters news. Starting with: file:// or
 		 * hdfs://
 		 */
@@ -141,7 +146,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			this.schema = this.context.getOutputSchema(0);
 			this.docName = (String) SopremoUtil.getObject(parameters,
 					DOCUMENT_NAME, null);
-			this.big = (Boolean) SopremoUtil.getObject(parameters, BIG, false);
+			this.big = (Boolean) SopremoUtil.getObject(parameters, BIG, true);
 
 			// set the hadoop installation path
 			this.hdfsConfPath = (String) SopremoUtil.getObject(parameters,
@@ -169,7 +174,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 					String contentOfNextBigFile = this.getFileContent(this
 							.nextName());
 					String[] splitsOfBigFile = contentOfNextBigFile
-							.split("ABCDEFGHIJKSPLIT");
+							.split(ReutersNewsInputFormat.SPLIT_MARKER);
 					for (String contentOfSingleNews : splitsOfBigFile) {
 						if (contentOfSingleNews != null
 								&& !contentOfSingleNews.isEmpty()) {
@@ -242,6 +247,8 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 						+ "/etc/hadoop/core-site.xml"));
 				conf.addResource(new Path(hdfsConfPath
 						+ "/etc/hadoop/hdfs-site.xml"));
+				conf.addResource(new Path(hdfsConfPath + "/conf/core-site.xml"));
+				conf.addResource(new Path(hdfsConfPath + "/conf/hdfs-site.xml"));
 			}
 			return conf;
 		}
@@ -471,8 +478,12 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 
 	@Property(flag = true)
 	@Name(noun = "big")
-	public void setBig() {
-		this.big = true;
+	public void setBig(EvaluationExpression big) {
+		String tmpBig = big.toString().replace("\"", "").replace("\'", "");
+		if (tmpBig.contains("false")) {
+			this.big = false;
+		} else {
+			this.big = true;
+		}
 	}
-
 }
