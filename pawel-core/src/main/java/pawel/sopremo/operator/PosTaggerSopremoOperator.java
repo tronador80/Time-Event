@@ -3,10 +3,7 @@
  */
 package pawel.sopremo.operator;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
-import org.apache.uima.UIMAException;
 
 import pawel.uima.annotator.pos.PosTaggerAnalysisComponent;
 import pawel.utils.JsonConverter;
@@ -52,9 +49,7 @@ public class PosTaggerSopremoOperator extends
 				try {
 					out.collect(Xmi2Json.xmi2Json(ptac.tagPos(JsonConverter
 							.json2String(object))));
-				} catch (UIMAException e) {
-					log.error(e.getMessage(), e);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					log.error(e.getMessage(), e);
 				}
 			} else {

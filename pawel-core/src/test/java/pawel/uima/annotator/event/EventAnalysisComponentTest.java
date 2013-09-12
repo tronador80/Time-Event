@@ -4,16 +4,13 @@
 package pawel.uima.annotator.event;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.UIMAException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import pawel.uima.annotator.event.EventAnalysisComponent;
 import pawel.utils.JsonConverter;
 import pawel.utils.OutputHandler;
 import eu.stratosphere.sopremo.type.ArrayNode;
@@ -51,10 +48,8 @@ public class EventAnalysisComponentTest {
 		String tokensAsXml = null;
 		try {
 			tokensAsXml = eac.tagEvent(exampleInput);
-		} catch (UIMAException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}
 		Assert.assertNotNull(tokensAsXml);

@@ -425,16 +425,16 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 
 			int numberOfDocumentsToProcess = allFilesToProcess.size();
 
+			float minNumSplitsDouble = (float) minNumSplits;
 			for (int i = 0; i < minNumSplits; i++) {
 				List<String> filesToProcessWithinThisSplit = new ArrayList<String>(
-						allFilesToProcess
-								.subList(
-										i
-												* (numberOfDocumentsToProcess / minNumSplits),
-										Math.min(
-												(i + 1)
-														* (numberOfDocumentsToProcess / minNumSplits),
-												numberOfDocumentsToProcess)));
+						allFilesToProcess.subList(
+								Math.round(i
+										* (numberOfDocumentsToProcess / minNumSplitsDouble)),
+								Math.min(
+										Math.round((i + 1)
+												* (numberOfDocumentsToProcess / minNumSplitsDouble)),
+										numberOfDocumentsToProcess)));
 				splits[i] = new ReutersNewsInputSplit(i,
 						filesToProcessWithinThisSplit, this.big);
 

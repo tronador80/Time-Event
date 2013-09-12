@@ -487,7 +487,7 @@ public class JsonConverter {
 	 * @return
 	 */
 	private static IJsonNode parseJsonArray(JSONArray jsonArray) {
-		ArrayNode<IJsonNode> res = new ArrayNode<>();
+		ArrayNode<IJsonNode> res = new ArrayNode<IJsonNode>();
 
 		for (Object arrayElement : jsonArray) {
 			res.add(JsonConverter.parseJson(arrayElement));

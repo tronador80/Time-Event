@@ -7,10 +7,8 @@ import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescripti
 import static org.uimafit.factory.CollectionReaderFactory.createCollectionReader;
 import static org.uimafit.pipeline.SimplePipeline.runPipeline;
 
-import java.io.IOException;
 import java.util.Random;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.uimafit.component.xwriter.XWriter;
@@ -41,10 +39,9 @@ public class SentenceSplitterAnalysisComponent {
 	 * @param inputText
 	 *            text that should be splitted to single sentences
 	 * @return json string representing single sentences of <b>inputText</b>
-	 * @throws UIMAException
-	 * @throws IOException
+	 * @throws Exception
 	 */
-	public String tokenize(String inputText) throws UIMAException, IOException {
+	public String tokenize(String inputText) throws Exception {
 
 		String outputDirName = "/sentence_splitter_"
 				+ Math.abs((new Random()).nextLong());
@@ -63,7 +60,7 @@ public class SentenceSplitterAnalysisComponent {
 					OutputHandler.DEFAULT_TMP_DIR + outputDirName);
 
 			runPipeline(source, splitter, dest);
-			
+
 		} catch (Exception e) {
 			OutputHandler.removeOutputDirectory(outputDirName);
 			throw e;

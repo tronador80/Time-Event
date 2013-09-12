@@ -7,10 +7,8 @@ import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescripti
 import static org.uimafit.factory.CollectionReaderFactory.createCollectionReader;
 import static org.uimafit.pipeline.SimplePipeline.runPipeline;
 
-import java.io.IOException;
 import java.util.Random;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.uimafit.factory.TypeSystemDescriptionFactory;
@@ -43,10 +41,9 @@ public class EventAnalysisComponent {
 	 *            json string containing output of
 	 *            {@link TimeTaggerSopremoOperator}.
 	 * @return json string containing tagged event expressions
-	 * @throws UIMAException
-	 * @throws IOException
+	 * @throws Exception
 	 */
-	public String tagEvent(String inputText) throws UIMAException, IOException {
+	public String tagEvent(String inputText) throws Exception {
 
 		String outputDirName = "/event_tagger_"
 				+ Math.abs((new Random()).nextLong());

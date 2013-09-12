@@ -3,10 +3,7 @@
  */
 package pawel.sopremo.operator;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
-import org.apache.uima.UIMAException;
 
 import pawel.uima.annotator.sentencesplit.SentenceSplitterAnalysisComponent;
 import pawel.utils.JsonConverter;
@@ -51,9 +48,7 @@ public class SentenceSplitterSopremoOperator extends
 					ObjectNode result = (ObjectNode) Xmi2Json.xmi2Json(ssac
 							.tokenize(JsonConverter.json2String(object)));
 					out.collect(result);
-				} catch (UIMAException e) {
-					log.error(e.getMessage());
-				} catch (IOException e) {
+				} catch (Exception e) {
 					log.error(e.getMessage());
 				}
 

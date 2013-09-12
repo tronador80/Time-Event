@@ -7,10 +7,8 @@ import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescripti
 import static org.uimafit.factory.CollectionReaderFactory.createCollectionReader;
 import static org.uimafit.pipeline.SimplePipeline.runPipeline;
 
-import java.io.IOException;
 import java.util.Random;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.uimafit.component.xwriter.XWriter;
@@ -42,10 +40,9 @@ public class PosTaggerAnalysisComponent {
 	 *            json string containing output of
 	 *            {@link SentenceSplitterSopremoOperator}.
 	 * @return json string containing pos tags
-	 * @throws UIMAException
-	 * @throws IOException
+	 * @throws Exception
 	 */
-	public String tagPos(String inputText) throws UIMAException, IOException {
+	public String tagPos(String inputText) throws Exception {
 
 		String outputDirName = "/pos_tagger_"
 				+ Math.abs((new Random()).nextLong());

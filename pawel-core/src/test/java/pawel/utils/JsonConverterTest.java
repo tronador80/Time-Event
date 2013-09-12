@@ -3,6 +3,7 @@
  */
 package pawel.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.junit.Assert;
@@ -10,7 +11,6 @@ import org.junit.Test;
 
 import pawel.model.Sentence2;
 import pawel.model.Timex3;
-
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.MissingNode;
@@ -243,15 +243,16 @@ public class JsonConverterTest {
 		Assert.assertEquals("Today is", s.getSentenceText());
 		Assert.assertTrue(s.getTimexs() != null && s.getTimexs().size() == 1);
 		Timex3 t = s.getTimexs().get(0);
-		Assert.assertEquals("Thu Feb 14 23:59:59 CET 2013", t.getDate()
-				.toString());
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		Assert.assertEquals("20130214235959", sdf.format(t.getDate()));
 	}
 
 	@Test
 	public void testString2JsonNode() {
 		String input = "[{\"key11\":\"value11\", \"key12\":\"value12\"},"
 				+ "{\"key21\":\"value21\", \"key22\":\"value22\"}]";
-		ArrayNode<IJsonNode> expectedResult = new ArrayNode<>();
+		ArrayNode<IJsonNode> expectedResult = new ArrayNode<IJsonNode>();
 		ObjectNode node1 = new ObjectNode();
 		node1.put("key11", new TextNode("value11"));
 		node1.put("key12", new TextNode("value12"));

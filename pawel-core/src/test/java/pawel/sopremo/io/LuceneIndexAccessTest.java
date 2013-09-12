@@ -68,7 +68,7 @@ public class LuceneIndexAccessTest {
 
 		// prepare expected output
 		ObjectNode output1 = new ObjectNode();
-		ArrayNode<IJsonNode> annotations1 = new ArrayNode<>();
+		ArrayNode<IJsonNode> annotations1 = new ArrayNode<IJsonNode>();
 		ObjectNode node1 = new ObjectNode();
 		node1.put("Text", new TextNode("Pawel Example Text First"));
 		node1.put("info", new TextNode("blablabla"));
@@ -76,7 +76,7 @@ public class LuceneIndexAccessTest {
 		output1.put("annotations", annotations1);
 
 		ObjectNode output2 = new ObjectNode();
-		ArrayNode<IJsonNode> annotations2 = new ArrayNode<>();
+		ArrayNode<IJsonNode> annotations2 = new ArrayNode<IJsonNode>();
 		ObjectNode node2 = new ObjectNode();
 		node2.put("Text", new TextNode("Second irrelevant text."));
 		node2.put("info", new TextNode("hahahahaha"));
@@ -135,5 +135,5 @@ public class LuceneIndexAccessTest {
 		}
 
 	}
-	
+
 }

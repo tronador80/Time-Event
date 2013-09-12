@@ -3,10 +3,7 @@
  */
 package pawel.sopremo.operator;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
-import org.apache.uima.UIMAException;
 
 import pawel.uima.annotator.heideltime.HeidelTimeAnalysisComponent;
 import pawel.uima.annotator.sutime.SuTimeAnalysisComponent;
@@ -47,31 +44,44 @@ public class TimeTaggerSopremoOperator extends
 			.getLogger(TimeTaggerSopremoOperator.class);
 
 	public static final String ENGINE = "engine";
+	public static final String TYPE_TO_PROCESS = "type_to_process";
+	public static final String LANGUAGE = "language";
+
+	/**
+	 * engine used by time tagger (heideltime or sutime)
+	 */
 	private String engine;
 
-	public static final String TYPE_TO_PROCESS = "type_to_process";
+	/**
+	 * type of document to process (only for heideltime)
+	 */
 	private String typeToProcess;
 
+	/**
+	 * language of the input documents (only heideltime)
+	 */
+	private String language;
+
+	/**
+	 * This class is responsible for
+	 * 
+	 * @author ptondryk
+	 * 
+	 */
 	public static class Implementation extends SopremoMap {
 
 		private String typeToProcess;
 		private String engine;
+		private String language;
 
 		public void open(Configuration parameters) {
 			super.open(parameters);
 			this.typeToProcess = SopremoUtil.getObject(parameters,
-					TYPE_TO_PROCESS, null);
-			this.engine = SopremoUtil.getObject(parameters, ENGINE, null);
-
-			if (this.engine == null) {
-				log.info("Engine not specified, using default: heideltime.");
-			} else if (this.engine.contains("heideltime")
-					|| this.engine.contains("sutime")) {
-				log.info("Engine specified, using time tagging engine: "
-						+ this.engine + ".");
-			} else {
-				log.warn("Unknown time tagging engine: " + this.engine + ".");
-			}
+					TYPE_TO_PROCESS, "news");
+			this.engine = SopremoUtil.getObject(parameters, ENGINE,
+					"heideltime");
+			this.language = SopremoUtil.getObject(parameters, LANGUAGE,
+					"english");
 		}
 
 		protected void map(final IJsonNode value, final JsonCollector out) {
@@ -80,42 +90,26 @@ public class TimeTaggerSopremoOperator extends
 
 				try {
 
-					if (this.getEngine().contains("sutime")) {
+					if (this.engine.contains("sutime")) {
 						SuTimeAnalysisComponent stac = new SuTimeAnalysisComponent();
 						out.collect(Xmi2Json.xmi2Json(stac
 								.tagTime(JsonConverter.json2String(object))));
 
-					} else if (this.getEngine().contains("heideltime")) {
+					} else if (this.engine.contains("heideltime")) {
 						HeidelTimeAnalysisComponent htac = new HeidelTimeAnalysisComponent();
 
 						out.collect(Xmi2Json.xmi2Json(htac.tagTime(
 								JsonConverter.json2String(object),
-								this.getTypeToProcess())));
+								this.typeToProcess, this.language)));
 					} else {
 						log.error("Unknown time tagger! Please select \"sutime\" or \"heideltime\".");
 					}
-				} catch (UIMAException e) {
-					log.error(e.getMessage(), e);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					log.error(e.getMessage(), e);
 				}
 			} else {
 				log.error("Error: Root element mst be object!");
 			}
-		}
-
-		public String getTypeToProcess() {
-			if (typeToProcess == null) {
-				return "news";
-			}
-			return typeToProcess;
-		}
-
-		public String getEngine() {
-			if (this.engine == null) {
-				return "heideltime";
-			}
-			return engine;
 		}
 	}
 
@@ -133,6 +127,8 @@ public class TimeTaggerSopremoOperator extends
 		SopremoUtil.setObject(mapcontract.getParameters(), TYPE_TO_PROCESS,
 				this.typeToProcess);
 		SopremoUtil.setObject(mapcontract.getParameters(), ENGINE, this.engine);
+		SopremoUtil.setObject(mapcontract.getParameters(), LANGUAGE,
+				this.language);
 
 		module.getOutput(0).setInput(mapcontract);
 		return module;
@@ -141,15 +137,22 @@ public class TimeTaggerSopremoOperator extends
 	@Property(preferred = true)
 	@Name(preposition = "engine")
 	public void setEngine(EvaluationExpression engine) {
-		this.engine = engine.toString();
+		this.engine = engine.toString().replaceAll("\"", "")
+				.replaceAll("'", "");
 	}
 
 	@Property(preferred = true)
 	@Name(preposition = "input_type")
 	public void setType(EvaluationExpression typeToProcess) {
-		this.typeToProcess = typeToProcess.toString();
-		log.debug("Type of document to process (for heidel time) is set to \""
-				+ this.typeToProcess + "\"");
+		this.typeToProcess = typeToProcess.toString().replaceAll("\"", "")
+				.replaceAll("'", "");
+	}
+
+	@Property(preferred = true)
+	@Name(preposition = "language")
+	public void setLanguage(EvaluationExpression language) {
+		this.language = language.toString().replaceAll("\"", "")
+				.replaceAll("'", "");
 	}
 
 }

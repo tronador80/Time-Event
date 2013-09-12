@@ -7,10 +7,8 @@ import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescripti
 import static org.uimafit.factory.CollectionReaderFactory.createCollectionReader;
 import static org.uimafit.pipeline.SimplePipeline.runPipeline;
 
-import java.io.IOException;
 import java.util.Random;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.uimafit.component.xwriter.XWriter;
@@ -22,15 +20,16 @@ import pawel.utils.OutputHandler;
 import de.unihd.dbs.uima.annotator.heideltime.HeidelTime;
 
 /**
- * Class provides functionality for temporal expressions tagging.
+ * Class provides functionality for temporal expressions tagging with
+ * HeidelTime.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class HeidelTimeAnalysisComponent {
 
 	/**
-	 * 
+	 * empty constructor
 	 */
 	public HeidelTimeAnalysisComponent() {
 
@@ -43,17 +42,20 @@ public class HeidelTimeAnalysisComponent {
 	 *            json string containing output of
 	 *            {@link PosTaggerSopremoOperator}
 	 * @param typeToProcess
-	 *            news/narratives
+	 *            type of document to process
+	 *            (news/narratives/colloquial/scientific)
+	 * @param language
+	 *            language of the input documents
 	 * @return tagged temporal expressions as json string
-	 * @throws UIMAException
-	 * @throws IOException
+	 * @throws Exception
 	 */
-	public String tagTime(String inputText, String typeToProcess)
-			throws UIMAException, IOException {
+	public String tagTime(String inputText, String typeToProcess,
+			String language) throws Exception {
 
 		String outputDirName = "/heideltime_tagger_"
 				+ Math.abs((new Random()).nextLong());
 
+		// prepare and run UIMA pipeline
 		try {
 			CollectionReader source = createCollectionReader(
 					JsonArrayReader.class, "PARAM_INPUT",
@@ -69,8 +71,8 @@ public class HeidelTimeAnalysisComponent {
 					HeidelTime.class, HeidelTime.PARAM_DATE, true,
 					HeidelTime.PARAM_DURATION, true, HeidelTime.PARAM_TIME,
 					true, HeidelTime.PARAM_SET, true,
-					HeidelTime.PARAM_LANGUAGE, "english",
-					HeidelTime.PARAM_TYPE_TO_PROCESS, typeToProcess);
+					HeidelTime.PARAM_TYPE_TO_PROCESS, typeToProcess,
+					HeidelTime.PARAM_LANGUAGE, language);
 
 			AnalysisEngineDescription heidelTimeTranslatorAfter = createPrimitiveDescription(
 					HeidelTranslatorAfter.class,

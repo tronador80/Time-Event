@@ -3,10 +3,7 @@
  */
 package pawel.sopremo.operator;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
-import org.apache.uima.UIMAException;
 
 import pawel.uima.annotator.event.EventAnalysisComponent;
 import pawel.utils.JsonConverter;
@@ -74,9 +71,7 @@ public class EventSopremoOperator extends
 					res.put("analyzedText", new TextNode(analyzedText));
 					res.put("timestamp", new TextNode(timestamp));
 					out.collect(res);
-				} catch (UIMAException e) {
-					log.error(e.getMessage(), e);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					log.error(e.getMessage(), e);
 				}
 			} else {

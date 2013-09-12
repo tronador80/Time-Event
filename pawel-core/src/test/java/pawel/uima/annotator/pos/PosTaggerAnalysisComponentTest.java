@@ -4,16 +4,13 @@
 package pawel.uima.annotator.pos;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.UIMAException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import pawel.uima.annotator.pos.PosTaggerAnalysisComponent;
 import pawel.utils.OutputHandler;
 import pawel.utils.Xmi2Json;
 import eu.stratosphere.sopremo.type.ArrayNode;
@@ -48,10 +45,8 @@ public class PosTaggerAnalysisComponentTest {
 		String tokensAsXml = null;
 		try {
 			tokensAsXml = ptac.tagPos(exampleInput);
-		} catch (UIMAException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}
 		Assert.assertNotNull(tokensAsXml);

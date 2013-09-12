@@ -4,11 +4,9 @@
 package pawel.uima.annotator.sutime;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.UIMAException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,10 +45,8 @@ public class SuTimeAnalysisComponentTest {
 		String tokensAsXml = null;
 		try {
 			tokensAsXml = sutac.tagTime(exampleInput);
-		} catch (UIMAException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}
 		Assert.assertNotNull(tokensAsXml);
@@ -142,10 +138,8 @@ public class SuTimeAnalysisComponentTest {
 		String tokensAsXml = null;
 		try {
 			tokensAsXml = sutac.tagTime(exampleInput);
-		} catch (UIMAException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}
 		Assert.assertNotNull(tokensAsXml);

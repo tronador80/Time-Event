@@ -4,11 +4,9 @@
 package pawel.uima.annotator.heideltime;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.UIMAException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,11 +44,9 @@ public class HeidelTimeAnalysisComponentTest {
 
 		String tokensAsXml = null;
 		try {
-			tokensAsXml = htac.tagTime(exampleInput, "narratives");
-		} catch (UIMAException e) {
+			tokensAsXml = htac.tagTime(exampleInput, "narratives", "english");
+		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}
 		Assert.assertNotNull(tokensAsXml);
@@ -141,11 +137,9 @@ public class HeidelTimeAnalysisComponentTest {
 
 		String tokensAsXml = null;
 		try {
-			tokensAsXml = htac.tagTime(exampleInput, "news");
-		} catch (UIMAException e) {
+			tokensAsXml = htac.tagTime(exampleInput, "news", "english");
+		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}
 		Assert.assertNotNull(tokensAsXml);

@@ -1,9 +1,7 @@
 package pawel.uima.annotator.sentencesplit;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.apache.uima.UIMAException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,9 +41,7 @@ public class SentenceSplitterAnalysisComponentTest {
 		String tokensAsXml = null;
 		try {
 			tokensAsXml = tac.tokenize(exampleSentence);
-		} catch (UIMAException e) {
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 
@@ -90,9 +86,7 @@ public class SentenceSplitterAnalysisComponentTest {
 		String tokensAsXml = null;
 		try {
 			tokensAsXml = tac.tokenize(exampleText);
-		} catch (UIMAException e) {
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 		Assert.assertNotNull(tokensAsXml);
@@ -155,9 +149,7 @@ public class SentenceSplitterAnalysisComponentTest {
 
 		try {
 			tokensAsXml = tac.tokenize(exampleText);
-		} catch (UIMAException e) {
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 		Assert.assertNotNull(tokensAsXml);
