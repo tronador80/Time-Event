@@ -34,12 +34,17 @@ import edu.stanford.nlp.util.CoreMap;
  */
 public class SuTimeUima extends org.uimafit.component.JCasAnnotator_ImplBase {
 
+	/**
+	 * TimeAnnotator created as static to avoid creating it for every jcas...
+	 */
+	private static TimeAnnotator ta = new TimeAnnotator("sutime",
+			System.getProperties());
+
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 
 		AnnotationPipeline pipeline = new AnnotationPipeline();
-		pipeline.addAnnotator(new TimeAnnotator("sutime", System
-				.getProperties()));
+		pipeline.addAnnotator(SuTimeUima.ta);
 
 		Text text = null;
 		AnnotationIndex<org.apache.uima.jcas.tcas.Annotation> texts = jcas

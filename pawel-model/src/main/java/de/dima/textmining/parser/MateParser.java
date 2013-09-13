@@ -17,7 +17,7 @@ import de.dima.textmining.shallow.ShallowToken;
 
 public class MateParser implements de.dima.textmining.parser.Parser {
 
-	private Parser parser;
+	private static Parser parser;
 
 	Logger logger = Logger.getLogger(MateParser.class);
 
@@ -29,58 +29,39 @@ public class MateParser implements de.dima.textmining.parser.Parser {
 		initilize(language);
 	}
 
-	public MateParser(String modelFile) {
-		initilize(modelFile);
-	}
-
-	public MateParser(Options options) {
-		initilize(options);
-	}
-
-	private void initilize(Options options) {
-
-		parser = new Parser(options);
-	}
-
-	private void initilize(String modelFile) {
-
-		Options optsParser = new Options(new String[] { "-model", modelFile });
-
-		parser = new Parser(optsParser);
-	}
-
 	private void initilize(LanguageType language) {
+		if (MateParser.parser == null) {
+			String resourcePath = "";
 
-		String resourcePath = "";
+			if (language.equals(LanguageType.GERMAN)) {
+				logger.debug("initializing german mate parser");
+				resourcePath = "/models/mate/prs-ger.model";
+			} else if (language.equals(LanguageType.ENGLISH)
+					|| language.equals(LanguageType.DEFAULT)) {
+				logger.info("initializing english mate parser");
+				resourcePath = "/models/mate/CoNLL2009-ST-English-ALL.anna-3.3.parser.model";
+			} else {
+				logger.error("Unsupported language requested for this POSTagger: "
+						+ language);
+				return;
+			}
 
-		if (language.equals(LanguageType.GERMAN)
-				|| language.equals(LanguageType.DEFAULT)) {
-			logger.debug("initializing german mate parser");
-			resourcePath = "/models/mate/prs-ger.model";
-		} else if (language.equals(LanguageType.ENGLISH)) {
-			logger.debug("initializing english mate parser");
-			resourcePath = "/models/mate/prs-eng.model";
-		} else {
-			logger.error("Unsupported language requested for this POSTagger: "
-					+ language);
-			return;
+			String parserModelPath = ResourceManager
+					.getResourcePath(resourcePath);
+
+			Options optsParser = new Options(new String[] { "-model",
+					parserModelPath });
+
+			// TODO: in manchen Situationen treten hier Probleme auf, weil er
+			// das
+			// Model nicht Laden kann.
+			// Evt. wird es manchen Situationen bei Hadoop zu schnell geloescht.
+			MateParser.parser = new Parser(optsParser);
 		}
-
-		String parserModelPath = ResourceManager.getResourcePath(resourcePath);
-
-		Options optsParser = new Options(new String[] { "-model",
-				parserModelPath });
-
-		// TODO: in manchen Situationen treten hier Probleme auf, weil er das
-		// Model nicht Laden kann.
-		// Evt. wird es manchen Situationen bei Hadoop zu schnell geloescht.
-
-		parser = new Parser(optsParser);
 	}
 
 	@Override
 	public CoNLLNode parse(List<ShallowToken> shallowSentence) {
-
 		List<String> tokens = new ArrayList<String>();
 		List<String> postags = new ArrayList<String>();
 
@@ -97,7 +78,6 @@ public class MateParser implements de.dima.textmining.parser.Parser {
 	@Override
 	public CoNLLNode parse(List<String> tokens, List<String> postags) {
 		logger.debug("parsing tokens: " + tokens + " postags: " + postags);
-
 		if (tokens.isEmpty() || postags.isEmpty()) {
 			// if sentence was empty, return null
 			logger.info("parser got empty sentence. returning null.\n");
@@ -117,9 +97,8 @@ public class MateParser implements de.dima.textmining.parser.Parser {
 		// Provide the sentence
 		sen.init(tokensN.toArray(new String[0]));
 		sen.setPPos(postagsN.toArray(new String[0]));
-		// System.out.println(sen.printSem());
 
-		sen = parser.parse(sen);
+		sen = parser.apply(sen);
 
 		List<String> conllLines = new ArrayList<String>();
 
@@ -127,14 +106,13 @@ public class MateParser implements de.dima.textmining.parser.Parser {
 
 			String line = "" + (i + 1) + "\t" + sen.forms[i] + "\t" + "_"
 					+ "\t" + sen.ppos[i] + "\t" + sen.ppos[i] + "\t"
-					+ sen.pfeats[i] + "\t" + sen.phead[i] + "\t"
-					+ sen.labels[i] + "\t" + sen.phead[i] + "\t"
-					+ sen.labels[i];
+					+ sen.pfeats[i] + "\t" + sen.pheads[i] + "\t"
+					+ sen.plabels[i] + "\t" + sen.pheads[i] + "\t"
+					+ sen.plabels[i];
 
 			conllLines.add(line);
 
 		}
-
 		CoNLLNode node = null;
 
 		try {
@@ -143,8 +121,7 @@ public class MateParser implements de.dima.textmining.parser.Parser {
 			e.printStackTrace();
 		}
 
-		logger.debug("parsing result:\n" + node);
-
+		logger.info("parsing result:\n" + node);
 		return node;
 	}
 }

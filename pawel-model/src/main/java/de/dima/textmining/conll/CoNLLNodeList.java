@@ -3,30 +3,12 @@ package de.dima.textmining.conll;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.dima.textmining.shallow.ShallowToken;
-
 public class CoNLLNodeList extends ArrayList<CoNLLNode> {
 
 	/**
 	 * ID
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public List<ShallowToken> getAsShallowTokens() {
-
-		List<ShallowToken> tokens = new ArrayList<ShallowToken>();
-
-		for (int i = 0; i < this.size(); i++) {
-
-			CoNLLNode node = this.get(i);
-
-			tokens.add(new ShallowToken(node.getForm(), node.getPostag(), node
-					.getLemma()));
-		}
-
-		return tokens;
-
-	}
 
 	public List<Integer> nodeListAsIdList() {
 		List<Integer> ids = new ArrayList<Integer>();

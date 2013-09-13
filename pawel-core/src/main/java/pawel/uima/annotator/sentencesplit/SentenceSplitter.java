@@ -23,6 +23,9 @@ import edu.stanford.nlp.util.CoreMap;
 public class SentenceSplitter extends
 		org.uimafit.component.JCasAnnotator_ImplBase {
 
+	private static PTBTokenizerAnnotator ptbta;
+	private static WordsToSentencesAnnotator wtsa;
+
 	/**
 	 * empty constructor
 	 */
@@ -34,9 +37,16 @@ public class SentenceSplitter extends
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		String text = jcas.getDocumentText();
 
+		if (SentenceSplitter.ptbta == null) {
+			SentenceSplitter.ptbta = new PTBTokenizerAnnotator(false);
+		}
+		if (SentenceSplitter.wtsa == null) {
+			SentenceSplitter.wtsa = new WordsToSentencesAnnotator(false);
+		}
+
 		AnnotationPipeline pipeline = new AnnotationPipeline();
-		pipeline.addAnnotator(new PTBTokenizerAnnotator(false));
-		pipeline.addAnnotator(new WordsToSentencesAnnotator(false));
+		pipeline.addAnnotator(SentenceSplitter.ptbta);
+		pipeline.addAnnotator(SentenceSplitter.wtsa);
 
 		Annotation annotations = new Annotation(text);
 

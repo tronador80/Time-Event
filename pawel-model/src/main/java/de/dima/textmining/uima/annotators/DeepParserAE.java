@@ -38,8 +38,11 @@ import de.unihd.dbs.uima.types.heideltime.Timex3;
  */
 public class DeepParserAE extends org.uimafit.component.JCasAnnotator_ImplBase {
 
-	@ConfigurationParameter(name = "Max_sentence_length")
+	@ConfigurationParameter(name = "MAX_SENTENCE_LENGTH")
 	public int maxSentenceLength;
+
+	@ConfigurationParameter(name = "MIN_SENTENCE_LENGTH")
+	public int minSentenceLength;
 
 	@ConfigurationParameter(name = "WriteCoNLL")
 	public Boolean writeCoNLL;
@@ -99,7 +102,6 @@ public class DeepParserAE extends org.uimafit.component.JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-
 		/**
 		 * get iterators over sentences and tokens
 		 */
@@ -132,22 +134,13 @@ public class DeepParserAE extends org.uimafit.component.JCasAnnotator_ImplBase {
 			try {
 				Sentence sent = (Sentence) an;
 
-				// ignore too short sentence
-				if (sent.getCoveredText().length() < 10)
-					continue;
 				// ignore sentence with " this causes parser errors
 				if (sent.getCoveredText().indexOf('"') != -1) {
 					continue;
 				}
 
-				/*
-				 * if sentence too long, skip because parse takes too long TODO:
-				 * make this a UIMA parameter
-				 */
-				if (sent.getCoveredText().length() > this.maxSentenceLength) {
-
-					// System.out.println("SKIPPING sentence: "
-					// + sent.getCoveredText());
+				if (sent.getCoveredText().length() > this.maxSentenceLength
+						|| sent.getCoveredText().length() < this.minSentenceLength) {
 					continue;
 				}
 				// only parse if sentence contains a time expression
@@ -157,8 +150,6 @@ public class DeepParserAE extends org.uimafit.component.JCasAnnotator_ImplBase {
 					// skip sentence without time annotation
 					continue;
 				}
-
-				// System.out.println("Parsing: " + sent.getCoveredText());
 
 				/*
 				 * init new vector of Shallow token
@@ -209,7 +200,6 @@ public class DeepParserAE extends org.uimafit.component.JCasAnnotator_ImplBase {
 		if (writeCoNLL && sb.length() > 10) {
 			this.output.println(sb);
 		}
-
 	}
 
 	/**

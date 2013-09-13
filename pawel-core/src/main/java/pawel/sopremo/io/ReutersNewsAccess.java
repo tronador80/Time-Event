@@ -357,7 +357,12 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 						this.string2TextNode(news.getItemid().toString()));
 
 				StringBuilder textBuilder = new StringBuilder();
-				for (String p : news.getText().getP()) {
+				for (int i = 0; i < news.getText().getP().size(); i++) {
+					String p = news.getText().getP().get(i);
+					if (i == (news.getText().getP().size() - 1)
+							&& p.contains("--")) {
+						continue;
+					}
 					if (textBuilder.length() > 0) {
 						textBuilder.append(" ");
 					}

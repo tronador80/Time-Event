@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 
 import pawel.uima.annotator.pos.PosTaggerAnalysisComponent;
 import pawel.utils.JsonConverter;
-import pawel.utils.Xmi2Json;
 import eu.stratosphere.nephele.configuration.Configuration;
 import eu.stratosphere.sopremo.operator.ElementaryOperator;
 import eu.stratosphere.sopremo.operator.InputCardinality;
@@ -47,8 +46,7 @@ public class PosTaggerSopremoOperator extends
 				PosTaggerAnalysisComponent ptac = new PosTaggerAnalysisComponent();
 
 				try {
-					out.collect(Xmi2Json.xmi2Json(ptac.tagPos(JsonConverter
-							.json2String(object))));
+					out.collect(ptac.tagPos(JsonConverter.json2String(object)));
 				} catch (Exception e) {
 					log.error(e.getMessage(), e);
 				}

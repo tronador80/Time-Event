@@ -1,13 +1,8 @@
 package pawel.uima.annotator.sentencesplit;
 
-import java.io.File;
-
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import pawel.utils.OutputHandler;
-import pawel.utils.Xmi2Json;
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.MissingNode;
@@ -21,33 +16,20 @@ import eu.stratosphere.sopremo.type.ObjectNode;
  */
 public class SentenceSplitterAnalysisComponentTest {
 
-	/**
-	 * this method checks whether the temporal directory is empty after each
-	 * operator call
-	 */
-	@After
-	public void testIsTmpDirEmpty() {
-		File tmpDir = new File(OutputHandler.DEFAULT_TMP_DIR);
-		if (tmpDir.exists() && tmpDir.isDirectory()) {
-			Assert.assertEquals(0, tmpDir.list().length);
-		}
-	}
-
 	@Test
 	public void testSingleSentence() {
 		SentenceSplitterAnalysisComponent tac = new SentenceSplitterAnalysisComponent();
 
 		String exampleSentence = "{\"annotations\": [{\"Text\": \"This is an example.\", \"date\": \"200704121412\"}]}";
-		String tokensAsXml = null;
+		IJsonNode result = null;
 		try {
-			tokensAsXml = tac.tokenize(exampleSentence);
+			result = tac.tokenize(exampleSentence);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 
-		Assert.assertNotNull(tokensAsXml);
+		Assert.assertNotNull(result);
 
-		IJsonNode result = Xmi2Json.xmi2Json(tokensAsXml);
 		Assert.assertTrue(result instanceof ObjectNode);
 
 		ObjectNode resultObject = (ObjectNode) result;
@@ -83,15 +65,14 @@ public class SentenceSplitterAnalysisComponentTest {
 
 		String exampleText = "{\"annotations\": [{\"Text\": \"Pawel was born on 07/13/1988. "
 				+ "On 09/29/2013 Pawel completed his Master's thesis.\", \"date\": \"200704121412\"}]}";
-		String tokensAsXml = null;
+		IJsonNode result = null;
 		try {
-			tokensAsXml = tac.tokenize(exampleText);
+			result = tac.tokenize(exampleText);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
-		Assert.assertNotNull(tokensAsXml);
+		Assert.assertNotNull(result);
 
-		IJsonNode result = Xmi2Json.xmi2Json(tokensAsXml);
 		Assert.assertTrue(result instanceof ObjectNode);
 
 		ObjectNode resultObject = (ObjectNode) result;
@@ -145,16 +126,15 @@ public class SentenceSplitterAnalysisComponentTest {
 				+ "exist on all worker nodes. For the remainder of this instruction "
 				+ "we will refer to this user as nephele. Using the super user root "
 				+ "is highly discouraged for security reasons.\", \"date\": \"200704121412\"}]} ";
-		String tokensAsXml = null;
+		IJsonNode result = null;
 
 		try {
-			tokensAsXml = tac.tokenize(exampleText);
+			result = tac.tokenize(exampleText);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
-		Assert.assertNotNull(tokensAsXml);
+		Assert.assertNotNull(result);
 
-		IJsonNode result = Xmi2Json.xmi2Json(tokensAsXml);
 		Assert.assertTrue(result instanceof ObjectNode);
 
 		ObjectNode resultObject = (ObjectNode) result;

@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import pawel.uima.annotator.heideltime.HeidelTimeAnalysisComponent;
 import pawel.uima.annotator.sutime.SuTimeAnalysisComponent;
 import pawel.utils.JsonConverter;
-import pawel.utils.Xmi2Json;
 import eu.stratosphere.nephele.configuration.Configuration;
 import eu.stratosphere.pact.common.contract.MapContract;
 import eu.stratosphere.pact.common.plan.PactModule;
@@ -92,15 +91,15 @@ public class TimeTaggerSopremoOperator extends
 
 					if (this.engine.contains("sutime")) {
 						SuTimeAnalysisComponent stac = new SuTimeAnalysisComponent();
-						out.collect(Xmi2Json.xmi2Json(stac
-								.tagTime(JsonConverter.json2String(object))));
+						out.collect(stac.tagTime(JsonConverter
+								.json2String(object)));
 
 					} else if (this.engine.contains("heideltime")) {
 						HeidelTimeAnalysisComponent htac = new HeidelTimeAnalysisComponent();
 
-						out.collect(Xmi2Json.xmi2Json(htac.tagTime(
+						out.collect(htac.tagTime(
 								JsonConverter.json2String(object),
-								this.typeToProcess, this.language)));
+								this.typeToProcess, this.language));
 					} else {
 						log.error("Unknown time tagger! Please select \"sutime\" or \"heideltime\".");
 					}

@@ -30,6 +30,12 @@ import edu.stanford.nlp.util.CoreMap;
  */
 public class PosTagger extends JCasAnnotator_ImplBase {
 
+	/**
+	 * maxent tagger (created here to avoid loading model every time when
+	 * calling the PosTagger)
+	 */
+	private static MaxentTagger mt;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -41,12 +47,15 @@ public class PosTagger extends JCasAnnotator_ImplBase {
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		String text = jcas.getDocumentText();
 
+		if (PosTagger.mt == null) {
+			PosTagger.mt = new MaxentTagger(
+					ResourceManager
+							.getResourcePath("/edu/stanford/nlp/models/pos-tagger/wsj-left3words/wsj-0-18-left3words-distsim.tagger"));
+		}
+
 		// prepare the pipeline for part-of-speech tagging
 		AnnotationPipeline pipeline = new AnnotationPipeline();
-		pipeline.addAnnotator(new POSTaggerAnnotator(
-				new MaxentTagger(
-						ResourceManager
-								.getResourcePath("/edu/stanford/nlp/models/pos-tagger/wsj-left3words/wsj-0-18-left3words-distsim.tagger"))));
+		pipeline.addAnnotator(new POSTaggerAnnotator(PosTagger.mt));
 		Annotation annotations = new Annotation(text);
 
 		// create Token annotations

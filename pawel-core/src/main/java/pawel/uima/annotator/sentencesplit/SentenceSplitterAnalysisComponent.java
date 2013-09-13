@@ -11,11 +11,11 @@ import java.util.Random;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
-import org.uimafit.component.xwriter.XWriter;
 import org.uimafit.factory.TypeSystemDescriptionFactory;
 
 import pawel.uima.reader.JsonArrayReader;
-import pawel.utils.OutputHandler;
+import pawel.uima.writer.InMemoryOutput;
+import eu.stratosphere.sopremo.type.IJsonNode;
 
 /**
  * Class provides functionality for sentence splitting.
@@ -38,35 +38,24 @@ public class SentenceSplitterAnalysisComponent {
 	 * 
 	 * @param inputText
 	 *            text that should be splitted to single sentences
-	 * @return json string representing single sentences of <b>inputText</b>
+	 * @return json representing single sentences and tokens of <b>inputText</b>
 	 * @throws Exception
 	 */
-	public String tokenize(String inputText) throws Exception {
+	public IJsonNode tokenize(String inputText) throws Exception {
+		String key = "ssac_" + Math.abs((new Random()).nextLong());
 
-		String outputDirName = "/sentence_splitter_"
-				+ Math.abs((new Random()).nextLong());
+		CollectionReader source = createCollectionReader(JsonArrayReader.class,
+				"PARAM_INPUT", new String[] { inputText });
 
-		try {
-			CollectionReader source = createCollectionReader(
-					JsonArrayReader.class, "PARAM_INPUT",
-					new String[] { inputText });
+		AnalysisEngineDescription splitter = createPrimitiveDescription(
+				SentenceSplitter.class,
+				TypeSystemDescriptionFactory.createTypeSystemDescription());
 
-			AnalysisEngineDescription splitter = createPrimitiveDescription(
-					SentenceSplitter.class,
-					TypeSystemDescriptionFactory.createTypeSystemDescription());
+		AnalysisEngineDescription dest = createPrimitiveDescription(
+				InMemoryOutput.class, InMemoryOutput.PARAM_KEY, key);
 
-			AnalysisEngineDescription dest = createPrimitiveDescription(
-					XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
-					OutputHandler.DEFAULT_TMP_DIR + outputDirName);
+		runPipeline(source, splitter, dest);
 
-			runPipeline(source, splitter, dest);
-
-		} catch (Exception e) {
-			OutputHandler.removeOutputDirectory(outputDirName);
-			throw e;
-		}
-
-		return OutputHandler
-				.readOutputFromExtendedDefaultTmpDirectory(outputDirName);
+		return (IJsonNode) InMemoryOutput.getOutputMap().remove(key);
 	}
 }

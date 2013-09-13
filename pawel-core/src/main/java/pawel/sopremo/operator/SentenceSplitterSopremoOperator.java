@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 
 import pawel.uima.annotator.sentencesplit.SentenceSplitterAnalysisComponent;
 import pawel.utils.JsonConverter;
-import pawel.utils.Xmi2Json;
 import eu.stratosphere.nephele.configuration.Configuration;
 import eu.stratosphere.sopremo.operator.ElementaryOperator;
 import eu.stratosphere.sopremo.operator.InputCardinality;
@@ -45,9 +44,7 @@ public class SentenceSplitterSopremoOperator extends
 				SentenceSplitterAnalysisComponent ssac = new SentenceSplitterAnalysisComponent();
 
 				try {
-					ObjectNode result = (ObjectNode) Xmi2Json.xmi2Json(ssac
-							.tokenize(JsonConverter.json2String(object)));
-					out.collect(result);
+					out.collect(ssac.tokenize(JsonConverter.json2String(object)));
 				} catch (Exception e) {
 					log.error(e.getMessage());
 				}

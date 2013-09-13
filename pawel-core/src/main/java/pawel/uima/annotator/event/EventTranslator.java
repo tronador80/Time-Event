@@ -24,7 +24,6 @@ public class EventTranslator extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-
 		List<org.apache.uima.jcas.tcas.Annotation> annotationsToAdd = new ArrayList<org.apache.uima.jcas.tcas.Annotation>();
 		List<org.apache.uima.jcas.tcas.Annotation> annotationsToRemove = new ArrayList<org.apache.uima.jcas.tcas.Annotation>();
 
@@ -68,7 +67,6 @@ public class EventTranslator extends JCasAnnotator_ImplBase {
 		for (org.apache.uima.jcas.tcas.Annotation annotation : annotationsToRemove) {
 			annotation.removeFromIndexes();
 		}
-
 	}
 
 	/**

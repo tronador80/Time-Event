@@ -9,15 +9,18 @@ import static org.uimafit.pipeline.SimplePipeline.runPipeline;
 
 import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.uimafit.factory.TypeSystemDescriptionFactory;
 
 import pawel.sopremo.operator.TimeTaggerSopremoOperator;
 import pawel.uima.reader.JsonArrayReader;
+import pawel.uima.writer.InMemoryOutput;
 import pawel.uima.writer.JsonWriter;
-import pawel.utils.OutputHandler;
 import de.dima.textmining.uima.annotators.DeepParserAE;
+import eu.stratosphere.sopremo.type.ArrayNode;
+import eu.stratosphere.sopremo.type.IJsonNode;
 
 /**
  * Class allows to tag event expressions.
@@ -26,6 +29,8 @@ import de.dima.textmining.uima.annotators.DeepParserAE;
  * 
  */
 public class EventAnalysisComponent {
+
+	private static Logger log = Logger.getLogger(EventAnalysisComponent.class);
 
 	/**
 	 * 
@@ -40,13 +45,15 @@ public class EventAnalysisComponent {
 	 * @param inputText
 	 *            json string containing output of
 	 *            {@link TimeTaggerSopremoOperator}.
+	 * @param maxSentenceLength
+	 * @param minSentenceLength
 	 * @return json string containing tagged event expressions
 	 * @throws Exception
 	 */
-	public String tagEvent(String inputText) throws Exception {
+	public IJsonNode tagEvent(String inputText, int maxSentenceLength,
+			int minSentenceLength) throws Exception {
 
-		String outputDirName = "/event_tagger_"
-				+ Math.abs((new Random()).nextLong());
+		String key = "eac_" + Math.abs((new Random()).nextLong());
 
 		try {
 			CollectionReader source = createCollectionReader(
@@ -60,33 +67,20 @@ public class EventAnalysisComponent {
 					TypeSystemDescriptionFactory.createTypeSystemDescription());
 
 			AnalysisEngineDescription deepParse = createPrimitiveDescription(
-					DeepParserAE.class, "Max_sentence_length", 300,
-					"WriteCoNLL", false);
+					DeepParserAE.class, "MAX_SENTENCE_LENGTH",
+					maxSentenceLength, "MIN_SENTENCE_LENGTH",
+					minSentenceLength, "WriteCoNLL", false);
 
 			AnalysisEngineDescription dest = createPrimitiveDescription(
-					JsonWriter.class, JsonWriter.PARAM_OUTFILE,
-					OutputHandler.DEFAULT_TMP_DIR + outputDirName);
+					JsonWriter.class, JsonWriter.PARAM_KEY, key);
 
 			runPipeline(source, eventTranslator, deepParse, dest);
 
 		} catch (OutOfMemoryError ome) {
-			System.err.println(ome.getMessage());
-			OutputHandler.removeOutputDirectory(outputDirName);
-			return "[]";
-		} catch (Exception e) {
-			OutputHandler.removeOutputDirectory(outputDirName);
-			throw e;
+			log.error(ome.getMessage(), ome);
+			return new ArrayNode<IJsonNode>();
 		}
 
-		String res = OutputHandler
-				.readOutputFromExtendedDefaultTmpDirectory(outputDirName);
-
-		if (res == null) {
-			res = "[]";
-		} else {
-			res = res.replace("}{", "},{");
-			res = "[" + res + "]";
-		}
-		return res;
+		return (IJsonNode) InMemoryOutput.getOutputMap().remove(key);
 	}
 }

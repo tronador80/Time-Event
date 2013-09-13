@@ -25,7 +25,7 @@
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
-			<source>${project.basedir}/../pawel-model/lib/anna-2.0.jar</source>
+			<source>${project.basedir}/../pawel-model/lib/anna-3.3.jar</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>

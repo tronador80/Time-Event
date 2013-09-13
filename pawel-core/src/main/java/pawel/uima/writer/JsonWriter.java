@@ -17,9 +17,6 @@
 
 package pawel.uima.writer;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
@@ -43,12 +39,16 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import pawel.types.pawel.Text;
+import pawel.utils.JsonConverter;
 import de.dima.textmining.conll.CoNLLNode;
 import de.dima.textmining.events.EventExtractor;
 import de.dima.textmining.timeindex.TimelineResult;
 import de.dima.textmining.types.Sentence;
 import de.dima.textmining.types.Timespan;
 import de.unihd.dbs.uima.types.heideltime.Timex3;
+import eu.stratosphere.sopremo.type.ArrayNode;
+import eu.stratosphere.sopremo.type.IJsonNode;
+import eu.stratosphere.sopremo.type.ObjectNode;
 
 /**
  * A simple CAS consumer that writes the CAS to XMI format.
@@ -71,11 +71,13 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 	 * directory into which the output files will be written.
 	 */
 
-	public static final String PARAM_OUTFILE = "OutputFile";
+	public static final String PARAM_KEY = "KEY";
 
-	private String outputFile;
+	private String key;
 
 	private EventExtractor eventExtractor;
+
+	private ArrayNode<IJsonNode> events = new ArrayNode<IJsonNode>();
 
 	public void initialize(UimaContext aContext)
 			throws ResourceInitializationException {
@@ -83,17 +85,13 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 		// extractor for time events // don't save dot trees
 		eventExtractor = new EventExtractor(false);
 
-		this.outputFile = (String) aContext
-				.getConfigParameterValue(PARAM_OUTFILE);
+		this.key = (String) aContext.getConfigParameterValue(PARAM_KEY);
 
 	}
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 
-		/**
-		 * get all
-		 */
 		AnnotationIndex<Annotation> timeSpanIndex = jcas
 				.getAnnotationIndex(Timespan.type);
 		AnnotationIndex<Annotation> timeIndex = jcas
@@ -134,8 +132,6 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 
 		for (Annotation an : sentIndex) {
 			Sentence sent = (Sentence) an;
-			// ChunkDeepParser deep = (ChunkDeepParser) an;
-			// System.out.println(deep.getCoveredText()+" ::: "+sent.getCoveredText());
 
 			// check if sentence has a parse
 			CoNLLNode root = null;
@@ -235,7 +231,6 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 				// == "FUTURE_REF" || startTime == "PAST_REF" || startTime ==
 				// "PRESENT_REF"
 				) {
-					// System.out.println("XX PERSONAL XX :: " + startTime);
 					personalTime = startTime;
 					startHours = "00,00,00";
 					endHours = "00,00,00";
@@ -315,6 +310,10 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 				}
 			}
 		}
+
+		ObjectNode res = new ObjectNode();
+		res.put("events", this.events);
+		InMemoryOutput.getOutputMap().put(this.key, res);
 	}
 
 	/**
@@ -327,23 +326,8 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 				metaPublisher, metaSourceID, startDate, endDate,
 				sent.getBegin(), sent.getEnd());
 
-		log.debug("ADD INDEX");
-		log.debug(timeResult.getJson());
-		log.debug(this.outputFile + "/tmpL.out");
+		events.add(JsonConverter.string2JsonNode(timeResult.getJson()));
 
-		try {
-			File dir = new File(this.outputFile);
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
-			FileWriter fw = new FileWriter(this.outputFile + "/tmp"
-					+ (new Random()).nextLong() + ".out", true);
-			BufferedWriter out = new BufferedWriter(fw);
-			out.append(timeResult.getJson());
-			out.close();
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
 	}
 
 	private String calcMetaDay(String metaDay, String metaMonth,

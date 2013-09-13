@@ -92,6 +92,8 @@ public class HeidelTime extends JCasAnnotator_ImplBase {
 	// FOR DEBUGGING PURPOSES (IF FALSE)
 	private Boolean deleteOverlapped = true;
 
+	private static RuleManager rulem;
+
 	/**
 	 * @see AnalysisComponent#initialize(UimaContext)
 	 */
@@ -196,11 +198,13 @@ public class HeidelTime extends JCasAnnotator_ImplBase {
 		// run preprocessing processors
 		procMan.executeProcessors(jcas, Priority.PREPROCESSING);
 
-		RuleManager rulem = RuleManager.getInstance(language);
-
 		timexID = 1; // reset counter once per document processing
 
 		timex_counter = 0;
+
+		if (HeidelTime.rulem == null) {
+			HeidelTime.rulem = RuleManager.getInstance(language);
+		}
 
 		// //////////////////////////////////////////
 		// CHECK SENTENCE BY SENTENCE FOR TIMEXES //
@@ -227,28 +231,28 @@ public class HeidelTime extends JCasAnnotator_ImplBase {
 			do {
 				try {
 					if (find_dates) {
-						findTimexes("DATE", rulem.getHmDatePattern(),
-								rulem.getHmDateOffset(),
-								rulem.getHmDateNormalization(),
-								rulem.getHmDateQuant(), s, jcas);
+						findTimexes("DATE", HeidelTime.rulem.getHmDatePattern(),
+								HeidelTime.rulem.getHmDateOffset(),
+								HeidelTime.rulem.getHmDateNormalization(),
+								HeidelTime.rulem.getHmDateQuant(), s, jcas);
 					}
 					if (find_times) {
-						findTimexes("TIME", rulem.getHmTimePattern(),
-								rulem.getHmTimeOffset(),
-								rulem.getHmTimeNormalization(),
-								rulem.getHmTimeQuant(), s, jcas);
+						findTimexes("TIME", HeidelTime.rulem.getHmTimePattern(),
+								HeidelTime.rulem.getHmTimeOffset(),
+								HeidelTime.rulem.getHmTimeNormalization(),
+								HeidelTime.rulem.getHmTimeQuant(), s, jcas);
 					}
 					if (find_sets) {
-						findTimexes("SET", rulem.getHmSetPattern(),
-								rulem.getHmSetOffset(),
-								rulem.getHmSetNormalization(),
-								rulem.getHmSetQuant(), s, jcas);
+						findTimexes("SET", HeidelTime.rulem.getHmSetPattern(),
+								HeidelTime.rulem.getHmSetOffset(),
+								HeidelTime.rulem.getHmSetNormalization(),
+								HeidelTime.rulem.getHmSetQuant(), s, jcas);
 					}
 					if (find_durations) {
-						findTimexes("DURATION", rulem.getHmDurationPattern(),
-								rulem.getHmDurationOffset(),
-								rulem.getHmDurationNormalization(),
-								rulem.getHmDurationQuant(), s, jcas);
+						findTimexes("DURATION", HeidelTime.rulem.getHmDurationPattern(),
+								HeidelTime.rulem.getHmDurationOffset(),
+								HeidelTime.rulem.getHmDurationNormalization(),
+								HeidelTime.rulem.getHmDurationQuant(), s, jcas);
 					}
 				} catch (NullPointerException npe) {
 					if (!debugIteration) {

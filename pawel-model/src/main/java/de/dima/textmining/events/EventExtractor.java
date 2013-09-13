@@ -25,7 +25,7 @@ import de.dima.textmining.types.Timespan;
 public class EventExtractor {
 
 	/** toggle saving of parse trees as .dot files and writing of debug output */
-	private boolean debugMode = true;
+	private boolean debugMode = false;
 
 	/** folder for saving parse trees as .dot files */
 	private static final String DEFAULT_DOT_FOLDER = "/Users/Eumel/Documents/uni/tu_berlin/ws11/textmining/time_project/output/trees/dot_trees/";
@@ -97,7 +97,6 @@ public class EventExtractor {
 			Annotation time = (Annotation) timeIter.next();
 			int timeBegin = time.getBegin();
 			int timeEnd = time.getEnd();
-			// System.out.print(time.getCoveredText() + ": ");
 
 			// iterate over all tokens of a timex annotation
 			while (tokenIter.hasNext()) {
@@ -105,7 +104,6 @@ public class EventExtractor {
 				Token token = (Token) tokenIter.next();
 				// check if timex has ended
 				if (token.getBegin() >= timeEnd) {
-					// System.out.println();
 					break;
 				}
 				// check for overlap of current token with timex
@@ -113,9 +111,7 @@ public class EventExtractor {
 					if (root != null) {
 						// add position entry
 						posList.add(tokenNr);
-
 					} else {
-						// System.out.print(tokenNr + " ");
 					}
 					// root.getCompleteSentence().get(tokenNr).getForm();
 				}
@@ -185,11 +181,6 @@ public class EventExtractor {
 
 		// is parent of timeNode is available start event generation
 		if (currentNode != null) {
-			// System.out.println();
-			// // debug
-			// System.out.println("parent " + parent.getForm() + " " +
-			// parent.getPostag() + " " + parent.getDeprel());
-
 			boolean tmpRelFound = false;
 			// go up until a TMP relation was found or the root is reached
 			while (!(tmpRelFound || currentNode.getDeprel().equals("ROOT"))) {
@@ -251,7 +242,6 @@ public class EventExtractor {
 				boolean printEvent = false;
 
 				for (CoNLLNode node : verbChilds) {
-					// System.out.println(node.getDeprel());
 					if (node.getDeprel().equals("SBJ")) {
 						// subj = node.getDescendants().getCanonicalString(
 						// false);
@@ -271,32 +261,18 @@ public class EventExtractor {
 					} else if (node.getDeprel().equals("PRT")) {
 						verb += " " + node.getForm();
 
-						// debug output
-					} else if (debugMode) {
-						System.out.println("other: "
-								+ node.getDeprel()
-								+ " : "
-								+ node.getDescendants().getCanonicalString(
-										false));
 					}
 				}
 
 				// construct obj string
 				boolean nonAdvObjNodeFound = false;
 				for (CoNLLNode node : objNodes) {
-					// first check if an OBJ node was found if yes ignore ADV
-					// nodes
-					// if (node.getDeprel().equals("OBJ")) {
-					// nonAdvObjNodeFound = true;
-					// }
 					if (!node.getDeprel().equals("ADV")) {
 						nonAdvObjNodeFound = true;
-						// System.out.println("REL: " + node.getDeprel());
 					}
 				}
 
-				
-				/** 
+				/**
 				 * Construct obj String out of object Nodes
 				 */
 				boolean useNode = false;
@@ -305,26 +281,24 @@ public class EventExtractor {
 					// ignore ADV if OBJ found
 					if (node.getDeprel().equals("ADV")) {
 
-						// use ADV nodes only if no other Obj node found 
+						// use ADV nodes only if no other Obj node found
 						if (!(nonAdvObjNodeFound)) {
 							useNode = true;
-//							System.err.println("2len: " +obj.length() + "adv nodes: "+ node.getDescendants().size());
 						} else {
 							// or if ADV is small and obj is not to big
 							if (obj.length() < 35
 									&& node.getDescendants().size() < 6) {
-//								System.err.println("len: " +obj.length() + "adv nodes: "+ node.getDescendants().size());
 								useNode = true;
-//								printEvent = true;
+								// printEvent = true;
 							}
 						}
-					}else if(node.getDeprel().equals("LOC")){
-						// use LOC nodes if obj is short and loc has max 5 nodes 
-						if (obj.length() < 10 && node.getDescendants().size() < 6) {
+					} else if (node.getDeprel().equals("LOC")) {
+						// use LOC nodes if obj is short and loc has max 5 nodes
+						if (obj.length() < 10
+								&& node.getDescendants().size() < 6) {
 							useNode = true;
 						}
 					} else {
-
 
 						// use all non ADV non LOC nodes
 						useNode = true;
@@ -336,7 +310,7 @@ public class EventExtractor {
 						String objPart = getSimpleString(node);
 						if (objPart.length() != 0) {
 							obj += " " + objPart;
-						
+
 						}
 					}
 				}
@@ -345,21 +319,6 @@ public class EventExtractor {
 				// ignored because it is only a relative clause
 				if (objNodes.size() != 0 && obj.trim().length() == 0) {
 					objWasOnlyRelClause = true;
-				}
-
-				// debug output
-				if (debugMode || printEvent) {
-					System.out.println();
-					System.out.println("verb: " + verb);
-					System.out.println("subj: " + subj);
-					System.out.println("obj: " + obj);
-					System.out.println();
-				}
-			} else {
-				// debug output
-
-				if (debugMode) {
-					System.out.println("Parent no verb");
 				}
 			}
 
@@ -402,36 +361,9 @@ public class EventExtractor {
 			// }
 
 			if (validEvent) {
-
-				// save parse trees as dot for debugging
-				if (debugMode) {
-					root.storeCompleteSentenceAsDot(DEFAULT_DOT_FOLDER
-							+ root.getDescendants().getCanonicalString(false)
-									.substring(0, 10) + "_"
-							+ timeTokenPostions.get(0) + "_"
-							+ timeNode.getForm() + "_S;" + subj + "_V;" + verb
-							+ "_O;" + obj + ".dot");
-					System.out.println("EVENT: "
-							+ (subj + " " + verb + " " + obj).trim());
-				}
-				// combine parts of the event
-				// TODO handle empty obj
-				// return subj + " | " + verb + " | " + obj;
-
 				return (subj + " " + verb + " " + obj).trim();
 
 			} else {
-				// save parse trees as dot for debugging
-				if (debugMode) {
-					System.out.println("NOT VALID: "
-							+ (subj + " | " + verb + " | " + obj).trim());
-					// root.storeCompleteSentenceAsDot(DEFAULT_DOT_FOLDER
-					// + root.getDescendants().getCanonicalString(false)
-					// .substring(0, 10) + "_"
-					// + timeTokenPostions.get(0) + "_" + timeNode.getForm()
-					// + "_S;" + subj + "_V;" + verb + "_O;" + obj + ".dot");
-				}
-
 				return null;
 			}
 		} else {
@@ -524,10 +456,6 @@ public class EventExtractor {
 			goodNodes.removeAll(badNodes);
 		}
 
-		if (debugMode) {
-			System.out.println("Good Nodes: "
-					+ goodNodes.getCanonicalString(false));
-		}
 		// TODO if more than one than one node?s
 		// remove nodes with unwanted relations from sub tree
 		CoNLLNode badNode = getUnwantedNode(tree);

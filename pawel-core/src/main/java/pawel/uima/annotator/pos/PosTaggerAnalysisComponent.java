@@ -11,12 +11,12 @@ import java.util.Random;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
-import org.uimafit.component.xwriter.XWriter;
 import org.uimafit.factory.TypeSystemDescriptionFactory;
 
 import pawel.sopremo.operator.SentenceSplitterSopremoOperator;
 import pawel.uima.reader.JsonArrayReader;
-import pawel.utils.OutputHandler;
+import pawel.uima.writer.InMemoryOutput;
+import eu.stratosphere.sopremo.type.IJsonNode;
 
 /**
  * Class provides method for pos tagging.
@@ -39,34 +39,24 @@ public class PosTaggerAnalysisComponent {
 	 * @param inputText
 	 *            json string containing output of
 	 *            {@link SentenceSplitterSopremoOperator}.
-	 * @return json string containing pos tags
+	 * @return json containing pos tags
 	 * @throws Exception
 	 */
-	public String tagPos(String inputText) throws Exception {
+	public IJsonNode tagPos(String inputText) throws Exception {
+		String key = "ptac_" + Math.abs((new Random()).nextLong());
 
-		String outputDirName = "/pos_tagger_"
-				+ Math.abs((new Random()).nextLong());
+		CollectionReader source = createCollectionReader(JsonArrayReader.class,
+				"PARAM_INPUT", new String[] { inputText });
 
-		try {
-			CollectionReader source = createCollectionReader(
-					JsonArrayReader.class, "PARAM_INPUT",
-					new String[] { inputText });
+		AnalysisEngineDescription tokens = createPrimitiveDescription(
+				PosTagger.class,
+				TypeSystemDescriptionFactory.createTypeSystemDescription());
 
-			AnalysisEngineDescription tokens = createPrimitiveDescription(
-					PosTagger.class,
-					TypeSystemDescriptionFactory.createTypeSystemDescription());
+		AnalysisEngineDescription dest = createPrimitiveDescription(
+				InMemoryOutput.class, InMemoryOutput.PARAM_KEY, key);
 
-			AnalysisEngineDescription dest = createPrimitiveDescription(
-					XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
-					OutputHandler.DEFAULT_TMP_DIR + outputDirName);
+		runPipeline(source, tokens, dest);
 
-			runPipeline(source, tokens, dest);
-		} catch (Exception e) {
-			OutputHandler.removeOutputDirectory(outputDirName);
-			throw e;
-		}
-
-		return OutputHandler
-				.readOutputFromExtendedDefaultTmpDirectory(outputDirName);
+		return (IJsonNode) InMemoryOutput.getOutputMap().remove(key);
 	}
 }

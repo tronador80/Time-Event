@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Vector;
-
-import de.dima.textmining.shallow.ShallowToken;
 
 /**
  * Tree-like representation of CoNLL data as described in
@@ -223,17 +220,6 @@ public class CoNLLNode implements Comparable<CoNLLNode>, Serializable {
 				+ "\t" + getPostag() + "\t" + getFeats() + "\t" + newHead
 				+ "\t" + getDeprel() + "\t" + newPhead + "\t" + getPdeprel()
 				+ "\n";
-	}
-
-	public List<ShallowToken> getCompleteSentenceAsListOfShallowToken() {
-		List<ShallowToken> tokens = new Vector<ShallowToken>();
-		for (int i = 1; i < completeSentence.size(); i++) {
-			CoNLLNode token = completeSentence.get(i);
-			ShallowToken st = new ShallowToken(token.getForm(),
-					token.getPostag(), token.getLemma());
-			tokens.add(st);
-		}
-		return tokens;
 	}
 
 	/**
