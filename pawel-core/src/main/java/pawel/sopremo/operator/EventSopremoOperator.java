@@ -121,7 +121,7 @@ public class EventSopremoOperator extends
 		context.setInputsAndOutputs(this.getNumInputs(), this.getNumOutputs());
 		PactModule module = new PactModule(1, 1);
 		MapContract.Builder builder = MapContract.builder(Implementation.class);
-		builder.name(this.toString());
+		builder.name("EventsOperator");
 		builder.input(module.getInput(0));
 		MapContract mapcontract = builder.build();
 
@@ -133,7 +133,6 @@ public class EventSopremoOperator extends
 				this.minSentenceLength);
 		module.getOutput(0).setInput(mapcontract);
 
-		module.getOutput(0).setInput(mapcontract);
 		return module;
 	}
 

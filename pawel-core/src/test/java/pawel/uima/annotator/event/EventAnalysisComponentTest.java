@@ -31,12 +31,11 @@ public class EventAnalysisComponentTest {
 
 		IJsonNode result = null;
 		try {
-			result = eac.tagEvent(exampleInput, 10, 250);
+			result = eac.tagEvent(exampleInput, 250, 10);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
-
 		Assert.assertNotNull(result);
 
 		Assert.assertTrue(result instanceof ObjectNode);

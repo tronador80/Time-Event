@@ -3,6 +3,8 @@
  */
 package pawel.sopremo.io;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 import eu.stratosphere.sopremo.expressions.ConstantExpression;
@@ -216,5 +218,28 @@ public class ReutersNewsAccessTest {
 				.add(out4);
 
 		sopremoPlan.run();
+	}
+
+	/**
+	 * in this test is checked whether the tables are correctly filtered when
+	 * using ReutersNewsAccess operator with tablesOut parameter
+	 */
+	@Test
+	public void testFileSystemReutersNewsFileWithTablesFiltering() {
+
+		final SopremoTestPlan sopremoPlan = new SopremoTestPlan(0, 1);
+
+		final ReutersNewsAccess reutersNews = new ReutersNewsAccess();
+		reutersNews.setDocumentName(new ConstantExpression(System
+				.getProperty("user.dir")
+				+ "/src/test/resources/test_reuters_news_filtering"));
+		reutersNews.setTablesOut(new ConstantExpression("true"));
+
+		sopremoPlan.getOutputOperator(0).setInputs(reutersNews);
+
+		sopremoPlan.run();
+
+		Assert.assertEquals(3, sopremoPlan.getActualOutput(0).getAllNodes()
+				.size());
 	}
 }

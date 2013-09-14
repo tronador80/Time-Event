@@ -37,11 +37,13 @@ public class SuTimeUima extends org.uimafit.component.JCasAnnotator_ImplBase {
 	/**
 	 * TimeAnnotator created as static to avoid creating it for every jcas...
 	 */
-	private static TimeAnnotator ta = new TimeAnnotator("sutime",
-			System.getProperties());
+	private static TimeAnnotator ta;
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		if (SuTimeUima.ta == null) {
+			SuTimeUima.ta = new TimeAnnotator("sutime", System.getProperties());
+		}
 
 		AnnotationPipeline pipeline = new AnnotationPipeline();
 		pipeline.addAnnotator(SuTimeUima.ta);

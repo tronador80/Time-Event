@@ -273,7 +273,7 @@ public class LuceneIndexAccess extends ElementaryOperator<LuceneIndexAccess> {
 	public PactModule asPactModule(EvaluationContext context) {
 		context.setInputsAndOutputs(0, 1);
 		GenericDataSource<?> contract = new GenericDataSource<LuceneInputFormat>(
-				LuceneInputFormat.class, "Lucene Index Input");
+				LuceneInputFormat.class, "LuceneIndexInput");
 
 		final PactModule pactModule = new PactModule(0, 1);
 		SopremoUtil.setObject(contract.getParameters(), SopremoUtil.CONTEXT,

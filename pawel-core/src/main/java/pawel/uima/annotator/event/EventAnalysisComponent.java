@@ -52,7 +52,6 @@ public class EventAnalysisComponent {
 	 */
 	public IJsonNode tagEvent(String inputText, int maxSentenceLength,
 			int minSentenceLength) throws Exception {
-
 		String key = "eac_" + Math.abs((new Random()).nextLong());
 
 		try {

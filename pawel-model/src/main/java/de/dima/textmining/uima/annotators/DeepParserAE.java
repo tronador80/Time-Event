@@ -133,7 +133,6 @@ public class DeepParserAE extends org.uimafit.component.JCasAnnotator_ImplBase {
 
 			try {
 				Sentence sent = (Sentence) an;
-
 				// ignore sentence with " this causes parser errors
 				if (sent.getCoveredText().indexOf('"') != -1) {
 					continue;
@@ -143,6 +142,7 @@ public class DeepParserAE extends org.uimafit.component.JCasAnnotator_ImplBase {
 						|| sent.getCoveredText().length() < this.minSentenceLength) {
 					continue;
 				}
+
 				// only parse if sentence contains a time expression
 				FSIterator timeIter = timeIndex.subiterator(sent);
 				FSIterator timespanIter = timespanIndex.subiterator(sent);

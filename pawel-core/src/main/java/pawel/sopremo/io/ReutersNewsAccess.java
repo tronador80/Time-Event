@@ -57,6 +57,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 	protected static final String DOCUMENT_NAME = "document_id";
 	protected static final String HDFS_CONF_PATH = "hdfs_conf_path";
 	protected static final String BIG = "big";
+	protected static final String TABLES_OUT = "tablesOut";
 
 	/**
 	 * name containing substring XYZ that will be replaced with
@@ -74,6 +75,12 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 	 * news (true) or single news (false)
 	 */
 	private boolean big;
+
+	/**
+	 * This variable indicates whether the news that contain tables should be
+	 * skipped.
+	 */
+	private boolean tablesOut;
 
 	/**
 	 * 
@@ -132,6 +139,12 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		private boolean big;
 
 		/**
+		 * This variable indicates whether the news that contain tables should
+		 * be skipped.
+		 */
+		private boolean tablesOut;
+
+		/**
 		 * this list contains content of all news that belong to currently
 		 * processed file
 		 */
@@ -147,6 +160,8 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			this.docName = (String) SopremoUtil.getObject(parameters,
 					DOCUMENT_NAME, null);
 			this.big = (Boolean) SopremoUtil.getObject(parameters, BIG, true);
+			this.tablesOut = (Boolean) SopremoUtil.getObject(parameters,
+					TABLES_OUT, true);
 
 			// set the hadoop installation path
 			this.hdfsConfPath = (String) SopremoUtil.getObject(parameters,
@@ -162,7 +177,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 
 		@Override
 		public boolean reachedEnd() throws IOException {
-			return (this.docId >= this.getFilesToPorcess().size() && (this.newsToProcess == null || this.newsToProcess
+			return (this.docId >= this.getFilesToProcess().size() && (this.newsToProcess == null || this.newsToProcess
 					.isEmpty()));
 		}
 
@@ -193,8 +208,13 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			if (newNode != null) {
 				this.schema.jsonToRecord(newNode, record);
 				return true;
+			} else if (this.getFilesToProcess().size() > this.docId
+					|| (this.newsToProcess != null && !this.newsToProcess
+							.isEmpty())) {
+				return this.nextRecord(record);
+			} else {
+				return false;
 			}
-			return false;
 		}
 
 		@Override
@@ -210,12 +230,13 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 				ReutersNewsInputSplit reutersNewsSplit = (ReutersNewsInputSplit) split;
 
 				this.docId = 0;
-				this.getFilesToPorcess().addAll(
+				this.getFilesToProcess().addAll(
 						reutersNewsSplit.getFilesToProcess());
 				this.big = reutersNewsSplit.getBig();
 				if (big && this.newsToProcess == null) {
 					this.newsToProcess = new ArrayList<String>();
 				}
+				this.tablesOut = reutersNewsSplit.getTablesOut();
 
 			} else {
 				log.warn("Received split is not ReutersNewsInputSplit... This split will be ignored.");
@@ -258,7 +279,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		 * 
 		 * @return list of file names
 		 */
-		private List<String> getFilesToPorcess() {
+		private List<String> getFilesToProcess() {
 			if (this.filesToProcess == null) {
 				this.filesToProcess = new ArrayList<String>();
 			}
@@ -309,7 +330,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		 * @return name of file
 		 */
 		private String nextName() {
-			return this.getFilesToPorcess().get(this.docId++);
+			return this.getFilesToProcess().get(this.docId++);
 		}
 
 		/**
@@ -368,9 +389,15 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 					}
 					textBuilder.append(p);
 				}
-				text.put("Text", this.string2TextNode(textBuilder.toString()));
+				String textContent = textBuilder.toString();
 
-				annotations.add(text);
+				if (this.tablesOut
+						&& this.countOccurrences(textContent, '\t') > 5) {
+					return null;
+				} else {
+					text.put("Text", this.string2TextNode(textContent));
+					annotations.add(text);
+				}
 
 			} catch (JAXBException e) {
 				log.error(e.getMessage(), e);
@@ -441,11 +468,30 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 												* (numberOfDocumentsToProcess / minNumSplitsDouble)),
 										numberOfDocumentsToProcess)));
 				splits[i] = new ReutersNewsInputSplit(i,
-						filesToProcessWithinThisSplit, this.big);
+						filesToProcessWithinThisSplit, this.big, this.tablesOut);
 
 			}
 
 			return splits;
+		}
+
+		/**
+		 * Counts how often <code>c</code> occurs in <code>string</code>.
+		 * 
+		 * @param string
+		 * @param c
+		 * @return number of occurrences
+		 */
+		private int countOccurrences(String string, char c) {
+			int counter = 0;
+
+			for (int i = 0; i < string.length(); i++) {
+				if (string.charAt(i) == c) {
+					counter++;
+				}
+			}
+
+			return counter;
 		}
 	}
 
@@ -453,7 +499,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 	public PactModule asPactModule(EvaluationContext context) {
 		context.setInputsAndOutputs(0, 1);
 		GenericDataSource<?> contract = new GenericDataSource<ReutersNewsInputFormat>(
-				ReutersNewsInputFormat.class, "Reuters News Index Input");
+				ReutersNewsInputFormat.class, "ReutersNewsInput");
 
 		final PactModule pactModule = new PactModule(0, 1);
 		SopremoUtil.setObject(contract.getParameters(), SopremoUtil.CONTEXT,
@@ -463,6 +509,8 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		SopremoUtil.setObject(contract.getParameters(), HDFS_CONF_PATH,
 				this.hdfsConfPath);
 		SopremoUtil.setObject(contract.getParameters(), BIG, this.big);
+		SopremoUtil.setObject(contract.getParameters(), TABLES_OUT,
+				this.tablesOut);
 		pactModule.getOutput(0).setInput(contract);
 		return pactModule;
 	}
@@ -489,6 +537,18 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			this.big = false;
 		} else {
 			this.big = true;
+		}
+	}
+
+	@Property(flag = true)
+	@Name(noun = "tables_out")
+	public void setTablesOut(EvaluationExpression tablesOut) {
+		String tmpBig = tablesOut.toString().replace("\"", "")
+				.replace("\'", "");
+		if (tmpBig.contains("false")) {
+			this.tablesOut = false;
+		} else {
+			this.tablesOut = true;
 		}
 	}
 }

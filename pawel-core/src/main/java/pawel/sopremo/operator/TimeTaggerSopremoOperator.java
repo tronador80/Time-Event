@@ -117,7 +117,7 @@ public class TimeTaggerSopremoOperator extends
 		context.setInputsAndOutputs(this.getNumInputs(), this.getNumOutputs());
 		PactModule module = new PactModule(1, 1);
 		MapContract.Builder builder = MapContract.builder(Implementation.class);
-		builder.name(this.toString());
+		builder.name("TimeOperator");
 		builder.input(module.getInput(0));
 		MapContract mapcontract = builder.build();
 
