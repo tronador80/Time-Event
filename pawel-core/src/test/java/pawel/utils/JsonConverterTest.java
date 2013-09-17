@@ -20,7 +20,7 @@ import eu.stratosphere.sopremo.type.TextNode;
 /**
  * Test class for class {@link JsonConverter}.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class JsonConverterTest {

@@ -27,10 +27,10 @@ import eu.stratosphere.sopremo.type.ObjectNode;
 import eu.stratosphere.sopremo.type.TextNode;
 
 /**
- * Sopremo operator that allows events tagging. Input of this operator is result
- * of {@link TimeTaggerSopremoOperator}.
+ * Sopremo operator that makes it possible to tag events. Input of this operator
+ * is result of {@link TimeTaggerSopremoOperator}.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 @InputCardinality(1)

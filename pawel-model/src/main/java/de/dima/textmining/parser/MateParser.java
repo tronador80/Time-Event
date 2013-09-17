@@ -121,7 +121,7 @@ public class MateParser implements de.dima.textmining.parser.Parser {
 			e.printStackTrace();
 		}
 
-		logger.info("parsing result:\n" + node);
+		logger.debug("parsing result:\n" + node);
 		return node;
 	}
 }

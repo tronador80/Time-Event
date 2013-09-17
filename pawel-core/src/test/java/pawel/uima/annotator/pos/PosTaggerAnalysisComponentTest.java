@@ -15,7 +15,9 @@ import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 
 /**
- * @author pawel
+ * Tests for {@link PosTaggerAnalysisComponent}.
+ * 
+ * @author ptondryk
  * 
  */
 public class PosTaggerAnalysisComponentTest {

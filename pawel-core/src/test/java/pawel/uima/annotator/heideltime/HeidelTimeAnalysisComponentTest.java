@@ -15,7 +15,9 @@ import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 
 /**
- * @author pawel
+ * Test class for {@link HeidelTimeAnalysisComponent}.
+ * 
+ * @author ptondryk
  * 
  */
 public class HeidelTimeAnalysisComponentTest {

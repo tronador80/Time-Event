@@ -14,7 +14,7 @@ import pawel.utils.TextUtils;
  * Method calculates temporal summaries based on algorithm from
  * "Temporal Summaries of News Topics" paper.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class TemporalSummaries {
@@ -28,8 +28,8 @@ public class TemporalSummaries {
 	 *            text where the sentences come from
 	 * @return map<Sentence, rank>
 	 */
-	public static Map<Sentence2, Double> rankSentences(List<Sentence2> sentences,
-			String completeText) {
+	public static Map<Sentence2, Double> rankSentences(
+			List<Sentence2> sentences, String completeText) {
 
 		Map<Sentence2, Double> sentenceRanking = new HashMap<Sentence2, Double>();
 

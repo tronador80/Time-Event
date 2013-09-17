@@ -37,7 +37,7 @@ import eu.stratosphere.sopremo.type.TextNode;
 /**
  * This class provides access to lucene index for sopremo/meteor jobs.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 @InputCardinality(max = 0, min = 0)

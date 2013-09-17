@@ -31,7 +31,7 @@ import eu.stratosphere.sopremo.type.TextNode;
 /**
  * Test class for class {@link LuceneIndexAccess}.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class LuceneIndexAccessTest {

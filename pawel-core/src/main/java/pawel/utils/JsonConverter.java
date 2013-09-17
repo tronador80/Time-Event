@@ -26,7 +26,7 @@ import eu.stratosphere.sopremo.type.TextNode;
 /**
  * Class provides functionality for some json convertions.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class JsonConverter {
@@ -495,6 +495,5 @@ public class JsonConverter {
 
 		return res;
 	}
-	
-	
+
 }

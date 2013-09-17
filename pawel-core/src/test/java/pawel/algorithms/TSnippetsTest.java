@@ -19,7 +19,7 @@ import pawel.model.Token;
 /**
  * Test class for class {@link TSnippets}.
  * 
- * @author pawel
+ * @author ptondryk
  * @see TSnippets
  */
 public class TSnippetsTest {

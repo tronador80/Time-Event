@@ -4,7 +4,6 @@
 package pawel.sopremo.io;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +11,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -313,9 +313,8 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 				}
 			} else {
 				try {
-					FileInputStream fos = new FileInputStream(fileName);
-					fileContent = IOUtils.toString(fos);
-					fos.close();
+					fileContent = FileUtils
+							.readFileToString(new File(fileName));
 				} catch (IOException e) {
 					log.error(e.getMessage(), e);
 				}
@@ -387,7 +386,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 					if (textBuilder.length() > 0) {
 						textBuilder.append(" ");
 					}
-					textBuilder.append(p);
+					textBuilder.append(p.replace('\n', ' '));
 				}
 				String textContent = textBuilder.toString();
 
@@ -449,7 +448,8 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 				}
 
 			} else {
-				File[] files = (new File(this.docName)).listFiles();
+				File[] files = (new File(this.docName.replace("file://", "")))
+						.listFiles();
 				for (File file : files) {
 					allFilesToProcess.add(file.getAbsolutePath());
 				}

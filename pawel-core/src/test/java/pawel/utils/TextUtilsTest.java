@@ -10,7 +10,7 @@ import org.junit.Test;
 /**
  * Test class for class {@link TextUtils}.
  * 
- * @author pawel
+ * @author ptondryk
  * @see TextUtils
  */
 public class TextUtilsTest {

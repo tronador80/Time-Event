@@ -12,7 +12,7 @@ import pawel.algorithms.CosineSimilarity;
 /**
  * Test case class for <code>CosineSimilarity</code> class.
  * 
- * @author pawel
+ * @author ptondryk
  * @see CosineSimilarity
  */
 public class CosineSimilarityTest {

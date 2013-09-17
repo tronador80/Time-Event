@@ -18,7 +18,7 @@ import pawel.model.Timex3;
 /**
  * Test class for class {@link TemporalSummaries}.
  * 
- * @author pawel
+ * @author ptondryk
  * @see TemporalSummaries
  * 
  */
@@ -46,7 +46,8 @@ public class TemporalSummariesTest {
 		sentences.add(s2);
 		sentences.add(s3);
 
-		Map<Sentence2, Double> rank = TemporalSummaries.rankSentences(sentences,
+		Map<Sentence2, Double> rank = TemporalSummaries.rankSentences(
+				sentences,
 				"Today is monday. Today is monday. Today is my birthday.");
 
 		Assert.assertEquals(3, rank.size());

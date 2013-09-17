@@ -15,6 +15,8 @@ import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 
 /**
+ * Tests for class {@link SuTimeAnalysisComponent}.
+ * 
  * @author ptondryk
  * 
  */

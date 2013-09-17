@@ -30,7 +30,7 @@ import eu.stratosphere.sopremo.type.ObjectNode;
  * additionally has one more parameter: type (news or narrative) of text to
  * process.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 @InputCardinality(1)

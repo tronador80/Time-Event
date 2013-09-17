@@ -60,7 +60,7 @@ import eu.stratosphere.sopremo.type.ObjectNode;
  * </ul>
  * 
  * @author Andreas Wolf
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {

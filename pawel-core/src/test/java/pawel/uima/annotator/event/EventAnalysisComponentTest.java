@@ -18,7 +18,7 @@ import eu.stratosphere.sopremo.type.ObjectNode;
  * Test class for class {@link EventAnalysisComponent}. Tests use only short
  * texts to avoid Java Heap Space problems.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class EventAnalysisComponentTest {

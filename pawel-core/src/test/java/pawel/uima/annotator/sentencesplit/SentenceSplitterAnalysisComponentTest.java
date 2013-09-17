@@ -11,7 +11,7 @@ import eu.stratosphere.sopremo.type.ObjectNode;
 /**
  * Test class for class {@link SentenceSplitterAnalysisComponent}
  * 
- * @author pawel
+ * @author ptondryk
  * @see SentenceSplitterAnalysisComponent
  */
 public class SentenceSplitterAnalysisComponentTest {

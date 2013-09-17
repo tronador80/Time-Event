@@ -8,7 +8,7 @@ import pawel.utils.TextUtils;
 /**
  * Class provides methods for calculating cosine similarity.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class CosineSimilarity {

@@ -1,13 +1,13 @@
 INSTALLATION
 
 #####################################################################
-1. put the jars (sopremo-pawel.jar and pawel-model.jar and anna-2.0.jar 
+1. put the jars (sopremo-pawel.jar and pawel-model.jar and anna-3.3.jar 
 	and index-import.jar) in the "lib" directory there where 
 	the stratosphere is installed...
 	also put the nephele-server-0.2.1.jar in "lib" (replace existing)
 
 #####################################################################
-2. add the both jars (sopremo-pawel.jar and pawel-model.jar and anna-2.0.jar 
+2. add the both jars (sopremo-pawel.jar and pawel-model.jar and anna-3.3.jar 
 		and index-import.jar) to classpath of stratosphere by editing following files:
 			-> meteor-client.sh
 			-> sopremo-server.sh
@@ -19,7 +19,7 @@ INSTALLATION
         add=1
     elif [[ "$jarfile" =~ 'pawel-model' ]]; then
         add=1
-    elif [[ "$jarfile" =~ 'anna-2.0' ]]; then
+    elif [[ "$jarfile" =~ 'anna-3.3' ]]; then
         add=1
     elif [[ "$jarfile" =~ 'index-import' ]]; then
         add=1

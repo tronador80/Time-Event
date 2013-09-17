@@ -19,7 +19,7 @@ import pawel.model.Timex3;
 /**
  * Test class for {@link SentencesSelector}
  * 
- * @author pawel
+ * @author ptondryk
  * @see SentencesSelector
  */
 public class SentenceSelectorTest {

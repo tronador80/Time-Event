@@ -13,7 +13,7 @@ import pawel.utils.SentencesSelector;
 /**
  * Implementation of TSnippets algorithm.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class TSnippets {

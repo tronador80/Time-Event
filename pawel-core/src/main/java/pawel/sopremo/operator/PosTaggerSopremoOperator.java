@@ -22,10 +22,10 @@ import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 
 /**
- * Sopremo operator that allows POS tagging. Input of this operator is
- * {@link SentenceSplitterSopremoOperator}.
+ * Sopremo operator that is responsible for POS tagging. Input of this operator
+ * is {@link SentenceSplitterSopremoOperator}.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 @InputCardinality(1)
@@ -55,7 +55,7 @@ public class PosTaggerSopremoOperator extends
 					log.error(e.getMessage(), e);
 				}
 			} else {
-				log.error("Error: Root element mst be object!");
+				log.error("Error: Root element must be object!");
 			}
 		}
 

@@ -4,7 +4,7 @@
 package pawel.utils;
 
 /**
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class TextUtils {

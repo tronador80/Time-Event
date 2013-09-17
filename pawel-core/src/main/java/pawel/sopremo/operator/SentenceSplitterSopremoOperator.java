@@ -26,9 +26,9 @@ import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 
 /**
- * Sopremo operator that allows sentence splitting.
+ * Sopremo operator that is responsible for sentence splitting and tokenizing.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 @InputCardinality(1)
@@ -112,6 +112,7 @@ public class SentenceSplitterSopremoOperator extends
 
 			IJsonNode shouldBeAnnotationsArray = result.get("annotations");
 			if (shouldBeAnnotationsArray instanceof ArrayNode<?>) {
+				@SuppressWarnings("unchecked")
 				ArrayNode<IJsonNode> annotations = (ArrayNode<IJsonNode>) shouldBeAnnotationsArray;
 				for (int i = 0; i < annotations.size(); i++) {
 					IJsonNode shouldBeAnnotation = annotations.get(i);
@@ -138,6 +139,7 @@ public class SentenceSplitterSopremoOperator extends
 
 			IJsonNode shouldBeAnnotationsArray = result.get("annotations");
 			if (shouldBeAnnotationsArray instanceof ArrayNode<?>) {
+				@SuppressWarnings("unchecked")
 				ArrayNode<IJsonNode> annotations = (ArrayNode<IJsonNode>) shouldBeAnnotationsArray;
 				for (int i = 0; i < annotations.size(); i++) {
 					IJsonNode shouldBeAnnotation = annotations.get(i);

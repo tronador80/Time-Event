@@ -21,7 +21,7 @@ import eu.stratosphere.sopremo.type.IJsonNode;
 /**
  * Class provides method for pos tagging.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class PosTaggerAnalysisComponent {

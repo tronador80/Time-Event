@@ -33,7 +33,7 @@ import eu.stratosphere.sopremo.type.TextNode;
  * its input is result of TimeTaggerSopremoOperator and NOT result of
  * EventSopremoOperator
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 @InputCardinality(1)

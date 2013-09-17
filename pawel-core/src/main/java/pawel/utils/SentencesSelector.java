@@ -13,7 +13,7 @@ import pawel.model.Sentence2;
 import pawel.model.Timex3;
 
 /**
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class SentencesSelector {

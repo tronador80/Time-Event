@@ -191,7 +191,6 @@ public class EventExtractor {
 				// go up one step
 				currentNode = currentNode.getParent();
 				if (currentNode == null) {
-					System.out.println("Parser Error no ROOT node");
 					return null;
 				}
 			}

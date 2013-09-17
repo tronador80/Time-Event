@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Class represents Timex.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class Timex3 extends Token {

@@ -6,7 +6,7 @@ package pawel.model;
 /**
  * Class represents single token.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class Token {

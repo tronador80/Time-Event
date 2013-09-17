@@ -21,7 +21,7 @@ import eu.stratosphere.sopremo.type.IJsonNode;
 /**
  * This class use SuTime for time tagging.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class SuTimeAnalysisComponent {

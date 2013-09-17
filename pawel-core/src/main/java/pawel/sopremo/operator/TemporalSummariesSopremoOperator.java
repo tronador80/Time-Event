@@ -37,7 +37,7 @@ import eu.stratosphere.sopremo.type.TextNode;
  * For every sentence it calculate its usefulness and novelty using formulas
  * from "Temporal Summaries of News Topics" paper.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 @InputCardinality(1)

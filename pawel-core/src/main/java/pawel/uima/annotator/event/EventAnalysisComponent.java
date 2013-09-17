@@ -25,7 +25,7 @@ import eu.stratosphere.sopremo.type.IJsonNode;
 /**
  * Class allows to tag event expressions.
  * 
- * @author pawel
+ * @author ptondryk
  * 
  */
 public class EventAnalysisComponent {
