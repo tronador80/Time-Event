@@ -47,7 +47,24 @@ public class SentencesSelector {
 				}
 			}
 
-			sentenceRanking.remove(currentSentence);
+			// check if sentence with same text is already contained in summary
+			boolean isContained = false;
+			for (Sentence2 sent : summary) {
+				if (sent.getSentenceText().equals(
+						currentSentence.getSentenceText())) {
+					isContained = true;
+					break;
+				}
+			}
+			if (isContained) {
+				i--;
+				continue;
+			}
+
+			if (sentenceRanking.remove(currentSentence) == 0.0) {
+				break; // if rank = 0 break because rank = 0 have sentences
+						// without temporal expressions
+			}
 			summary.add(currentSentence);
 		}
 
@@ -73,16 +90,16 @@ public class SentencesSelector {
 				Timex3 sentence1FirstTimex = null;
 				for (Timex3 timex : s1.getTimexs()) {
 					if (sentence1FirstTimex == null
-							|| sentence1FirstTimex.getDate().compareTo(
-									timex.getDate()) < 0) {
+							|| (sentence1FirstTimex.getDate() != null && sentence1FirstTimex
+									.getDate().compareTo(timex.getDate()) < 0)) {
 						sentence1FirstTimex = timex;
 					}
 				}
 				Timex3 sentence2FirstTimex = null;
 				for (Timex3 timex : s2.getTimexs()) {
 					if (sentence2FirstTimex == null
-							|| sentence2FirstTimex.getDate().compareTo(
-									timex.getDate()) < 0) {
+							|| (sentence2FirstTimex.getDate() != null && sentence2FirstTimex
+									.getDate().compareTo(timex.getDate()) < 0)) {
 						sentence2FirstTimex = timex;
 					}
 				}

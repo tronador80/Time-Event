@@ -5,6 +5,8 @@ package pawel.sopremo.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -163,12 +166,9 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			this.tablesOut = (Boolean) SopremoUtil.getObject(parameters,
 					TABLES_OUT, true);
 
-			// set the hadoop installation path
+			// set the custom hadoop configuration path
 			this.hdfsConfPath = (String) SopremoUtil.getObject(parameters,
 					HDFS_CONF_PATH, null);
-			if (this.hdfsConfPath == null || this.hdfsConfPath.isEmpty()) {
-				this.hdfsConfPath = System.getenv().get("HADOOP_HOME");
-			}
 
 			if (big) {
 				this.newsToProcess = new ArrayList<String>();
@@ -298,7 +298,15 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			if (fileName.startsWith("hdfs")) {
 				FileSystem fileSystem;
 				try {
-					fileSystem = FileSystem.get(this.getConfiguration());
+
+					if (this.hdfsConfPath != null
+							&& !this.hdfsConfPath.isEmpty()) {
+
+						fileSystem = FileSystem.get(this.getConfiguration());
+					} else {
+						fileSystem = FileSystem.get(new URI(fileName),
+								new Configuration());
+					}
 
 					Path path = new Path(fileName);
 					if (!fileSystem.exists(path)) {
@@ -309,6 +317,8 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 					fileContent = IOUtils.toString(in);
 
 				} catch (IOException e) {
+					log.error(e.getMessage(), e);
+				} catch (URISyntaxException e) {
 					log.error(e.getMessage(), e);
 				}
 			} else {
@@ -435,7 +445,16 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			if (this.docName.startsWith("hdfs")) {
 				FileSystem fileSystem;
 				try {
-					fileSystem = FileSystem.get(this.getConfiguration());
+
+					if (this.hdfsConfPath != null
+							&& !this.hdfsConfPath.isEmpty()) {
+
+						fileSystem = FileSystem.get(this.getConfiguration());
+					} else {
+						fileSystem = FileSystem.get(new URI(this.docName),
+								new Configuration());
+					}
+
 					FileStatus[] fileStates = fileSystem.listStatus(new Path(
 							this.docName));
 					for (FileStatus fileStatus : fileStates) {
@@ -445,6 +464,8 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 				} catch (IOException e) {
 					log.error(e.getMessage(), e);
 					return null;
+				} catch (URISyntaxException e) {
+					log.error(e.getMessage(), e);
 				}
 
 			} else {

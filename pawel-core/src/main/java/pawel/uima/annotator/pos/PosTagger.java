@@ -12,8 +12,8 @@ import org.apache.uima.jcas.JCas;
 import org.uimafit.component.JCasAnnotator_ImplBase;
 
 import de.dima.textmining.resources.ResourceManager;
-import pawel.types.pawel.Sentence;
-import pawel.types.pawel.Token;
+import pawel.paweltypes.Sentence;
+import pawel.paweltypes.Token;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;

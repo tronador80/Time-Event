@@ -11,7 +11,6 @@ import eu.stratosphere.nephele.configuration.Configuration;
 import eu.stratosphere.pact.common.contract.MapContract;
 import eu.stratosphere.pact.common.plan.PactModule;
 import eu.stratosphere.sopremo.EvaluationContext;
-import eu.stratosphere.sopremo.expressions.ConstantExpression;
 import eu.stratosphere.sopremo.expressions.EvaluationExpression;
 import eu.stratosphere.sopremo.operator.ElementaryOperator;
 import eu.stratosphere.sopremo.operator.InputCardinality;
@@ -21,8 +20,9 @@ import eu.stratosphere.sopremo.operator.Property;
 import eu.stratosphere.sopremo.pact.JsonCollector;
 import eu.stratosphere.sopremo.pact.SopremoMap;
 import eu.stratosphere.sopremo.pact.SopremoUtil;
-import eu.stratosphere.sopremo.type.DecimalNode;
+import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
+import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 import eu.stratosphere.sopremo.type.TextNode;
 
@@ -90,10 +90,20 @@ public class TSnippetsSopremoOperator extends
 		protected void map(final IJsonNode value, final JsonCollector out) {
 			if (value instanceof ObjectNode) {
 				ObjectNode object = (ObjectNode) value;
-				TextNode tn = (TextNode) object.get("analyzedText");
+
+				String analyzedText = "";
+				if (object.get("annotations") instanceof ArrayNode<?>)
+					for (Object annotation : ((ArrayNode<?>) object
+							.get("annotations"))) {
+						if (annotation instanceof ObjectNode
+								&& !(((ObjectNode) annotation).get("Text") instanceof MissingNode)) {
+							analyzedText = ((ObjectNode) annotation)
+									.get("Text").toString();
+						}
+					}
 
 				ObjectNode res = new ObjectNode();
-				res.put("text", tn);
+				res.put("analyzedText", new TextNode(analyzedText));
 
 				res.put("summary",
 						new TextNode(
@@ -138,51 +148,31 @@ public class TSnippetsSopremoOperator extends
 	@Property(preferred = true)
 	@Name(preposition = "alpha")
 	public void setAlpha(EvaluationExpression alpha) {
-		if (alpha instanceof ConstantExpression) {
-			ConstantExpression constant = (ConstantExpression) alpha;
-			DecimalNode dn = (DecimalNode) constant.getConstant();
-			this.alpha = dn.getDoubleValue();
-		}
+		this.alpha = Double.parseDouble(alpha.toString());
 	}
 
 	@Property(preferred = true)
 	@Name(preposition = "beta")
 	public void setBeta(EvaluationExpression beta) {
-		if (beta instanceof ConstantExpression) {
-			ConstantExpression constant = (ConstantExpression) beta;
-			DecimalNode dn = (DecimalNode) constant.getConstant();
-			this.beta = dn.getDoubleValue();
-		}
+		this.beta = Double.parseDouble(beta.toString());
 	}
 
 	@Property(preferred = true)
 	@Name(preposition = "gamma")
 	public void setGamma(EvaluationExpression gamma) {
-		if (gamma instanceof ConstantExpression) {
-			ConstantExpression constant = (ConstantExpression) gamma;
-			DecimalNode dn = (DecimalNode) constant.getConstant();
-			this.gamma = dn.getDoubleValue();
-		}
+		this.gamma = Double.parseDouble(gamma.toString());
 	}
 
 	@Property(preferred = true)
 	@Name(preposition = "epsilon")
 	public void setEpsilon(EvaluationExpression epsilon) {
-		if (epsilon instanceof ConstantExpression) {
-			ConstantExpression constant = (ConstantExpression) epsilon;
-			DecimalNode dn = (DecimalNode) constant.getConstant();
-			this.epsilon = dn.getDoubleValue();
-		}
+		this.epsilon = Double.parseDouble(epsilon.toString());
 	}
 
 	@Property(preferred = true)
 	@Name(preposition = "theta")
 	public void setTheta(EvaluationExpression theta) {
-		if (theta instanceof ConstantExpression) {
-			ConstantExpression constant = (ConstantExpression) theta;
-			DecimalNode dn = (DecimalNode) constant.getConstant();
-			this.theta = dn.getDoubleValue();
-		}
+		this.theta = Double.parseDouble(theta.toString());
 	}
 
 	@Property(preferred = true)

@@ -1,6 +1,6 @@
 
-/* First created by JCasGen Thu Jul 25 02:13:40 CEST 2013 */
-package pawel.types.pawel;
+/* First created by JCasGen Wed Sep 25 20:16:43 CEST 2013 */
+package pawel.paweltypes;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -13,10 +13,8 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-import org.apache.uima.jcas.cas.TOP_Type;
-
 /** 
- * Updated by JCasGen Fri Jul 26 00:15:14 CEST 2013
+ * Updated by JCasGen Wed Sep 25 20:16:43 CEST 2013
  * @generated */
 public class Token_Type extends Annotation_Type {
   /** @generated */
@@ -44,10 +42,8 @@ public class Token_Type extends Annotation_Type {
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("pawel.types.pawel.Token");
-
-
-
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("pawel.paweltypes.Token");
+ 
   /** @generated */
   final Feature casFeat_value;
   /** @generated */
@@ -55,13 +51,13 @@ public class Token_Type extends Annotation_Type {
   /** @generated */ 
   public String getValue(int addr) {
         if (featOkTst && casFeat_value == null)
-      jcas.throwFeatMissing("value", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("value", "pawel.paweltypes.Token");
     return ll_cas.ll_getStringValue(addr, casFeatCode_value);
   }
   /** @generated */    
   public void setValue(int addr, String v) {
         if (featOkTst && casFeat_value == null)
-      jcas.throwFeatMissing("value", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("value", "pawel.paweltypes.Token");
     ll_cas.ll_setStringValue(addr, casFeatCode_value, v);}
     
   
@@ -73,13 +69,13 @@ public class Token_Type extends Annotation_Type {
   /** @generated */ 
   public String getToken(int addr) {
         if (featOkTst && casFeat_Token == null)
-      jcas.throwFeatMissing("Token", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("Token", "pawel.paweltypes.Token");
     return ll_cas.ll_getStringValue(addr, casFeatCode_Token);
   }
   /** @generated */    
   public void setToken(int addr, String v) {
         if (featOkTst && casFeat_Token == null)
-      jcas.throwFeatMissing("Token", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("Token", "pawel.paweltypes.Token");
     ll_cas.ll_setStringValue(addr, casFeatCode_Token, v);}
     
   
@@ -91,13 +87,13 @@ public class Token_Type extends Annotation_Type {
   /** @generated */ 
   public String getOriginalText(int addr) {
         if (featOkTst && casFeat_originalText == null)
-      jcas.throwFeatMissing("originalText", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("originalText", "pawel.paweltypes.Token");
     return ll_cas.ll_getStringValue(addr, casFeatCode_originalText);
   }
   /** @generated */    
   public void setOriginalText(int addr, String v) {
         if (featOkTst && casFeat_originalText == null)
-      jcas.throwFeatMissing("originalText", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("originalText", "pawel.paweltypes.Token");
     ll_cas.ll_setStringValue(addr, casFeatCode_originalText, v);}
     
   
@@ -109,13 +105,13 @@ public class Token_Type extends Annotation_Type {
   /** @generated */ 
   public int getBegin(int addr) {
         if (featOkTst && casFeat_begin == null)
-      jcas.throwFeatMissing("begin", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("begin", "pawel.paweltypes.Token");
     return ll_cas.ll_getIntValue(addr, casFeatCode_begin);
   }
   /** @generated */    
   public void setBegin(int addr, int v) {
         if (featOkTst && casFeat_begin == null)
-      jcas.throwFeatMissing("begin", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("begin", "pawel.paweltypes.Token");
     ll_cas.ll_setIntValue(addr, casFeatCode_begin, v);}
     
   
@@ -127,13 +123,13 @@ public class Token_Type extends Annotation_Type {
   /** @generated */ 
   public int getEnd(int addr) {
         if (featOkTst && casFeat_end == null)
-      jcas.throwFeatMissing("end", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("end", "pawel.paweltypes.Token");
     return ll_cas.ll_getIntValue(addr, casFeatCode_end);
   }
   /** @generated */    
   public void setEnd(int addr, int v) {
         if (featOkTst && casFeat_end == null)
-      jcas.throwFeatMissing("end", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("end", "pawel.paweltypes.Token");
     ll_cas.ll_setIntValue(addr, casFeatCode_end, v);}
     
   
@@ -145,13 +141,13 @@ public class Token_Type extends Annotation_Type {
   /** @generated */ 
   public String getBeforeToken(int addr) {
         if (featOkTst && casFeat_beforeToken == null)
-      jcas.throwFeatMissing("beforeToken", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("beforeToken", "pawel.paweltypes.Token");
     return ll_cas.ll_getStringValue(addr, casFeatCode_beforeToken);
   }
   /** @generated */    
   public void setBeforeToken(int addr, String v) {
         if (featOkTst && casFeat_beforeToken == null)
-      jcas.throwFeatMissing("beforeToken", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("beforeToken", "pawel.paweltypes.Token");
     ll_cas.ll_setStringValue(addr, casFeatCode_beforeToken, v);}
     
   
@@ -163,13 +159,13 @@ public class Token_Type extends Annotation_Type {
   /** @generated */ 
   public String getAfterToken(int addr) {
         if (featOkTst && casFeat_afterToken == null)
-      jcas.throwFeatMissing("afterToken", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("afterToken", "pawel.paweltypes.Token");
     return ll_cas.ll_getStringValue(addr, casFeatCode_afterToken);
   }
   /** @generated */    
   public void setAfterToken(int addr, String v) {
         if (featOkTst && casFeat_afterToken == null)
-      jcas.throwFeatMissing("afterToken", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("afterToken", "pawel.paweltypes.Token");
     ll_cas.ll_setStringValue(addr, casFeatCode_afterToken, v);}
     
   
@@ -181,13 +177,13 @@ public class Token_Type extends Annotation_Type {
   /** @generated */ 
   public String getPos(int addr) {
         if (featOkTst && casFeat_pos == null)
-      jcas.throwFeatMissing("pos", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("pos", "pawel.paweltypes.Token");
     return ll_cas.ll_getStringValue(addr, casFeatCode_pos);
   }
   /** @generated */    
   public void setPos(int addr, String v) {
         if (featOkTst && casFeat_pos == null)
-      jcas.throwFeatMissing("pos", "pawel.types.pawel.Token");
+      jcas.throwFeatMissing("pos", "pawel.paweltypes.Token");
     ll_cas.ll_setStringValue(addr, casFeatCode_pos, v);}
     
   

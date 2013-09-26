@@ -39,7 +39,7 @@ public class HeidelTranslatorAfter extends JCasAnnotator_ImplBase {
 				Timex3 heidelTimex = (Timex3) annotation;
 				annotationsToRemove.add(heidelTimex);
 
-				pawel.types.pawel.Timex3 timex = this.heidelTimex3ToTimex3(
+				pawel.paweltypes.Timex3 timex = this.heidelTimex3ToTimex3(
 						heidelTimex, jcas);
 				timex.addToIndexes();
 			}
@@ -85,10 +85,10 @@ public class HeidelTranslatorAfter extends JCasAnnotator_ImplBase {
 	 * @param jcas
 	 * @return
 	 */
-	private pawel.types.pawel.Timex3 heidelTimex3ToTimex3(Timex3 heidelTimex,
+	private pawel.paweltypes.Timex3 heidelTimex3ToTimex3(Timex3 heidelTimex,
 			JCas jcas) {
 
-		pawel.types.pawel.Timex3 res = new pawel.types.pawel.Timex3(jcas);
+		pawel.paweltypes.Timex3 res = new pawel.paweltypes.Timex3(jcas);
 
 		res.setAllTokIds(heidelTimex.getAllTokIds());
 		res.setBegin(heidelTimex.getBegin());

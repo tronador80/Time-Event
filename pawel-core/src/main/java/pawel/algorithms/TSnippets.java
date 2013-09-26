@@ -113,16 +113,25 @@ public class TSnippets {
 			String query, Integer sentenceNum) {
 		double rank = 0.0d;
 
+		// normalize the parameters
+		double sumOfParameters = alpha + beta + gamma + epsilon + theta;
+		double alpha_normalized = alpha / sumOfParameters;
+		double beta_normalized = beta / sumOfParameters;
+		double gamma_normalized = gamma / sumOfParameters;
+		double epsilon_normalized = epsilon / sumOfParameters;
+		double theta_normalized = theta / sumOfParameters;
+
 		if (!sentence.getTimexs().isEmpty() && !sentence.getTokens().isEmpty()) {
-			rank = alpha * sentence.getTimexs().size()
-					/ (double) sentence.getTokens().size() - beta
-					* (double) sentencePosition + gamma
-					* (double) sentence.getTokens().size() + epsilon
-					* (double) sentence.getTimexs().size() + theta
+			rank = alpha_normalized * sentence.getTimexs().size()
+					/ (double) sentence.getTokens().size() - beta_normalized
+					* (double) sentencePosition + gamma_normalized
+					* (double) sentence.getTokens().size() + epsilon_normalized
+					* (double) sentence.getTimexs().size() + theta_normalized
 					* (double) countTimexInDocument;
 			if (query != null && !query.isEmpty()) {
-				rank += CosineSimilarity.calculateCosineSimilarity(
-						sentence.getSentenceText(), query);
+				// modify algorithm to make query more important
+				rank += (rank * CosineSimilarity.calculateCosineSimilarity(
+						sentence.getSentenceText(), query));
 			}
 		}
 

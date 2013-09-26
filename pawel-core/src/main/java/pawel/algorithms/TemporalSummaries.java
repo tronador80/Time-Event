@@ -36,13 +36,7 @@ public class TemporalSummaries {
 		int completeTextLength = completeText.split(" ").length;
 		for (int k = 0; k < sentences.size(); k++) {
 			Sentence2 sentence = sentences.get(k);
-			String[] sentenceWords = sentence.getSentenceText().split(" "); // TODO
-																			// remove
-																			// words
-																			// like:
-																			// "the",
-																			// "is"
-																			// etc
+			String[] sentenceWords = sentence.getSentenceText().split(" ");
 			// calculate usefulness
 			double usefulness = 1.0d;
 			for (String word : sentenceWords) {

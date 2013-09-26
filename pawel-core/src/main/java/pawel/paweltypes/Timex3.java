@@ -1,7 +1,7 @@
 
 
-/* First created by JCasGen Fri Jul 26 00:15:14 CEST 2013 */
-package pawel.types.pawel;
+/* First created by JCasGen Wed Sep 25 20:16:43 CEST 2013 */
+package pawel.paweltypes;
 
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
@@ -11,8 +11,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Fri Jul 26 00:15:14 CEST 2013
- * XML source: /Users/ptondryk/Dropbox/projects/Masterarbeit_git/dopa/pawel/pawel-core/src/main/resources/desc/pawel/Pawel_TypeSystem.xml
+ * Updated by JCasGen Wed Sep 25 20:16:43 CEST 2013
+ * XML source: /home/ptondryk/git/sopremo-pawel/pawel-core/src/main/resources/desc/pawel/Pawel_TypeSystem.xml
  * @generated */
 public class Timex3 extends Annotation {
   /** @generated
@@ -69,14 +69,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getFilename() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_filename == null)
-      jcasType.jcas.throwFeatMissing("filename", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("filename", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_filename);}
     
   /** setter for filename - sets  
    * @generated */
   public void setFilename(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_filename == null)
-      jcasType.jcas.throwFeatMissing("filename", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("filename", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_filename, v);}    
    
     
@@ -87,14 +87,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public int getSentId() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_sentId == null)
-      jcasType.jcas.throwFeatMissing("sentId", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("sentId", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getIntValue(addr, ((Timex3_Type)jcasType).casFeatCode_sentId);}
     
   /** setter for sentId - sets  
    * @generated */
   public void setSentId(int v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_sentId == null)
-      jcasType.jcas.throwFeatMissing("sentId", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("sentId", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setIntValue(addr, ((Timex3_Type)jcasType).casFeatCode_sentId, v);}    
    
     
@@ -105,14 +105,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public int getFirstTokId() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_firstTokId == null)
-      jcasType.jcas.throwFeatMissing("firstTokId", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("firstTokId", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getIntValue(addr, ((Timex3_Type)jcasType).casFeatCode_firstTokId);}
     
   /** setter for firstTokId - sets  
    * @generated */
   public void setFirstTokId(int v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_firstTokId == null)
-      jcasType.jcas.throwFeatMissing("firstTokId", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("firstTokId", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setIntValue(addr, ((Timex3_Type)jcasType).casFeatCode_firstTokId, v);}    
    
     
@@ -123,14 +123,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getAllTokIds() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_allTokIds == null)
-      jcasType.jcas.throwFeatMissing("allTokIds", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("allTokIds", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_allTokIds);}
     
   /** setter for allTokIds - sets  
    * @generated */
   public void setAllTokIds(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_allTokIds == null)
-      jcasType.jcas.throwFeatMissing("allTokIds", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("allTokIds", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_allTokIds, v);}    
    
     
@@ -141,14 +141,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getTimexId() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexId == null)
-      jcasType.jcas.throwFeatMissing("timexId", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexId", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexId);}
     
   /** setter for timexId - sets  
    * @generated */
   public void setTimexId(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexId == null)
-      jcasType.jcas.throwFeatMissing("timexId", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexId", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexId, v);}    
    
     
@@ -159,14 +159,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public int getTimexInstance() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexInstance == null)
-      jcasType.jcas.throwFeatMissing("timexInstance", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexInstance", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getIntValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexInstance);}
     
   /** setter for timexInstance - sets  
    * @generated */
   public void setTimexInstance(int v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexInstance == null)
-      jcasType.jcas.throwFeatMissing("timexInstance", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexInstance", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setIntValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexInstance, v);}    
    
     
@@ -177,14 +177,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getTimexType() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexType == null)
-      jcasType.jcas.throwFeatMissing("timexType", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexType", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexType);}
     
   /** setter for timexType - sets  
    * @generated */
   public void setTimexType(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexType == null)
-      jcasType.jcas.throwFeatMissing("timexType", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexType", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexType, v);}    
    
     
@@ -195,14 +195,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getTimexValue() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexValue == null)
-      jcasType.jcas.throwFeatMissing("timexValue", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexValue", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexValue);}
     
   /** setter for timexValue - sets  
    * @generated */
   public void setTimexValue(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexValue == null)
-      jcasType.jcas.throwFeatMissing("timexValue", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexValue", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexValue, v);}    
    
     
@@ -213,14 +213,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getFoundByRule() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_foundByRule == null)
-      jcasType.jcas.throwFeatMissing("foundByRule", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("foundByRule", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_foundByRule);}
     
   /** setter for foundByRule - sets  
    * @generated */
   public void setFoundByRule(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_foundByRule == null)
-      jcasType.jcas.throwFeatMissing("foundByRule", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("foundByRule", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_foundByRule, v);}    
    
     
@@ -231,14 +231,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getTimexQuant() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexQuant == null)
-      jcasType.jcas.throwFeatMissing("timexQuant", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexQuant", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexQuant);}
     
   /** setter for timexQuant - sets  
    * @generated */
   public void setTimexQuant(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexQuant == null)
-      jcasType.jcas.throwFeatMissing("timexQuant", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexQuant", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexQuant, v);}    
    
     
@@ -249,14 +249,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getTimexFreq() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexFreq == null)
-      jcasType.jcas.throwFeatMissing("timexFreq", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexFreq", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexFreq);}
     
   /** setter for timexFreq - sets  
    * @generated */
   public void setTimexFreq(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexFreq == null)
-      jcasType.jcas.throwFeatMissing("timexFreq", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexFreq", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexFreq, v);}    
    
     
@@ -267,14 +267,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getTimexMod() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexMod == null)
-      jcasType.jcas.throwFeatMissing("timexMod", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexMod", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexMod);}
     
   /** setter for timexMod - sets  
    * @generated */
   public void setTimexMod(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_timexMod == null)
-      jcasType.jcas.throwFeatMissing("timexMod", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("timexMod", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_timexMod, v);}    
    
     
@@ -285,14 +285,14 @@ public class Timex3 extends Annotation {
    * @generated */
   public String getTimex3() {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_Timex3 == null)
-      jcasType.jcas.throwFeatMissing("Timex3", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("Timex3", "pawel.paweltypes.Timex3");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_Timex3);}
     
   /** setter for Timex3 - sets  
    * @generated */
   public void setTimex3(String v) {
     if (Timex3_Type.featOkTst && ((Timex3_Type)jcasType).casFeat_Timex3 == null)
-      jcasType.jcas.throwFeatMissing("Timex3", "pawel.types.pawel.Timex3");
+      jcasType.jcas.throwFeatMissing("Timex3", "pawel.paweltypes.Timex3");
     jcasType.ll_cas.ll_setStringValue(addr, ((Timex3_Type)jcasType).casFeatCode_Timex3, v);}    
   }
 

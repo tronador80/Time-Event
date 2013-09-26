@@ -115,12 +115,10 @@ public class JsonConverter {
 	 * @return json string
 	 */
 	private static String jsonArray2String(ArrayNode<?> arrayNode) {
-		String res = "";
+		String res = "[";
 
 		for (int i = 0; i < arrayNode.size(); i++) {
-			if (res.isEmpty()) {
-				res += "[";
-			} else {
+			if (res.length() > 1) {
 				res += ",";
 			}
 			IJsonNode node = arrayNode.get(i);
@@ -280,28 +278,28 @@ public class JsonConverter {
 							tmpTokens.add(t);
 						}
 					}
+				}
+			}
 
-					if (!tmpTokens.isEmpty()) {
-						for (Token t : tmpTokens) {
-							for (Sentence2 s : res) {
-								if (s.getBegin() <= t.getBegin()
-										&& s.getEnd() > t.getBegin()) {
-									s.getTokens().add(t);
-									break;
-								}
-							}
+			if (!tmpTokens.isEmpty()) {
+				for (Token t : tmpTokens) {
+					for (Sentence2 s : res) {
+						if (s.getBegin() <= t.getBegin()
+								&& s.getEnd() > t.getBegin()) {
+							s.getTokens().add(t);
+							break;
 						}
 					}
+				}
+			}
 
-					if (!tmpTimexs.isEmpty()) {
-						for (Timex3 t : tmpTimexs) {
-							for (Sentence2 s : res) {
-								if (s.getBegin() <= t.getBegin()
-										&& s.getEnd() > t.getBegin()) {
-									s.getTimexs().add(t);
-									break;
-								}
-							}
+			if (!tmpTimexs.isEmpty()) {
+				for (Timex3 t : tmpTimexs) {
+					for (Sentence2 s : res) {
+						if (s.getBegin() <= t.getBegin()
+								&& s.getEnd() > t.getBegin()) {
+							s.getTimexs().add(t);
+							break;
 						}
 					}
 				}
@@ -323,7 +321,7 @@ public class JsonConverter {
 	public static Sentence2 eventNode2Sentence(ObjectNode eventNode) {
 		Sentence2 res = null;
 
-		IJsonNode eventText = eventNode.get("content");
+		IJsonNode eventText = eventNode.get("text");
 		IJsonNode eventTime = eventNode.get("end");
 
 		if (eventNode != null && eventText instanceof TextNode

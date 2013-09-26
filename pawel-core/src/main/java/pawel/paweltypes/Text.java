@@ -1,7 +1,7 @@
 
 
-/* First created by JCasGen Thu Jul 25 22:32:14 CEST 2013 */
-package pawel.types.pawel;
+/* First created by JCasGen Wed Sep 25 20:16:43 CEST 2013 */
+package pawel.paweltypes;
 
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
@@ -11,8 +11,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Fri Jul 26 00:15:14 CEST 2013
- * XML source: /Users/ptondryk/Dropbox/projects/Masterarbeit_git/dopa/pawel/pawel-core/src/main/resources/desc/pawel/Pawel_TypeSystem.xml
+ * Updated by JCasGen Wed Sep 25 20:16:43 CEST 2013
+ * XML source: /home/ptondryk/git/sopremo-pawel/pawel-core/src/main/resources/desc/pawel/Pawel_TypeSystem.xml
  * @generated */
 public class Text extends Annotation {
   /** @generated
@@ -69,14 +69,14 @@ public class Text extends Annotation {
    * @generated */
   public String getText() {
     if (Text_Type.featOkTst && ((Text_Type)jcasType).casFeat_Text == null)
-      jcasType.jcas.throwFeatMissing("Text", "pawel.types.pawel.Text");
+      jcasType.jcas.throwFeatMissing("Text", "pawel.paweltypes.Text");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Text_Type)jcasType).casFeatCode_Text);}
     
   /** setter for Text - sets  
    * @generated */
   public void setText(String v) {
     if (Text_Type.featOkTst && ((Text_Type)jcasType).casFeat_Text == null)
-      jcasType.jcas.throwFeatMissing("Text", "pawel.types.pawel.Text");
+      jcasType.jcas.throwFeatMissing("Text", "pawel.paweltypes.Text");
     jcasType.ll_cas.ll_setStringValue(addr, ((Text_Type)jcasType).casFeatCode_Text, v);}    
    
     
@@ -87,14 +87,14 @@ public class Text extends Annotation {
    * @generated */
   public String getDate() {
     if (Text_Type.featOkTst && ((Text_Type)jcasType).casFeat_date == null)
-      jcasType.jcas.throwFeatMissing("date", "pawel.types.pawel.Text");
+      jcasType.jcas.throwFeatMissing("date", "pawel.paweltypes.Text");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Text_Type)jcasType).casFeatCode_date);}
     
   /** setter for date - sets text's timestamp in form: yyyyMMddHHmmss 
    * @generated */
   public void setDate(String v) {
     if (Text_Type.featOkTst && ((Text_Type)jcasType).casFeat_date == null)
-      jcasType.jcas.throwFeatMissing("date", "pawel.types.pawel.Text");
+      jcasType.jcas.throwFeatMissing("date", "pawel.paweltypes.Text");
     jcasType.ll_cas.ll_setStringValue(addr, ((Text_Type)jcasType).casFeatCode_date, v);}    
   }
 

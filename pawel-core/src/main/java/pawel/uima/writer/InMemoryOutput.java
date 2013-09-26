@@ -15,10 +15,10 @@ import org.uimafit.component.JCasConsumer_ImplBase;
 import org.uimafit.descriptor.ConfigurationParameter;
 import org.uimafit.factory.ConfigurationParameterFactory;
 
-import pawel.types.pawel.Sentence;
-import pawel.types.pawel.Text;
-import pawel.types.pawel.Timex3;
-import pawel.types.pawel.Token;
+import pawel.paweltypes.Sentence;
+import pawel.paweltypes.Text;
+import pawel.paweltypes.Timex3;
+import pawel.paweltypes.Token;
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.ObjectNode;

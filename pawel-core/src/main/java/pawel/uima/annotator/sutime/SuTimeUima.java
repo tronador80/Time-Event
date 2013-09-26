@@ -10,10 +10,10 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 
-import pawel.types.pawel.Text;
-import pawel.types.pawel.Sentence;
-import pawel.types.pawel.Timex3;
-import pawel.types.pawel.Token;
+import pawel.paweltypes.Text;
+import pawel.paweltypes.Sentence;
+import pawel.paweltypes.Timex3;
+import pawel.paweltypes.Token;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;

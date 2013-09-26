@@ -1,6 +1,6 @@
 
-/* First created by JCasGen Wed Jul 24 21:03:27 CEST 2013 */
-package pawel.types.pawel;
+/* First created by JCasGen Wed Sep 25 20:16:43 CEST 2013 */
+package pawel.paweltypes;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -14,7 +14,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Fri Jul 26 00:15:14 CEST 2013
+ * Updated by JCasGen Wed Sep 25 20:16:43 CEST 2013
  * @generated */
 public class Sentence_Type extends Annotation_Type {
   /** @generated */
@@ -42,7 +42,7 @@ public class Sentence_Type extends Annotation_Type {
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("pawel.types.pawel.Sentence");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("pawel.paweltypes.Sentence");
  
   /** @generated */
   final Feature casFeat_Sentence;
@@ -51,13 +51,13 @@ public class Sentence_Type extends Annotation_Type {
   /** @generated */ 
   public String getSentence(int addr) {
         if (featOkTst && casFeat_Sentence == null)
-      jcas.throwFeatMissing("Sentence", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("Sentence", "pawel.paweltypes.Sentence");
     return ll_cas.ll_getStringValue(addr, casFeatCode_Sentence);
   }
   /** @generated */    
   public void setSentence(int addr, String v) {
         if (featOkTst && casFeat_Sentence == null)
-      jcas.throwFeatMissing("Sentence", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("Sentence", "pawel.paweltypes.Sentence");
     ll_cas.ll_setStringValue(addr, casFeatCode_Sentence, v);}
     
   
@@ -69,13 +69,13 @@ public class Sentence_Type extends Annotation_Type {
   /** @generated */ 
   public int getBegin(int addr) {
         if (featOkTst && casFeat_begin == null)
-      jcas.throwFeatMissing("begin", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("begin", "pawel.paweltypes.Sentence");
     return ll_cas.ll_getIntValue(addr, casFeatCode_begin);
   }
   /** @generated */    
   public void setBegin(int addr, int v) {
         if (featOkTst && casFeat_begin == null)
-      jcas.throwFeatMissing("begin", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("begin", "pawel.paweltypes.Sentence");
     ll_cas.ll_setIntValue(addr, casFeatCode_begin, v);}
     
   
@@ -87,13 +87,13 @@ public class Sentence_Type extends Annotation_Type {
   /** @generated */ 
   public int getEnd(int addr) {
         if (featOkTst && casFeat_end == null)
-      jcas.throwFeatMissing("end", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("end", "pawel.paweltypes.Sentence");
     return ll_cas.ll_getIntValue(addr, casFeatCode_end);
   }
   /** @generated */    
   public void setEnd(int addr, int v) {
         if (featOkTst && casFeat_end == null)
-      jcas.throwFeatMissing("end", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("end", "pawel.paweltypes.Sentence");
     ll_cas.ll_setIntValue(addr, casFeatCode_end, v);}
     
   
@@ -105,13 +105,13 @@ public class Sentence_Type extends Annotation_Type {
   /** @generated */ 
   public int getTokenBegin(int addr) {
         if (featOkTst && casFeat_tokenBegin == null)
-      jcas.throwFeatMissing("tokenBegin", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("tokenBegin", "pawel.paweltypes.Sentence");
     return ll_cas.ll_getIntValue(addr, casFeatCode_tokenBegin);
   }
   /** @generated */    
   public void setTokenBegin(int addr, int v) {
         if (featOkTst && casFeat_tokenBegin == null)
-      jcas.throwFeatMissing("tokenBegin", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("tokenBegin", "pawel.paweltypes.Sentence");
     ll_cas.ll_setIntValue(addr, casFeatCode_tokenBegin, v);}
     
   
@@ -123,13 +123,13 @@ public class Sentence_Type extends Annotation_Type {
   /** @generated */ 
   public int getTokenEnd(int addr) {
         if (featOkTst && casFeat_tokenEnd == null)
-      jcas.throwFeatMissing("tokenEnd", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("tokenEnd", "pawel.paweltypes.Sentence");
     return ll_cas.ll_getIntValue(addr, casFeatCode_tokenEnd);
   }
   /** @generated */    
   public void setTokenEnd(int addr, int v) {
         if (featOkTst && casFeat_tokenEnd == null)
-      jcas.throwFeatMissing("tokenEnd", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("tokenEnd", "pawel.paweltypes.Sentence");
     ll_cas.ll_setIntValue(addr, casFeatCode_tokenEnd, v);}
     
   
@@ -141,13 +141,13 @@ public class Sentence_Type extends Annotation_Type {
   /** @generated */ 
   public int getSentenceIndex(int addr) {
         if (featOkTst && casFeat_sentenceIndex == null)
-      jcas.throwFeatMissing("sentenceIndex", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("sentenceIndex", "pawel.paweltypes.Sentence");
     return ll_cas.ll_getIntValue(addr, casFeatCode_sentenceIndex);
   }
   /** @generated */    
   public void setSentenceIndex(int addr, int v) {
         if (featOkTst && casFeat_sentenceIndex == null)
-      jcas.throwFeatMissing("sentenceIndex", "pawel.types.pawel.Sentence");
+      jcas.throwFeatMissing("sentenceIndex", "pawel.paweltypes.Sentence");
     ll_cas.ll_setIntValue(addr, casFeatCode_sentenceIndex, v);}
     
   

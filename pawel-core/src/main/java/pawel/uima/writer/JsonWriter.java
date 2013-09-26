@@ -38,7 +38,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import pawel.types.pawel.Text;
+import pawel.paweltypes.Text;
 import pawel.utils.JsonConverter;
 import de.dima.textmining.conll.CoNLLNode;
 import de.dima.textmining.events.EventExtractor;

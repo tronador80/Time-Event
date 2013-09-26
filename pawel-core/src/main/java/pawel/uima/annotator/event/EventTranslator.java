@@ -28,34 +28,34 @@ public class EventTranslator extends JCasAnnotator_ImplBase {
 		List<org.apache.uima.jcas.tcas.Annotation> annotationsToRemove = new ArrayList<org.apache.uima.jcas.tcas.Annotation>();
 
 		AnnotationIndex<org.apache.uima.jcas.tcas.Annotation> timexs = jcas
-				.getAnnotationIndex(pawel.types.pawel.Timex3.type);
+				.getAnnotationIndex(pawel.paweltypes.Timex3.type);
 		AnnotationIndex<org.apache.uima.jcas.tcas.Annotation> tokens = jcas
-				.getAnnotationIndex(pawel.types.pawel.Token.type);
+				.getAnnotationIndex(pawel.paweltypes.Token.type);
 		AnnotationIndex<org.apache.uima.jcas.tcas.Annotation> sentences = jcas
-				.getAnnotationIndex(pawel.types.pawel.Sentence.type);
+				.getAnnotationIndex(pawel.paweltypes.Sentence.type);
 
 		for (org.apache.uima.jcas.tcas.Annotation annotation : tokens) {
-			if (annotation instanceof pawel.types.pawel.Token) {
+			if (annotation instanceof pawel.paweltypes.Token) {
 				annotationsToAdd.add(this.tokenToShallowAnnotation(
-						(pawel.types.pawel.Token) annotation, jcas));
+						(pawel.paweltypes.Token) annotation, jcas));
 				annotationsToAdd.add(this.tokenToHeidelToken(
-						(pawel.types.pawel.Token) annotation, jcas));
+						(pawel.paweltypes.Token) annotation, jcas));
 				annotationsToRemove.add(annotation);
 			}
 		}
 
 		for (org.apache.uima.jcas.tcas.Annotation annotation : timexs) {
-			if (annotation instanceof pawel.types.pawel.Timex3) {
+			if (annotation instanceof pawel.paweltypes.Timex3) {
 				annotationsToAdd.add(this.timex3ToHeidelTimex3(
-						(pawel.types.pawel.Timex3) annotation, jcas));
+						(pawel.paweltypes.Timex3) annotation, jcas));
 				annotationsToRemove.add(annotation);
 			}
 		}
 
 		for (org.apache.uima.jcas.tcas.Annotation annotation : sentences) {
-			if (annotation instanceof pawel.types.pawel.Sentence) {
+			if (annotation instanceof pawel.paweltypes.Sentence) {
 				annotationsToAdd.add(this.sentenceToHeidelSentence(
-						(pawel.types.pawel.Sentence) annotation, jcas));
+						(pawel.paweltypes.Sentence) annotation, jcas));
 				annotationsToRemove.add(annotation);
 			}
 		}
@@ -75,7 +75,7 @@ public class EventTranslator extends JCasAnnotator_ImplBase {
 	 * @param jcas
 	 * @return
 	 */
-	private Token tokenToHeidelToken(pawel.types.pawel.Token token, JCas jcas) {
+	private Token tokenToHeidelToken(pawel.paweltypes.Token token, JCas jcas) {
 		Token res = new Token(jcas);
 
 		res.setBegin(token.getBegin());
@@ -93,7 +93,7 @@ public class EventTranslator extends JCasAnnotator_ImplBase {
 	 * @return
 	 */
 	private Sentence sentenceToHeidelSentence(
-			pawel.types.pawel.Sentence sentence, JCas jcas) {
+			pawel.paweltypes.Sentence sentence, JCas jcas) {
 		Sentence res = new Sentence(jcas);
 
 		res.setBegin(sentence.getBegin());
@@ -109,7 +109,7 @@ public class EventTranslator extends JCasAnnotator_ImplBase {
 	 * @return
 	 */
 	private ShallowAnnotation tokenToShallowAnnotation(
-			pawel.types.pawel.Token token, JCas jcas) {
+			pawel.paweltypes.Token token, JCas jcas) {
 		ShallowAnnotation res = new ShallowAnnotation(jcas);
 
 		res.setBegin(token.getBegin());
@@ -126,8 +126,7 @@ public class EventTranslator extends JCasAnnotator_ImplBase {
 	 * @param jcas
 	 * @return
 	 */
-	private Timex3 timex3ToHeidelTimex3(pawel.types.pawel.Timex3 timex,
-			JCas jcas) {
+	private Timex3 timex3ToHeidelTimex3(pawel.paweltypes.Timex3 timex, JCas jcas) {
 
 		Timex3 res = new Timex3(jcas);
 

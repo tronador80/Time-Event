@@ -70,14 +70,13 @@ public class TemporalSummariesSopremoOperator extends
 			if (value instanceof ObjectNode) {
 				ObjectNode object = (ObjectNode) value;
 
-				TextNode tn = (TextNode) object.get("analyzedText");
 				ArrayNode<?> array = (ArrayNode<?>) object.get("events");
 				List<Sentence2> sentences = new ArrayList<Sentence2>();
 
 				String completeText = "";
 
 				ObjectNode res = new ObjectNode();
-				res.put("text", tn);
+				res.put("analyzedText", object.get("analyzedText"));
 
 				for (int i = 0; i < array.size(); i++) {
 					IJsonNode node = array.get(i);

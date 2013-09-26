@@ -21,12 +21,12 @@ import org.uimafit.component.JCasCollectionReader_ImplBase;
 import org.uimafit.descriptor.ConfigurationParameter;
 import org.uimafit.descriptor.TypeCapability;
 
-import pawel.types.pawel.Text;
-import pawel.types.pawel.Sentence;
+import pawel.paweltypes.Text;
+import pawel.paweltypes.Sentence;
+import pawel.paweltypes.Token;
 import de.dima.textmining.types.ShallowAnnotation;
 import de.unihd.dbs.uima.types.heideltime.Dct;
 import de.unihd.dbs.uima.types.heideltime.Timex3;
-import pawel.types.pawel.Token;
 
 /**
  * CollectionReader that takes an array of XMI formatted strings as input.

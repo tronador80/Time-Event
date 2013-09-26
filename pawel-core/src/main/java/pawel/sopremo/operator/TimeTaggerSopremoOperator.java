@@ -10,6 +10,7 @@ import pawel.uima.annotator.sutime.SuTimeAnalysisComponent;
 import pawel.utils.JsonConverter;
 import eu.stratosphere.nephele.configuration.Configuration;
 import eu.stratosphere.pact.common.contract.MapContract;
+import eu.stratosphere.pact.common.contract.ReduceContract;
 import eu.stratosphere.pact.common.plan.PactModule;
 import eu.stratosphere.sopremo.EvaluationContext;
 import eu.stratosphere.sopremo.expressions.EvaluationExpression;
@@ -20,8 +21,10 @@ import eu.stratosphere.sopremo.operator.OutputCardinality;
 import eu.stratosphere.sopremo.operator.Property;
 import eu.stratosphere.sopremo.pact.JsonCollector;
 import eu.stratosphere.sopremo.pact.SopremoMap;
+import eu.stratosphere.sopremo.pact.SopremoReduce;
 import eu.stratosphere.sopremo.pact.SopremoUtil;
 import eu.stratosphere.sopremo.type.IJsonNode;
+import eu.stratosphere.sopremo.type.IStreamNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 
 /**
@@ -97,6 +100,13 @@ public class TimeTaggerSopremoOperator extends
 					} else if (this.engine.contains("heideltime")) {
 						HeidelTimeAnalysisComponent htac = new HeidelTimeAnalysisComponent();
 
+						if (this.language == null) {
+							this.language = "english";
+						}
+						if (this.typeToProcess == null) {
+							this.typeToProcess = "news";
+						}
+
 						out.collect(htac.tagTime(
 								JsonConverter.json2String(object),
 								this.typeToProcess, this.language));
@@ -112,12 +122,25 @@ public class TimeTaggerSopremoOperator extends
 		}
 	}
 
+	public static class Reducer extends SopremoReduce {
+
+		public void open(Configuration parameters) throws Exception {
+			super.open(parameters);
+		}
+
+		protected void reduce(IStreamNode<IJsonNode> values, JsonCollector out) {
+			for (IJsonNode value : values) {
+				out.collect(value);
+			}
+		}
+	}
+
 	@Override
 	public PactModule asPactModule(EvaluationContext context) {
 		context.setInputsAndOutputs(this.getNumInputs(), this.getNumOutputs());
 		PactModule module = new PactModule(1, 1);
 		MapContract.Builder builder = MapContract.builder(Implementation.class);
-		builder.name("TimeOperator");
+		builder.name("TimeOperator.mapper");
 		builder.input(module.getInput(0));
 		MapContract mapcontract = builder.build();
 
@@ -129,7 +152,16 @@ public class TimeTaggerSopremoOperator extends
 		SopremoUtil.setObject(mapcontract.getParameters(), LANGUAGE,
 				this.language);
 
-		module.getOutput(0).setInput(mapcontract);
+		ReduceContract.Builder reduceBuilder = ReduceContract
+				.builder(Reducer.class);
+		reduceBuilder.name("TimeOperator.reducer");
+		reduceBuilder.input(mapcontract);
+		ReduceContract reduceContract = reduceBuilder.build();
+
+		SopremoUtil.setObject(reduceContract.getParameters(),
+				SopremoUtil.CONTEXT, context);
+
+		module.getOutput(0).addInput(reduceContract);
 		return module;
 	}
 

@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>Pawel_TypeSystem</name>
   <description/>
   <version>1.0</version>
   <vendor/>
   <types>
     <typeDescription>
-      <name>pawel.types.pawel.Sentence</name>
+      <name>pawel.paweltypes.Sentence</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -42,7 +43,7 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>pawel.types.pawel.Token</name>
+      <name>pawel.paweltypes.Token</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -89,7 +90,7 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>pawel.types.pawel.Text</name>
+      <name>pawel.paweltypes.Text</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -106,7 +107,7 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>pawel.types.pawel.Timex3</name>
+      <name>pawel.paweltypes.Timex3</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>

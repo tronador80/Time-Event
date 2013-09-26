@@ -8,9 +8,9 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.uimafit.component.JCasAnnotator_ImplBase;
 
-import pawel.types.pawel.Sentence;
-import pawel.types.pawel.Text;
-import pawel.types.pawel.Token;
+import pawel.paweltypes.Sentence;
+import pawel.paweltypes.Text;
+import pawel.paweltypes.Token;
 import de.unihd.dbs.uima.types.heideltime.Dct;
 
 /**
