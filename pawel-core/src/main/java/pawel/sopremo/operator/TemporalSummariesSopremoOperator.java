@@ -9,11 +9,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import pawel.algorithms.TemporalSummaries;
-import pawel.model.Sentence2;
+import pawel.model.Sentence;
 import pawel.utils.JsonConverter;
 import pawel.utils.SentencesSelector;
 import eu.stratosphere.nephele.configuration.Configuration;
 import eu.stratosphere.pact.common.contract.MapContract;
+import eu.stratosphere.pact.common.contract.ReduceContract;
 import eu.stratosphere.pact.common.plan.PactModule;
 import eu.stratosphere.sopremo.EvaluationContext;
 import eu.stratosphere.sopremo.expressions.EvaluationExpression;
@@ -24,9 +25,11 @@ import eu.stratosphere.sopremo.operator.OutputCardinality;
 import eu.stratosphere.sopremo.operator.Property;
 import eu.stratosphere.sopremo.pact.JsonCollector;
 import eu.stratosphere.sopremo.pact.SopremoMap;
+import eu.stratosphere.sopremo.pact.SopremoReduce;
 import eu.stratosphere.sopremo.pact.SopremoUtil;
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
+import eu.stratosphere.sopremo.type.IStreamNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 import eu.stratosphere.sopremo.type.TextNode;
 
@@ -56,7 +59,7 @@ public class TemporalSummariesSopremoOperator extends
 	private static Logger log = Logger
 			.getLogger(TemporalSummariesSopremoOperator.class);
 
-	public static class Implementation extends SopremoMap {
+	public static class Mapper extends SopremoMap {
 
 		private Integer sentenceNum;
 
@@ -71,7 +74,7 @@ public class TemporalSummariesSopremoOperator extends
 				ObjectNode object = (ObjectNode) value;
 
 				ArrayNode<?> array = (ArrayNode<?>) object.get("events");
-				List<Sentence2> sentences = new ArrayList<Sentence2>();
+				List<Sentence> sentences = new ArrayList<Sentence>();
 
 				String completeText = "";
 
@@ -82,7 +85,7 @@ public class TemporalSummariesSopremoOperator extends
 					IJsonNode node = array.get(i);
 					if (node instanceof ObjectNode) {
 						ObjectNode eventNode = (ObjectNode) node;
-						Sentence2 sentence = JsonConverter
+						Sentence sentence = JsonConverter
 								.eventNode2Sentence(eventNode);
 
 						if (sentence != null) {
@@ -108,12 +111,25 @@ public class TemporalSummariesSopremoOperator extends
 
 	}
 
+	public static class Reducer extends SopremoReduce {
+
+		public void open(Configuration parameters) throws Exception {
+			super.open(parameters);
+		}
+
+		protected void reduce(IStreamNode<IJsonNode> values, JsonCollector out) {
+			for (IJsonNode value : values) {
+				out.collect(value);
+			}
+		}
+	}
+
 	@Override
 	public PactModule asPactModule(EvaluationContext context) {
 		context.setInputsAndOutputs(this.getNumInputs(), this.getNumOutputs());
 		PactModule module = new PactModule(1, 1);
-		MapContract.Builder builder = MapContract.builder(Implementation.class);
-		builder.name(this.toString());
+		MapContract.Builder builder = MapContract.builder(Mapper.class);
+		builder.name("TemporalSummaries.mapper");
 		builder.input(module.getInput(0));
 		MapContract mapcontract = builder.build();
 
@@ -122,7 +138,16 @@ public class TemporalSummariesSopremoOperator extends
 		SopremoUtil.setObject(mapcontract.getParameters(), SENTENCE_NUM,
 				this.sentenceNum);
 
-		module.getOutput(0).setInput(mapcontract);
+		ReduceContract.Builder reduceBuilder = ReduceContract
+				.builder(Reducer.class);
+		reduceBuilder.name("TemporalSummaries.reducer");
+		reduceBuilder.input(mapcontract);
+		ReduceContract reduceContract = reduceBuilder.build();
+
+		SopremoUtil.setObject(reduceContract.getParameters(),
+				SopremoUtil.CONTEXT, context);
+
+		module.getOutput(0).addInput(reduceContract);
 		return module;
 	}
 

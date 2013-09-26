@@ -3,11 +3,25 @@
  */
 package pawel.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author ptondryk
  * 
  */
 public class TextUtils {
+
+	/**
+	 * English stop words (this set comes from Apache Lucene project
+	 * {@link org.apache.lucene.analysis.core.StopAnalyzer})
+	 */
+	private static final List<String> stopWords = Arrays.asList("a", "an",
+			"and", "are", "as", "at", "be", "but", "by", "for", "if", "in",
+			"into", "is", "it", "no", "not", "of", "on", "or", "such", "that",
+			"the", "their", "then", "there", "these", "they", "this", "to",
+			"was", "will", "with");
 
 	/**
 	 * Method calculates how often <b>word</b> occures in <b>text</b>.
@@ -34,24 +48,35 @@ public class TextUtils {
 	}
 
 	/**
-	 * Method removes duplicate words from <b>query</b>.
+	 * Method removes duplicate words and (English) stop words from <b>text</b>.
 	 * 
-	 * @param query
-	 * @return
+	 * @param text
+	 *            text from which (English) stop words and duplicate words
+	 *            should be removed
+	 * @return same text but lower-cased and without duplicate words and
+	 *         (English) stop words
 	 */
-	public static String removeDuplicateWordsFromQuery(String query) {
-		String queryWithoutDuplicates = "";
-		String tmpQuery = query.replace(",", "").replace("-", "");
+	public static String removeDuplicateAndStopWords(String text) {
+		String textWithoutDuplicates = "";
+		List<String> wordsInTextWithoutDuplicates = new ArrayList<>();
+		String tmpQuery = text.replace(",", " ").replace("-", " ")
+				.replace(".", " ").replace("?", " ");
 		for (String wordInQuery : tmpQuery.split(" ")) {
-			String trimmedWordInQuery = wordInQuery.trim();
+			if (wordInQuery.isEmpty()) {
+				continue;
+			}
 
-			if (!queryWithoutDuplicates.contains(trimmedWordInQuery)) {
-				if (!queryWithoutDuplicates.isEmpty()) {
-					queryWithoutDuplicates += " ";
+			String trimmedWordInQuery = wordInQuery.trim().toLowerCase();
+
+			if (!wordsInTextWithoutDuplicates.contains(trimmedWordInQuery)
+					&& !TextUtils.stopWords.contains(trimmedWordInQuery)) {
+				if (!textWithoutDuplicates.isEmpty()) {
+					textWithoutDuplicates += " ";
 				}
-				queryWithoutDuplicates += trimmedWordInQuery;
+				textWithoutDuplicates += trimmedWordInQuery;
+				wordsInTextWithoutDuplicates.add(trimmedWordInQuery);
 			}
 		}
-		return queryWithoutDuplicates;
+		return textWithoutDuplicates;
 	}
 }

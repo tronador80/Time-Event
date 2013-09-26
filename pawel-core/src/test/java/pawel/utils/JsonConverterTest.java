@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import pawel.model.Sentence2;
+import pawel.model.Sentence;
 import pawel.model.Timex3;
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
@@ -210,11 +210,11 @@ public class JsonConverterTest {
 		annotations.add(timex);
 		annotations.add(token9);
 
-		List<Sentence2> sentences = JsonConverter.parseAnnotations(json);
+		List<Sentence> sentences = JsonConverter.parseAnnotations(json);
 
 		Assert.assertTrue(sentences.size() == 2);
-		Sentence2 s1 = sentences.get(0);
-		Sentence2 s2 = sentences.get(1);
+		Sentence s1 = sentences.get(0);
+		Sentence s2 = sentences.get(1);
 		Assert.assertEquals("My name is Pawel. ", s1.getSentenceText());
 		Assert.assertEquals(5, s1.getTokens().size());
 		Assert.assertEquals(0, s1.getTimexs().size());
@@ -294,11 +294,11 @@ public class JsonConverterTest {
 		annotations.add(token8);
 		annotations.add(token9);
 
-		List<Sentence2> sentences = JsonConverter.parseAnnotations(json);
+		List<Sentence> sentences = JsonConverter.parseAnnotations(json);
 
 		Assert.assertTrue(sentences.size() == 2);
-		Sentence2 s1 = sentences.get(0);
-		Sentence2 s2 = sentences.get(1);
+		Sentence s1 = sentences.get(0);
+		Sentence s2 = sentences.get(1);
 		Assert.assertEquals("My name is Pawel. ", s1.getSentenceText());
 		Assert.assertEquals(5, s1.getTokens().size());
 		Assert.assertEquals(0, s1.getTimexs().size());
@@ -322,7 +322,7 @@ public class JsonConverterTest {
 		Assert.assertTrue(jsonArray.get(0) instanceof ObjectNode);
 		ObjectNode eventNode = (ObjectNode) jsonArray.get(0);
 
-		Sentence2 s = JsonConverter.eventNode2Sentence(eventNode);
+		Sentence s = JsonConverter.eventNode2Sentence(eventNode);
 
 		Assert.assertEquals("Today is Monday. ", s.getSentenceText());
 		Assert.assertTrue(s.getTimexs() != null && s.getTimexs().size() == 1);

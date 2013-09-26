@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pawel.model.Sentence2;
+import pawel.model.Sentence;
 import pawel.utils.TextUtils;
 
 /**
@@ -28,14 +28,14 @@ public class TemporalSummaries {
 	 *            text where the sentences come from
 	 * @return map<Sentence, rank>
 	 */
-	public static Map<Sentence2, Double> rankSentences(
-			List<Sentence2> sentences, String completeText) {
+	public static Map<Sentence, Double> rankSentences(
+			List<Sentence> sentences, String completeText) {
 
-		Map<Sentence2, Double> sentenceRanking = new HashMap<Sentence2, Double>();
+		Map<Sentence, Double> sentenceRanking = new HashMap<Sentence, Double>();
 
 		int completeTextLength = completeText.split(" ").length;
 		for (int k = 0; k < sentences.size(); k++) {
-			Sentence2 sentence = sentences.get(k);
+			Sentence sentence = sentences.get(k);
 			String[] sentenceWords = sentence.getSentenceText().split(" ");
 			// calculate usefulness
 			double usefulness = 1.0d;

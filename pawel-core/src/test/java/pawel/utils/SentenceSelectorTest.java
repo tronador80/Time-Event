@@ -13,7 +13,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import pawel.model.Sentence2;
+import pawel.model.Sentence;
 import pawel.model.Timex3;
 
 /**
@@ -26,23 +26,23 @@ public class SentenceSelectorTest {
 
 	@Test
 	public void testSelectSentencesWithHighestRank() {
-		Sentence2 s1 = new Sentence2();
+		Sentence s1 = new Sentence();
 		s1.setSentenceText("Today is monday.");
 		Timex3 t1 = new Timex3();
 		t1.setDate(new Date());
 		s1.getTimexs().add(t1);
 
-		Sentence2 s2 = new Sentence2();
+		Sentence s2 = new Sentence();
 		s2.setSentenceText("Yesterday was sunday.");
 		Timex3 t2 = new Timex3();
 		t2.setDate(new Date((new Date()).getTime() - (1000l * 60 * 60 * 24)));
 		s2.getTimexs().add(t2);
 
-		Map<Sentence2, Double> sentenceRanking = new HashMap<Sentence2, Double>();
+		Map<Sentence, Double> sentenceRanking = new HashMap<Sentence, Double>();
 		sentenceRanking.put(s1, 0.5);
 		sentenceRanking.put(s2, 1.0);
 
-		List<Sentence2> sentences = SentencesSelector
+		List<Sentence> sentences = SentencesSelector
 				.selectSentencesWithHighestRank(sentenceRanking, 1);
 
 		Assert.assertNotNull(sentences);
@@ -52,19 +52,19 @@ public class SentenceSelectorTest {
 
 	@Test
 	public void testListToTimeSortedString() {
-		Sentence2 s1 = new Sentence2();
+		Sentence s1 = new Sentence();
 		s1.setSentenceText("Today is monday.");
 		Timex3 t1 = new Timex3();
 		t1.setDate(new Date());
 		s1.getTimexs().add(t1);
 
-		Sentence2 s2 = new Sentence2();
+		Sentence s2 = new Sentence();
 		s2.setSentenceText("Yesterday was sunday.");
 		Timex3 t2 = new Timex3();
 		t2.setDate(new Date((new Date()).getTime() - (1000l * 60 * 60 * 24)));
 		s2.getTimexs().add(t2);
 
-		List<Sentence2> sentences = new ArrayList<Sentence2>();
+		List<Sentence> sentences = new ArrayList<Sentence>();
 		sentences.add(s1);
 		sentences.add(s2);
 

@@ -12,7 +12,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import pawel.model.Sentence2;
+import pawel.model.Sentence;
 import pawel.model.Timex3;
 
 /**
@@ -26,27 +26,27 @@ public class TemporalSummariesTest {
 
 	@Test
 	public void testRankSentences() {
-		Sentence2 s1 = new Sentence2();
+		Sentence s1 = new Sentence();
 		s1.setSentenceText("Today is monday.");
 		Timex3 t1 = new Timex3();
 		t1.setDate(new Date());
 		s1.getTimexs().add(t1);
 
-		Sentence2 s2 = new Sentence2();
+		Sentence s2 = new Sentence();
 		s2.setSentenceText("Today is monday.");
 
-		Sentence2 s3 = new Sentence2();
+		Sentence s3 = new Sentence();
 		s3.setSentenceText("Today is my birthday.");
 		Timex3 t2 = new Timex3();
 		t2.setDate(new Date((new Date()).getTime() - (1000l * 60 * 60 * 24)));
 		s3.getTimexs().add(t2);
 
-		List<Sentence2> sentences = new ArrayList<Sentence2>();
+		List<Sentence> sentences = new ArrayList<Sentence>();
 		sentences.add(s1);
 		sentences.add(s2);
 		sentences.add(s3);
 
-		Map<Sentence2, Double> rank = TemporalSummaries.rankSentences(
+		Map<Sentence, Double> rank = TemporalSummaries.rankSentences(
 				sentences,
 				"Today is monday. Today is monday. Today is my birthday.");
 

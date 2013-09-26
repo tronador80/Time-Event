@@ -40,7 +40,7 @@ public class PosTaggerSopremoOperator extends
 	private static Logger log = Logger
 			.getLogger(PosTaggerSopremoOperator.class);
 
-	public static class Implementation extends SopremoMap {
+	public static class Mapper extends SopremoMap {
 
 		public void open(Configuration parameters) {
 			super.open(parameters);
@@ -81,7 +81,7 @@ public class PosTaggerSopremoOperator extends
 	public PactModule asPactModule(EvaluationContext context) {
 		context.setInputsAndOutputs(this.getNumInputs(), this.getNumOutputs());
 		PactModule module = new PactModule(1, 1);
-		MapContract.Builder builder = MapContract.builder(Implementation.class);
+		MapContract.Builder builder = MapContract.builder(Mapper.class);
 		builder.name("PosOperator.mapper");
 		builder.input(module.getInput(0));
 		MapContract mapcontract = builder.build();

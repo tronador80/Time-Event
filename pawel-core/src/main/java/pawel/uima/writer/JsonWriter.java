@@ -155,6 +155,8 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 			// map found all found timex to tokens
 			Map<String, List<Integer>> timexPositions = eventExtractor
 					.mapTimexToTokens(jcas, sent);
+			timexPositions.putAll(eventExtractor
+					.mapTimespanToTokens(jcas, sent));
 
 			while (timeIter.hasNext() || timeSpanIter.hasNext()) {
 				String startTime = "";
@@ -264,9 +266,10 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 					// event generation
 					String event = null;
 					List<Integer> timexPos = timexPositions.get(time
-							.getCoveredText()); // timeSpan.getCoveredText
+							.getCoveredText());
+
 					// check for mapping of timex to token (ignores durations)
-					if (timexPos != null) {
+					if (timexPos != null && !timexPos.isEmpty()) {
 						// get event for this timex
 						event = eventExtractor.makeEvent(root, timexPos);
 					}

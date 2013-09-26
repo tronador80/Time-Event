@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pawel.model.Sentence2;
+import pawel.model.Sentence;
 import pawel.utils.SentencesSelector;
 
 /**
@@ -36,10 +36,10 @@ public class TSnippets {
 	 *            snippet)
 	 * @return summary as string
 	 */
-	public static String generateSummary(List<Sentence2> anotations,
+	public static String generateSummary(List<Sentence> anotations,
 			Double alpha, Double beta, Double gamma, Double epsilon,
 			Double theta, String query, Integer sentenceNum) {
-		Map<Sentence2, Double> sentenceRanking = TSnippets
+		Map<Sentence, Double> sentenceRanking = TSnippets
 				.calculateSentencesRank(anotations, alpha, beta, gamma,
 						epsilon, theta, query, sentenceNum);
 		return SentencesSelector.listToTimeSortedString(SentencesSelector
@@ -64,19 +64,19 @@ public class TSnippets {
 	 *            snippet)
 	 * @return map<Sentence, rank>
 	 */
-	public static Map<Sentence2, Double> calculateSentencesRank(
-			List<Sentence2> sentences, Double alpha, Double beta, Double gamma,
+	public static Map<Sentence, Double> calculateSentencesRank(
+			List<Sentence> sentences, Double alpha, Double beta, Double gamma,
 			Double epsilon, Double theta, String query, Integer sentenceNum) {
-		Map<Sentence2, Double> sentenceRanking = new HashMap<Sentence2, Double>();
+		Map<Sentence, Double> sentenceRanking = new HashMap<Sentence, Double>();
 
 		int countTimexInDocument = 0;
 		for (int sentencePosition = 0; sentencePosition < sentences.size(); sentencePosition++) {
-			Sentence2 sentence = sentences.get(sentencePosition);
+			Sentence sentence = sentences.get(sentencePosition);
 			countTimexInDocument += sentence.getTimexs().size();
 		}
 
 		for (int sentencePosition = 0; sentencePosition < sentences.size(); sentencePosition++) {
-			Sentence2 sentence = sentences.get(sentencePosition);
+			Sentence sentence = sentences.get(sentencePosition);
 
 			sentenceRanking.put(sentence, TSnippets.calculateSentenceRank(
 					sentence, countTimexInDocument, sentencePosition, alpha,
@@ -107,7 +107,7 @@ public class TSnippets {
 	 * @param alpha
 	 * @return rank of given <b>sentence</b>
 	 */
-	public static double calculateSentenceRank(Sentence2 sentence,
+	public static double calculateSentenceRank(Sentence sentence,
 			int countTimexInDocument, int sentencePosition, Double alpha,
 			Double beta, Double gamma, Double epsilon, Double theta,
 			String query, Integer sentenceNum) {

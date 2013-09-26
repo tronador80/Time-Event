@@ -14,7 +14,7 @@ import org.apache.uima.jcas.JCasRegistry;
  * @author ptondryk
  * 
  */
-public class Sentence2 {
+public class Sentence {
 
 	private int begin;
 	private int end;
@@ -23,7 +23,7 @@ public class Sentence2 {
 	private List<Timex3> timexs;
 
 	public final static int typeIndexID = JCasRegistry
-			.register(Sentence2.class);
+			.register(Sentence.class);
 
 	public final static int type = typeIndexID;
 
@@ -34,7 +34,7 @@ public class Sentence2 {
 	/**
 	 * empty constructor
 	 */
-	public Sentence2() {
+	public Sentence() {
 	}
 
 	public int getBegin() {

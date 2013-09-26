@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
-import pawel.model.Sentence2;
+import pawel.model.Sentence;
 import pawel.model.Timex3;
 import pawel.model.Token;
 import eu.stratosphere.sopremo.type.ArrayNode;
@@ -149,8 +149,8 @@ public class JsonConverter {
 	 *            json object representing annotations (sentence, token, timex)
 	 * @return list of sentences
 	 */
-	public static List<Sentence2> parseAnnotations(ObjectNode jsonObject) {
-		List<Sentence2> res = new ArrayList<Sentence2>();
+	public static List<Sentence> parseAnnotations(ObjectNode jsonObject) {
+		List<Sentence> res = new ArrayList<Sentence>();
 		Object o = null;
 
 		o = jsonObject.get("annotations");
@@ -165,7 +165,7 @@ public class JsonConverter {
 				if (arrayElem instanceof ObjectNode) {
 					ObjectNode annotation = (ObjectNode) arrayElem;
 					if (!(annotation.get("Sentence") instanceof MissingNode)) {
-						Sentence2 s = new Sentence2();
+						Sentence s = new Sentence();
 
 						IJsonNode begin = annotation.get("begin");
 						if (begin instanceof TextNode) {
@@ -244,7 +244,7 @@ public class JsonConverter {
 
 						// find to which sentence this timex3 belongs
 						boolean foundSentenceWhereBelong = false;
-						for (Sentence2 s : res) {
+						for (Sentence s : res) {
 							if (s.getBegin() <= t.getBegin()
 									&& s.getEnd() > t.getBegin()) {
 								s.getTimexs().add(t);
@@ -266,7 +266,7 @@ public class JsonConverter {
 
 						// find to which sentence this token belongs
 						boolean foundSentenceWhereBelong = false;
-						for (Sentence2 s : res) {
+						for (Sentence s : res) {
 							if (s.getBegin() <= t.getBegin()
 									&& s.getEnd() > t.getBegin()) {
 								s.getTokens().add(t);
@@ -283,7 +283,7 @@ public class JsonConverter {
 
 			if (!tmpTokens.isEmpty()) {
 				for (Token t : tmpTokens) {
-					for (Sentence2 s : res) {
+					for (Sentence s : res) {
 						if (s.getBegin() <= t.getBegin()
 								&& s.getEnd() > t.getBegin()) {
 							s.getTokens().add(t);
@@ -295,7 +295,7 @@ public class JsonConverter {
 
 			if (!tmpTimexs.isEmpty()) {
 				for (Timex3 t : tmpTimexs) {
-					for (Sentence2 s : res) {
+					for (Sentence s : res) {
 						if (s.getBegin() <= t.getBegin()
 								&& s.getEnd() > t.getBegin()) {
 							s.getTimexs().add(t);
@@ -316,17 +316,17 @@ public class JsonConverter {
 	 * 
 	 * @param eventNode
 	 *            event node to convert to sentence
-	 * @return {@link Sentence2} object
+	 * @return {@link Sentence} object
 	 */
-	public static Sentence2 eventNode2Sentence(ObjectNode eventNode) {
-		Sentence2 res = null;
+	public static Sentence eventNode2Sentence(ObjectNode eventNode) {
+		Sentence res = null;
 
 		IJsonNode eventText = eventNode.get("text");
 		IJsonNode eventTime = eventNode.get("end");
 
 		if (eventNode != null && eventText instanceof TextNode
 				&& eventTime != null && eventTime instanceof TextNode) {
-			res = new Sentence2();
+			res = new Sentence();
 
 			TextNode event = (TextNode) eventText;
 			String sentenceContent = event.getTextValue().toString();

@@ -19,6 +19,7 @@ import pawel.uima.reader.JsonArrayReader;
 import pawel.uima.writer.InMemoryOutput;
 import pawel.uima.writer.JsonWriter;
 import de.dima.textmining.uima.annotators.DeepParserAE;
+import de.dima.textmining.uima.annotators.TimespanAnnotator;
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
 
@@ -65,6 +66,10 @@ public class EventAnalysisComponent {
 					EventTranslator.class,
 					TypeSystemDescriptionFactory.createTypeSystemDescription());
 
+			AnalysisEngineDescription timespanAnnotator = createPrimitiveDescription(
+					TimespanAnnotator.class,
+					TypeSystemDescriptionFactory.createTypeSystemDescription());
+
 			AnalysisEngineDescription deepParse = createPrimitiveDescription(
 					DeepParserAE.class, "MAX_SENTENCE_LENGTH",
 					maxSentenceLength, "MIN_SENTENCE_LENGTH",
@@ -73,7 +78,8 @@ public class EventAnalysisComponent {
 			AnalysisEngineDescription dest = createPrimitiveDescription(
 					JsonWriter.class, JsonWriter.PARAM_KEY, key);
 
-			runPipeline(source, eventTranslator, deepParse, dest);
+			runPipeline(source, eventTranslator, timespanAnnotator, deepParse,
+					dest);
 
 		} catch (OutOfMemoryError ome) {
 			log.error(ome.getMessage(), ome);

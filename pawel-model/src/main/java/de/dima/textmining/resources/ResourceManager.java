@@ -15,7 +15,9 @@ public class ResourceManager {
 		if (initialized)
 			return;
 		initialized = true;
-		tmpDir = System.getProperty("java.io.tmpdir");
+		
+		// models-files are extracted now to users home directory...
+		tmpDir = System.getProperty("user.home");
 		extractedResourceDir = tmpDir + File.separator + "tmp_models_location";
 		File dir = new File(extractedResourceDir);
 		if (!dir.exists()) {

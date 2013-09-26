@@ -70,7 +70,7 @@ public class TimeTaggerSopremoOperator extends
 	 * @author ptondryk
 	 * 
 	 */
-	public static class Implementation extends SopremoMap {
+	public static class Mapper extends SopremoMap {
 
 		private String typeToProcess;
 		private String engine;
@@ -139,7 +139,7 @@ public class TimeTaggerSopremoOperator extends
 	public PactModule asPactModule(EvaluationContext context) {
 		context.setInputsAndOutputs(this.getNumInputs(), this.getNumOutputs());
 		PactModule module = new PactModule(1, 1);
-		MapContract.Builder builder = MapContract.builder(Implementation.class);
+		MapContract.Builder builder = MapContract.builder(Mapper.class);
 		builder.name("TimeOperator.mapper");
 		builder.input(module.getInput(0));
 		MapContract mapcontract = builder.build();

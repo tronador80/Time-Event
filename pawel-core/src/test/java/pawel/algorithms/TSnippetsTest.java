@@ -12,7 +12,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pawel.model.Sentence2;
+import pawel.model.Sentence;
 import pawel.model.Timex3;
 import pawel.model.Token;
 
@@ -24,11 +24,11 @@ import pawel.model.Token;
  */
 public class TSnippetsTest {
 
-	static List<Sentence2> sentences;
+	static List<Sentence> sentences;
 
 	@BeforeClass
 	public static void initSentences() {
-		Sentence2 s1 = new Sentence2();
+		Sentence s1 = new Sentence();
 		s1.setSentenceText("Today is monday.");
 		Timex3 t1 = new Timex3();
 		t1.setDate(new Date());
@@ -37,14 +37,14 @@ public class TSnippetsTest {
 		s1.getTokens().add(new Token());
 		s1.getTokens().add(new Token());
 
-		Sentence2 s2 = new Sentence2();
+		Sentence s2 = new Sentence();
 		s2.setSentenceText("I don't like monday.");
 		s2.getTokens().add(new Token());
 		s2.getTokens().add(new Token());
 		s2.getTokens().add(new Token());
 		s2.getTokens().add(new Token());
 
-		Sentence2 s3 = new Sentence2();
+		Sentence s3 = new Sentence();
 		s3.setSentenceText("Yesterday was sunday.");
 		Timex3 t2 = new Timex3();
 		t2.setDate(new Date((new Date()).getTime() - (1000l * 60 * 60 * 24)));
@@ -53,7 +53,7 @@ public class TSnippetsTest {
 		s3.getTokens().add(new Token());
 		s3.getTokens().add(new Token());
 
-		TSnippetsTest.sentences = new ArrayList<Sentence2>();
+		TSnippetsTest.sentences = new ArrayList<Sentence>();
 		TSnippetsTest.sentences.add(s1);
 		TSnippetsTest.sentences.add(s2);
 		TSnippetsTest.sentences.add(s3);
@@ -79,7 +79,7 @@ public class TSnippetsTest {
 	@Test
 	public void testCalculateSentencesRank() {
 
-		Map<Sentence2, Double> rank = TSnippets.calculateSentencesRank(
+		Map<Sentence, Double> rank = TSnippets.calculateSentencesRank(
 				TSnippetsTest.sentences, 0.1d, 0.1d, 0.1d, 0.1d, 0.1d,
 				"Yesterday was sunday", 1);
 

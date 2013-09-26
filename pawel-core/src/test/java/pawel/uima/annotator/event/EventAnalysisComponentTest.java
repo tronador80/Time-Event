@@ -15,8 +15,7 @@ import eu.stratosphere.sopremo.type.MissingNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 
 /**
- * Test class for class {@link EventAnalysisComponent}. Tests use only short
- * texts to avoid Java Heap Space problems.
+ * Test class for class {@link EventAnalysisComponent}.
  * 
  * @author ptondryk
  * 
@@ -75,4 +74,50 @@ public class EventAnalysisComponentTest {
 		Assert.assertTrue(expectedEventContents.isEmpty());
 	}
 
+	@Test
+	public void testTagEventWithTimespan() {
+		EventAnalysisComponent eac = new EventAnalysisComponent();
+
+		String exampleInput = "{\"annotations\":[{\"Text\":\"Pawel was in Berlin from 02/07/2013 to 02/09/2013.\",\"begin\":\"0\",\"date\":\"20131009020000\",\"end\":\"0\"},{\"Sentence\":\"Pawel was in Berlin from 02/07/2013 to 02/09/2013.\",\"begin\":\"0\",\"end\":\"50\",\"sentenceIndex\":\"0\",\"tokenBegin\":\"0\",\"tokenEnd\":\"9\"},{\"Token\":\"Pawel\",\"afterToken\":\" \",\"beforeToken\":\"\",\"begin\":\"0\",\"end\":\"5\",\"originalText\":\"Pawel\",\"pos\":\"NNP\",\"value\":\"Pawel\"},{\"Token\":\"was\",\"afterToken\":\" \",\"beforeToken\":\" \",\"begin\":\"6\",\"end\":\"9\",\"originalText\":\"was\",\"pos\":\"VBD\",\"value\":\"was\"},{\"Token\":\"in\",\"afterToken\":\" \",\"beforeToken\":\" \",\"begin\":\"10\",\"end\":\"12\",\"originalText\":\"in\",\"pos\":\"IN\",\"value\":\"in\"},{\"Token\":\"Berlin\",\"afterToken\":\" \",\"beforeToken\":\" \",\"begin\":\"13\",\"end\":\"19\",\"originalText\":\"Berlin\",\"pos\":\"NNP\",\"value\":\"Berlin\"},{\"Token\":\"from\",\"afterToken\":\" \",\"beforeToken\":\" \",\"begin\":\"20\",\"end\":\"24\",\"originalText\":\"from\",\"pos\":\"IN\",\"value\":\"from\"},{\"Token\":\"02/07/2013\",\"afterToken\":\" \",\"beforeToken\":\" \",\"begin\":\"25\",\"end\":\"35\",\"originalText\":\"02/07/2013\",\"pos\":\"CD\",\"value\":\"02/07/2013\"},{\"Token\":\"to\",\"afterToken\":\" \",\"beforeToken\":\" \",\"begin\":\"36\",\"end\":\"38\",\"originalText\":\"to\",\"pos\":\"TO\",\"value\":\"to\"},{\"Token\":\"02/09/2013\",\"afterToken\":\"\",\"beforeToken\":\" \",\"begin\":\"39\",\"end\":\"49\",\"originalText\":\"02/09/2013\",\"pos\":\"CD\",\"value\":\"02/09/2013\"},{\"Token\":\".\",\"afterToken\":\"\",\"beforeToken\":\"\",\"begin\":\"49\",\"end\":\"50\",\"originalText\":\".\",\"pos\":\".\",\"value\":\".\"},{\"Timex3\":\"02/07/2013\",\"begin\":\"25\",\"end\":\"35\",\"firstTokId\":\"0\",\"sentId\":\"0\",\"timexId\":\"t1\",\"timexInstance\":\"0\",\"timexType\":\"DATE\",\"timexValue\":\"2013-02-07\"},{\"Timex3\":\"02/09/2013\",\"begin\":\"39\",\"end\":\"49\",\"firstTokId\":\"0\",\"sentId\":\"0\",\"timexId\":\"t2\",\"timexInstance\":\"0\",\"timexType\":\"DATE\",\"timexValue\":\"2013-02-09\"}]}";
+
+		IJsonNode result = null;
+		try {
+			result = eac.tagEvent(exampleInput, 250, 10);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		Assert.assertNotNull(result);
+
+		Assert.assertTrue(result instanceof ObjectNode);
+		ObjectNode resultObject = (ObjectNode) result;
+
+		Assert.assertFalse(resultObject.get("events") instanceof MissingNode);
+
+		Assert.assertTrue(resultObject.get("events") instanceof ArrayNode<?>);
+
+		ArrayNode<?> annotationsArray = (ArrayNode<?>) resultObject
+				.get("events");
+
+		int expectedNumberOfAnnotations = 1;
+		Assert.assertEquals(expectedNumberOfAnnotations,
+				annotationsArray.size());
+
+		List<String> expectedEventContents = new ArrayList<String>();
+		expectedEventContents.add("Pawel was");
+
+		Assert.assertTrue(annotationsArray.get(0) instanceof ObjectNode);
+		ObjectNode eventObject = (ObjectNode) annotationsArray.get(0);
+
+		Assert.assertFalse(eventObject.get("start") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("end") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("timeSpan") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("personalTime") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("content") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("text") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("start") instanceof MissingNode);
+
+		Assert.assertTrue(expectedEventContents.remove(eventObject.get(
+				"content").toString()));
+	}
 }

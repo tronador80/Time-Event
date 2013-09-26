@@ -36,9 +36,13 @@ public class CosineSimilarityTest {
 				.calculateCosineSimilarity(s1, s3);
 		double similarity23 = CosineSimilarity
 				.calculateCosineSimilarity(s2, s3);
+		double similarity11 = CosineSimilarity
+				.calculateCosineSimilarity(s1, s1);
 
 		Assert.assertTrue(similarity12 > similarity13);
 		Assert.assertTrue(similarity12 > similarity23);
+
+		Assert.assertTrue(similarity11 == 1.0d);
 
 	}
 }

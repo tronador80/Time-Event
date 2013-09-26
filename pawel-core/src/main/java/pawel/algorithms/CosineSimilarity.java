@@ -24,7 +24,7 @@ public class CosineSimilarity {
 	public static double calculateCosineSimilarity(String sentence, String query) {
 		double similarity = 0.0;
 		int countWordsInQuery = 0;
-		String normalizedQuery = TextUtils.removeDuplicateWordsFromQuery(query);
+		String normalizedQuery = TextUtils.removeDuplicateAndStopWords(query);
 		for (String queryWord : normalizedQuery.split(" ")) {
 			similarity += (double) TextUtils.countOccurrences(queryWord,
 					sentence);
@@ -33,7 +33,7 @@ public class CosineSimilarity {
 
 		double norm = 0.0;
 		String nomalizedSentence = TextUtils
-				.removeDuplicateWordsFromQuery(sentence);
+				.removeDuplicateAndStopWords(sentence);
 		for (String sentenceWord : nomalizedSentence.split(" ")) {
 			norm += Math.pow(
 					TextUtils.countOccurrences(sentenceWord, sentence), 2);
@@ -42,8 +42,10 @@ public class CosineSimilarity {
 		if (norm == 0 || countWordsInQuery == 0) {
 			return 0;
 		}
-		return similarity
-				/ (Math.sqrt(norm) * Math.sqrt((double) countWordsInQuery));
+
+		// round result to 8th decimal places
+		return Math.round(100000000l * (similarity / (Math.sqrt(norm) * Math
+				.sqrt((double) countWordsInQuery)))) / (double) 100000000l;
 	}
 
 }

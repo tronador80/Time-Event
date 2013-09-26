@@ -12,8 +12,8 @@ import org.apache.uima.jcas.JCas;
 import org.uimafit.component.JCasAnnotator_ImplBase;
 
 import de.dima.textmining.types.ShallowAnnotation;
-import de.dima.textmining.types.Sentence;
 import de.unihd.dbs.uima.types.heideltime.Timex3;
+import de.unihd.dbs.uima.types.heideltime.Sentence;
 import de.unihd.dbs.uima.types.heideltime.Token;
 
 /**
@@ -56,6 +56,9 @@ public class EventTranslator extends JCasAnnotator_ImplBase {
 			if (annotation instanceof pawel.paweltypes.Sentence) {
 				annotationsToAdd.add(this.sentenceToHeidelSentence(
 						(pawel.paweltypes.Sentence) annotation, jcas));
+				annotationsToAdd.add(this.sentenceToDimaSentence(
+						(pawel.paweltypes.Sentence) annotation, jcas));
+
 				annotationsToRemove.add(annotation);
 			}
 		}
@@ -95,6 +98,24 @@ public class EventTranslator extends JCasAnnotator_ImplBase {
 	private Sentence sentenceToHeidelSentence(
 			pawel.paweltypes.Sentence sentence, JCas jcas) {
 		Sentence res = new Sentence(jcas);
+
+		res.setBegin(sentence.getBegin());
+		res.setEnd(sentence.getEnd());
+		res.setSentenceId(sentence.getSentenceIndex());
+
+		return res;
+	}
+
+	/**
+	 * 
+	 * @param sentence
+	 * @param jcas
+	 * @return
+	 */
+	private de.dima.textmining.types.Sentence sentenceToDimaSentence(
+			pawel.paweltypes.Sentence sentence, JCas jcas) {
+		de.dima.textmining.types.Sentence res = new de.dima.textmining.types.Sentence(
+				jcas);
 
 		res.setBegin(sentence.getBegin());
 		res.setEnd(sentence.getEnd());

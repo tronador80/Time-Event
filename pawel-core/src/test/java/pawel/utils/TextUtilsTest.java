@@ -28,13 +28,13 @@ public class TextUtilsTest {
 	}
 
 	@Test
-	public void testRemoveDuplicateWordsFromQuery() {
+	public void testRemoveDuplicateAndStopWords() {
 		String query1 = "query how to remove duplicates from query";
 		String query2 = "how how query works how";
 
-		Assert.assertEquals("query how to remove duplicates from",
-				TextUtils.removeDuplicateWordsFromQuery(query1));
+		Assert.assertEquals("query how remove duplicates from",
+				TextUtils.removeDuplicateAndStopWords(query1));
 		Assert.assertEquals("how query works",
-				TextUtils.removeDuplicateWordsFromQuery(query2));
+				TextUtils.removeDuplicateAndStopWords(query2));
 	}
 }
