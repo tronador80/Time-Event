@@ -15,12 +15,12 @@
 
 	<files>
 		<file>
-			<source>${project.basedir}/../pawel-core/target/pawel-core-1.0b.jar</source>
+			<source>${project.basedir}/../pawel-core/target/pawel-core-${project.version}.jar</source>
 			<destName>sopremo-pawel.jar</destName>
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
-			<source>${project.basedir}/../pawel-model/target/pawel-model-1.0b-jar-with-dependencies.jar</source>
+			<source>${project.basedir}/../pawel-model/target/pawel-model-${project.version}-jar-with-dependencies.jar</source>
 			<destName>pawel-model.jar</destName>
 			<outputDirectory>/</outputDirectory>
 		</file>

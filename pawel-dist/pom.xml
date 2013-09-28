@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.stratosphere</groupId>
 		<artifactId>pawel</artifactId>
-		<version>1.0b</version>
+		<version>1.0</version>
 	</parent>
 	<artifactId>pawel-dist</artifactId>
 

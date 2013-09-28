@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -42,7 +41,6 @@ import pawel.paweltypes.Text;
 import pawel.utils.JsonConverter;
 import de.dima.textmining.conll.CoNLLNode;
 import de.dima.textmining.events.EventExtractor;
-import de.dima.textmining.timeindex.TimelineResult;
 import de.dima.textmining.types.Sentence;
 import de.dima.textmining.types.Timespan;
 import de.unihd.dbs.uima.types.heideltime.Timex3;
@@ -109,9 +107,7 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 		String metaDay = null;
 		String metaMonth = null;
 		String metaYear = null;
-		String metaSourceID = null;
-		String metaCity = null;
-		String metaPublisher = null;
+
 		if (meta != null) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 			try {
@@ -297,19 +293,7 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 					event = event.replaceAll("\"", "")
 							.replaceAll("\\n|\\r|\\t", " ")
 							.replaceAll(" +", " ");
-					/**
-					 * Add to Index
-					 */
-					final Calendar CAL = new GregorianCalendar(Locale.ENGLISH);
-					CAL.set(Integer.parseInt(startYear),
-							Integer.parseInt(startMnth),
-							Integer.parseInt(startDay));
-					Date startDat = CAL.getTime();
-					CAL.set(Integer.parseInt(endYear),
-							Integer.parseInt(endMnth), Integer.parseInt(endDay));
-					Date endDat = CAL.getTime();
-					this.addIndex(startDat, endDat, event, output, metaCity,
-							metaPublisher, metaSourceID, sent);
+					this.addIndex(output);
 				}
 			}
 		}
@@ -322,14 +306,8 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 	/**
 	 * Add to Index
 	 */
-	private void addIndex(Date startDate, Date endDate, String event,
-			String output, String metaCity, String metaPublisher,
-			String metaSourceID, Sentence sent) {
-		TimelineResult timeResult = new TimelineResult(event, output, metaCity,
-				metaPublisher, metaSourceID, startDate, endDate,
-				sent.getBegin(), sent.getEnd());
-
-		events.add(JsonConverter.string2JsonNode(timeResult.getJson()));
+	private void addIndex(String jsonOutput) {
+		events.add(JsonConverter.string2JsonNode(jsonOutput));
 
 	}
 

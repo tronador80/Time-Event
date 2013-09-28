@@ -3,7 +3,9 @@
  */
 package pawel.model.sopremo.io;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import eu.stratosphere.nephele.template.GenericInputSplit;
 
@@ -18,6 +20,13 @@ public class ReutersNewsInputSplit extends GenericInputSplit {
 	 * inputsplit
 	 */
 	private List<String> filesToProcess;
+
+	/**
+	 * this list contains names of all files that should be processed<br>
+	 * MAP key: (name of file); value: (array with two values: id of first and
+	 * last news to process)
+	 */
+	private Map<String, Long[]> newsIdsByFileToProcess;
 
 	/**
 	 * 
@@ -50,6 +59,26 @@ public class ReutersNewsInputSplit extends GenericInputSplit {
 			Boolean big, boolean tablesOut) {
 		super(splitId);
 		this.setFilesToProcess(filesToProcess);
+		this.setBig(big);
+		this.setTablesOut(tablesOut);
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param splitId
+	 * @param tablesOut
+	 * @param startDocId
+	 * @param endDocId
+	 * @param docName
+	 */
+	public ReutersNewsInputSplit(int splitId,
+			Map<String, Long[]> newsIdsByFileToProcess, Boolean big,
+			boolean tablesOut) {
+		super(splitId);
+		this.newsIdsByFileToProcess = newsIdsByFileToProcess;
+		this.filesToProcess = new ArrayList<String>(
+				newsIdsByFileToProcess.keySet());
 		this.setBig(big);
 		this.setTablesOut(tablesOut);
 	}
@@ -97,6 +126,39 @@ public class ReutersNewsInputSplit extends GenericInputSplit {
 	 */
 	public void setTablesOut(Boolean tablesOut) {
 		this.tablesOut = tablesOut;
+	}
+
+	/**
+	 * @return the newsIdsByFileToProcess
+	 */
+	public Map<String, Long[]> getNewsIdsByFileToProcess() {
+		return newsIdsByFileToProcess;
+	}
+
+	/**
+	 * @param newsIdsByFileToProcess
+	 *            the newsIdsByFileToProcess to set
+	 */
+	public void setNewsIdsByFileToProcess(
+			Map<String, Long[]> newsIdsByFileToProcess) {
+		this.newsIdsByFileToProcess = newsIdsByFileToProcess;
+	}
+
+	@Override
+	public String toString() {
+		String string = "ReutersNewsInputSplit [filesToProcess="
+				+ filesToProcess + ", big=" + big + ", tablesOut=" + tablesOut
+				+ ", newsIdsByFileToProcess={";
+
+		if (big) {
+			for (String fileName : this.newsIdsByFileToProcess.keySet()) {
+				string += "[ " + fileName + "; "
+						+ this.newsIdsByFileToProcess.get(fileName)[0] + "; "
+						+ this.newsIdsByFileToProcess.get(fileName)[1] + "]";
+			}
+		}
+
+		return string + "}]";
 	}
 
 }

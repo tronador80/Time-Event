@@ -9,7 +9,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
@@ -136,6 +138,13 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		private List<String> filesToProcess;
 
 		/**
+		 * this list contains names of all files that should be processed MAP
+		 * key: (name of file); value: (array with two values: id of first and
+		 * last news to process)
+		 */
+		private Map<String, Long[]> newsIdsByFileToProcess;
+
+		/**
 		 * this variable indicates whether the input files are composition of
 		 * many news (true) or single news (false)
 		 */
@@ -186,11 +195,16 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			IJsonNode newNode = null;
 			if (this.big) {
 				if (this.newsToProcess.isEmpty()) {
-					String contentOfNextBigFile = this.getFileContent(this
-							.nextName());
+					String fileName = this.nextName();
+					String contentOfNextBigFile = this.getFileContent(fileName);
+
 					String[] splitsOfBigFile = contentOfNextBigFile
 							.split(ReutersNewsInputFormat.SPLIT_MARKER);
-					for (String contentOfSingleNews : splitsOfBigFile) {
+
+					for (int i = newsIdsByFileToProcess.get(fileName)[0]
+							.intValue(); i <= newsIdsByFileToProcess
+							.get(fileName)[1].intValue(); i++) {
+						String contentOfSingleNews = splitsOfBigFile[i];
 						if (contentOfSingleNews != null
 								&& !contentOfSingleNews.isEmpty()) {
 							this.newsToProcess.add(contentOfSingleNews);
@@ -229,12 +243,19 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			if (split instanceof ReutersNewsInputSplit) {
 				ReutersNewsInputSplit reutersNewsSplit = (ReutersNewsInputSplit) split;
 
+				log.info("New Reuters News InputSplit received: "
+						+ reutersNewsSplit.toString());
+
 				this.docId = 0;
 				this.getFilesToProcess().addAll(
 						reutersNewsSplit.getFilesToProcess());
 				this.big = reutersNewsSplit.getBig();
-				if (big && this.newsToProcess == null) {
-					this.newsToProcess = new ArrayList<String>();
+				if (big) {
+					newsIdsByFileToProcess = reutersNewsSplit
+							.getNewsIdsByFileToProcess();
+					if (this.newsToProcess == null) {
+						this.newsToProcess = new ArrayList<String>();
+					}
 				}
 				this.tablesOut = reutersNewsSplit.getTablesOut();
 
@@ -477,19 +498,90 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 			}
 
 			int numberOfDocumentsToProcess = allFilesToProcess.size();
+			double minNumSplitsDouble = (double) minNumSplits;
 
-			float minNumSplitsDouble = (float) minNumSplits;
-			for (int i = 0; i < minNumSplits; i++) {
-				List<String> filesToProcessWithinThisSplit = new ArrayList<String>(
-						allFilesToProcess.subList(
-								Math.round(i
-										* (numberOfDocumentsToProcess / minNumSplitsDouble)),
-								Math.min(
-										Math.round((i + 1)
-												* (numberOfDocumentsToProcess / minNumSplitsDouble)),
-										numberOfDocumentsToProcess)));
-				splits[i] = new ReutersNewsInputSplit(i,
-						filesToProcessWithinThisSplit, this.big, this.tablesOut);
+			if (!this.big) {
+				for (int i = 0; i < minNumSplits; i++) {
+					splits[i] = new ReutersNewsInputSplit(
+							i,
+							new ArrayList<String>(
+									allFilesToProcess.subList(
+											(int) Math
+													.round(i
+															* (numberOfDocumentsToProcess / minNumSplitsDouble)),
+											(int) Math.min(
+													Math.round((i + 1)
+															* (numberOfDocumentsToProcess / minNumSplitsDouble)),
+													numberOfDocumentsToProcess))),
+							false, this.tablesOut);
+
+				}
+			} else {
+				// count all news within "big" files
+				long counter = 0;
+				Map<String, Long> countByfileName = new HashMap<String, Long>();
+				for (String fileName : allFilesToProcess) {
+					String fileContent = this.getFileContent(fileName);
+					long numberOfNewsInThisFile = new Long(
+							fileContent
+									.split(ReutersNewsInputFormat.SPLIT_MARKER).length);
+					counter += numberOfNewsInThisFile;
+					countByfileName.put(fileName, numberOfNewsInThisFile);
+				}
+
+				long newsPerSplit = (long) Math.ceil(counter
+						/ minNumSplitsDouble);
+
+				// prepare splits where every split have same number of news
+				long bigFileSplitMark = 0;
+				int splitsCounter = 0;
+				long newsInSplitCounter = 0;
+
+				Map<String, Long[]> newsIdsByFileToProcess = new HashMap<String, Long[]>();
+				int processedFilesCounter = 0;
+				for (String fileName : countByfileName.keySet()) {
+					processedFilesCounter++;
+					do {
+						if (newsInSplitCounter + countByfileName.get(fileName)
+								- bigFileSplitMark <= newsPerSplit) {
+							newsIdsByFileToProcess
+									.put(fileName,
+											new Long[] {
+													bigFileSplitMark,
+													countByfileName
+															.get(fileName) - 1 });
+							newsInSplitCounter += countByfileName.get(fileName)
+									- bigFileSplitMark;
+							bigFileSplitMark = 0;
+
+						} else {
+							long prevBigFileSplitMark = bigFileSplitMark;
+							bigFileSplitMark += (newsPerSplit - newsInSplitCounter);
+							newsIdsByFileToProcess.put(fileName,
+									new Long[] { prevBigFileSplitMark,
+											bigFileSplitMark - 1 });
+							newsInSplitCounter += (bigFileSplitMark - prevBigFileSplitMark);
+
+						}
+
+						if (newsInSplitCounter >= newsPerSplit
+								|| processedFilesCounter == countByfileName
+										.size()) {
+							ReutersNewsInputSplit reutersNewsInputSplit = new ReutersNewsInputSplit(
+									splitsCounter, newsIdsByFileToProcess,
+									true, this.tablesOut);
+							splits[splitsCounter] = reutersNewsInputSplit;
+							splitsCounter++;
+							newsInSplitCounter = 0;
+							newsIdsByFileToProcess = new HashMap<String, Long[]>();
+
+							if (splitsCounter == minNumSplits) {
+								return splits;
+							}
+						}
+
+					} while (bigFileSplitMark != 0);
+				}
 
 			}
 

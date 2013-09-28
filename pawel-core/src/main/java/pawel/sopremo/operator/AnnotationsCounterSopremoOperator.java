@@ -91,7 +91,7 @@ public class AnnotationsCounterSopremoOperator extends
 									"Token")) {
 								tokens++;
 							} else if (annotation.getFieldNames().contains(
-									"Timex")) {
+									"Timex3")) {
 								timexs++;
 							}
 						}
