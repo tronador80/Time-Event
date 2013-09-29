@@ -17,6 +17,9 @@ import de.unihd.dbs.uima.types.heideltime.Sentence;
 import de.unihd.dbs.uima.types.heideltime.Token;
 
 /**
+ * Implementation of UIMA JCas annotator that prepares the input data to use
+ * with event extractor.
+ * 
  * @author ptondryk
  * 
  */

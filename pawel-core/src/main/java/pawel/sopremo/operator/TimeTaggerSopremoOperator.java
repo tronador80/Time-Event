@@ -28,7 +28,7 @@ import eu.stratosphere.sopremo.type.IStreamNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
 
 /**
- * This class realize Sopremo operator that can tag temporal expressions. It is
+ * This class realizes Sopremo operator that can tag temporal expressions. It is
  * parameterizable. Engine can be choosed (sutime or heideltime). Heideltime
  * additionally has one more parameter: type (news or narrative) of text to
  * process.

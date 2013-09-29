@@ -26,7 +26,7 @@ import eu.stratosphere.sopremo.type.TextNode;
 
 /**
  * This class implements an UIMA JCas consumer that's task is to write results
- * to given string.
+ * to map.
  * 
  * @author ptondryk
  * 

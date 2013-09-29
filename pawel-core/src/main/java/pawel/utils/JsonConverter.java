@@ -24,7 +24,7 @@ import eu.stratosphere.sopremo.type.ObjectNode;
 import eu.stratosphere.sopremo.type.TextNode;
 
 /**
- * Class provides functionality for some json convertions.
+ * Class provides functionality for some json conversions.
  * 
  * @author ptondryk
  * 

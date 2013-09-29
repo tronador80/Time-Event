@@ -26,7 +26,7 @@ import eu.stratosphere.sopremo.type.IJsonNode;
 public class SentenceSplitterAnalysisComponent {
 
 	/**
-	 * 
+	 * empty constructor
 	 */
 	public SentenceSplitterAnalysisComponent() {
 
