@@ -274,17 +274,15 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 						continue;
 					}
 
-					String startMnth = Integer.toString(Integer
-							.parseInt(startMonth) - 1); // javascript srsly
-														// codes months as 0-11
-					String endMnth = Integer.toString(Integer
-							.parseInt(endMonth) - 1);
 					String timeText = "{ \"start\": \"" + startYear + "-"
-							+ startMnth + "-" + startDay + " " + startHours
-							+ "\", \"end\": \"" + endYear + "-" + endMnth + "-"
-							+ endDay + " " + endHours + "\", \"timeSpan\": \""
-							+ timeSpan + "\", \"personalTime\": \""
-							+ personalTime + "\", \"content\": \""
+							+ this.adjustMonthAndDay(startMonth) + "-"
+							+ this.adjustMonthAndDay(startDay) + " "
+							+ startHours + "\", \"end\": \"" + endYear + "-"
+							+ this.adjustMonthAndDay(endMonth) + "-"
+							+ this.adjustMonthAndDay(endDay) + " " + endHours
+							+ "\", \"timeSpan\": \"" + timeSpan
+							+ "\", \"personalTime\": \"" + personalTime
+							+ "\", \"content\": \""
 							+ event.replaceAll("\"", "") + "\", \"text\": \""
 							+ sent.getCoveredText().replaceAll("\"", "")
 							+ "\" }";
@@ -301,6 +299,17 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 		ObjectNode res = new ObjectNode();
 		res.put("events", this.events);
 		InMemoryOutput.getOutputMap().put(this.key, res);
+	}
+
+	/**
+	 * This method adds the leading zero to month (or day) if it contains only
+	 * one digit.
+	 * 
+	 * @param monthOrDay
+	 * @return adjusted month (or day)
+	 */
+	private String adjustMonthAndDay(String monthOrDay) {
+		return monthOrDay.length() == 2 ? monthOrDay : "0" + monthOrDay;
 	}
 
 	/**

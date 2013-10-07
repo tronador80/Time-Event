@@ -55,6 +55,14 @@ public class EventAnalysisComponentTest {
 		expectedEventContents.add("Pawel completed his Master 's thesis");
 		expectedEventContents.add("Pawel was born");
 
+		List<String> expectedEventStartTime = new ArrayList<String>();
+		expectedEventStartTime.add("1988-07-13 00,00,00");
+		expectedEventStartTime.add("2013-09-29 00,00,00");
+
+		List<String> expectedEventEndTime = new ArrayList<String>();
+		expectedEventEndTime.add("1988-07-13 23,59,59");
+		expectedEventEndTime.add("2013-09-29 23,59,59");
+
 		for (int i = 0; i < expectedNumberOfAnnotations; i++) {
 			Assert.assertTrue(annotationsArray.get(i) instanceof ObjectNode);
 			ObjectNode eventObject = (ObjectNode) annotationsArray.get(i);
@@ -69,9 +77,15 @@ public class EventAnalysisComponentTest {
 
 			Assert.assertTrue(expectedEventContents.remove(eventObject.get(
 					"content").toString()));
+			Assert.assertTrue(expectedEventStartTime.remove(eventObject.get(
+					"start").toString()));
+			Assert.assertTrue(expectedEventEndTime.remove(eventObject
+					.get("end").toString()));
 		}
 
 		Assert.assertTrue(expectedEventContents.isEmpty());
+		Assert.assertTrue(expectedEventStartTime.isEmpty());
+		Assert.assertTrue(expectedEventEndTime.isEmpty());
 	}
 
 	@Test
