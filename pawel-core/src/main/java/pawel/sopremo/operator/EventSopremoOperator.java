@@ -46,14 +46,19 @@ public class EventSopremoOperator extends
 
 	private static String MAX_SENTENCE_LENGTH = "maxSentenceLength";
 	private static String MIN_SENTENCE_LENGTH = "minSentenceLength";
+	private static String NEWER = "newer";
 
 	private String maxSentenceLength;
 	private String minSentenceLength;
+
+	private String newer;
 
 	public static class Mapper extends SopremoMap {
 
 		private String maxSentenceLength;
 		private String minSentenceLength;
+
+		private String newer = "true";
 
 		public void open(Configuration parameters) {
 			super.open(parameters);
@@ -103,10 +108,17 @@ public class EventSopremoOperator extends
 
 				}
 
+				boolean useNewer = true;
+				try {
+					useNewer = Boolean.parseBoolean(this.newer);
+				} catch (NumberFormatException nfe) {
+
+				}
+
 				try {
 					ObjectNode res = (ObjectNode) eac.tagEvent(
 							JsonConverter.json2String(object), maxLength,
-							minLength);
+							minLength, useNewer);
 					res.put("analyzedText", new TextNode(analyzedText));
 					res.put("timestamp", new TextNode(timestamp));
 					out.collect(res);
@@ -147,6 +159,7 @@ public class EventSopremoOperator extends
 				this.maxSentenceLength);
 		SopremoUtil.setObject(mapcontract.getParameters(), MIN_SENTENCE_LENGTH,
 				this.minSentenceLength);
+		SopremoUtil.setObject(mapcontract.getParameters(), NEWER, this.newer);
 
 		ReduceContract.Builder reduceBuilder = ReduceContract
 				.builder(Reducer.class);
@@ -173,6 +186,12 @@ public class EventSopremoOperator extends
 	public void setMinSentenceLength(EvaluationExpression minSentenceLength) {
 		this.minSentenceLength = minSentenceLength.toString().replace("\"", "")
 				.replace("\'", "");
+	}
+
+	@Property(flag = false, expert = true, preferred = true)
+	@Name(noun = "newer")
+	public void setNewer(EvaluationExpression newer) {
+		this.newer = newer.toString().replace("\"", "").replace("\'", "");
 	}
 
 }

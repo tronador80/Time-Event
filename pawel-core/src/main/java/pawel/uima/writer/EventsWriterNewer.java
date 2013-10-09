@@ -31,6 +31,8 @@ import java.util.NoSuchElementException;
 import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -38,7 +40,6 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import pawel.paweltypes.Text;
-import pawel.utils.JsonConverter;
 import de.dima.textmining.conll.CoNLLNode;
 import de.dima.textmining.events.EventExtractor;
 import de.dima.textmining.types.Sentence;
@@ -47,27 +48,18 @@ import de.unihd.dbs.uima.types.heideltime.Timex3;
 import eu.stratosphere.sopremo.type.ArrayNode;
 import eu.stratosphere.sopremo.type.IJsonNode;
 import eu.stratosphere.sopremo.type.ObjectNode;
+import eu.stratosphere.sopremo.type.TextNode;
 
 /**
- * A simple CAS consumer that writes the CAS to XMI format.
- * <p>
- * This CAS Consumer takes one parameter:
- * <ul>
- * <li><code>OutputDirectory</code> - path to directory into which output files
- * will be written</li>
- * </ul>
  * 
- * @author Andreas Wolf
+ * @author Markus Holtermann
  * @author ptondryk
  * 
  */
-public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
+public class EventsWriterNewer extends
+		org.uimafit.component.CasConsumer_ImplBase {
 
-	private static Logger log = Logger.getLogger(JsonWriter.class);
-	/**
-	 * Name of configuration parameter that must be set to the path of a
-	 * directory into which the output files will be written.
-	 */
+	private static Logger log = Logger.getLogger(EventsWriterNewer.class);
 
 	public static final String PARAM_KEY = "KEY";
 
@@ -75,27 +67,34 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 
 	private EventExtractor eventExtractor;
 
-	private ArrayNode<IJsonNode> events = new ArrayNode<IJsonNode>();
-
 	public void initialize(UimaContext aContext)
 			throws ResourceInitializationException {
-
 		// extractor for time events // don't save dot trees
 		eventExtractor = new EventExtractor(false);
 
 		this.key = (String) aContext.getConfigParameterValue(PARAM_KEY);
-
 	}
 
 	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
+	public void process(CAS aCAS) throws AnalysisEngineProcessException {
 
+		JCas jcas;
+		try {
+			jcas = aCAS.getJCas();
+		} catch (CASException e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+
+		/**
+		 * get all
+		 */
 		AnnotationIndex<Annotation> timeSpanIndex = jcas
 				.getAnnotationIndex(Timespan.type);
 		AnnotationIndex<Annotation> timeIndex = jcas
 				.getAnnotationIndex(Timex3.type);
 		AnnotationIndex<Annotation> sentIndex = jcas
 				.getAnnotationIndex(Sentence.type);
+
 		AnnotationIndex<Annotation> text = jcas.getAnnotationIndex(Text.type);
 
 		Text meta = null;
@@ -126,9 +125,10 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 
 		HashMap<String, Integer> week = initWeek();
 
+		ArrayNode<IJsonNode> events = new ArrayNode<>();
+
 		for (Annotation an : sentIndex) {
 			Sentence sent = (Sentence) an;
-
 			// check if sentence has a parse
 			CoNLLNode root = null;
 			String conll = sent.getCoNLLParse();
@@ -136,7 +136,7 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 				try {
 					root = CoNLLNode.parseCoNLL(conll);
 				} catch (IOException e) {
-					log.error(e.getMessage(), e);
+					e.printStackTrace();
 				}
 
 			} else {
@@ -175,7 +175,7 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 				}
 
 				boolean timeSpan = false;
-				String personalTime = "false";
+				boolean personalTime = false;
 
 				String[] startDate = new String[4];
 				String[] endDate = new String[4];
@@ -203,8 +203,8 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 				String startHours = startDate[3];
 				String endHours = startHours;
 				if (startHours == "") {
-					startHours = "00,00,00";
-					endHours = "23,59,59";
+					startHours = "00:00:00";
+					endHours = "23:59:59";
 				}
 
 				if (endTime != "") {
@@ -219,19 +219,16 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 						endDay = "31";
 					endHours = endDate[3];
 					if (endHours == "")
-						endHours = "23,59,59";
+						endHours = "23:59:59";
 					timeSpan = true;
 				}
 
 				if (startTime
-						.matches("(FUTURE_REF)|(PAST_REF)|(PRESENT_REF)|(UNDEF-this-day)|(UNDEF-next-day)"
-								+ "|(UNDEF_last_day)|(UNDEF_this_day_MINUS_2)")
-				// == "FUTURE_REF" || startTime == "PAST_REF" || startTime ==
-				// "PRESENT_REF"
-				) {
-					personalTime = startTime;
-					startHours = "00,00,00";
-					endHours = "00,00,00";
+						.matches("(FUTURE_REF)|(PAST_REF)|(PRESENT_REF)|(UNDEF-this-day)"
+								+ "|(UNDEF-next-day)|(UNDEF_last_day)|(UNDEF_this_day_MINUS_2)")) {
+					personalTime = true;
+					startHours = "00:00:00";
+					endHours = "00:00:00";
 					startYear = metaYear;
 					endYear = metaYear;
 					startMonth = metaMonth;
@@ -256,16 +253,14 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 					}
 				}
 
-				if (personalTime != "false" || timeSpan == true
-						|| startYear != "") {
+				if (personalTime || timeSpan || !startYear.equals("")) {
 
 					// event generation
 					String event = null;
 					List<Integer> timexPos = timexPositions.get(time
-							.getCoveredText());
-
+							.getCoveredText()); // timeSpan.getCoveredText
 					// check for mapping of timex to token (ignores durations)
-					if (timexPos != null && !timexPos.isEmpty()) {
+					if (timexPos != null) {
 						// get event for this timex
 						event = eventExtractor.makeEvent(root, timexPos);
 					}
@@ -274,50 +269,56 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 						continue;
 					}
 
-					String timeText = "{ \"start\": \"" + startYear + "-"
-							+ this.adjustMonthAndDay(startMonth) + "-"
-							+ this.adjustMonthAndDay(startDay) + " "
-							+ startHours + "\", \"end\": \"" + endYear + "-"
-							+ this.adjustMonthAndDay(endMonth) + "-"
-							+ this.adjustMonthAndDay(endDay) + " " + endHours
-							+ "\", \"timeSpan\": \"" + timeSpan
-							+ "\", \"personalTime\": \"" + personalTime
-							+ "\", \"content\": \""
-							+ event.replaceAll("\"", "") + "\", \"text\": \""
-							+ sent.getCoveredText().replaceAll("\"", "")
-							+ "\" }";
-					String output = timeText.replaceAll("\\n|\\r|\\t", " ")
-							.replaceAll(" +", " ");
-					event = event.replaceAll("\"", "")
-							.replaceAll("\\n|\\r|\\t", " ")
-							.replaceAll(" +", " ");
-					this.addIndex(output);
+					SimpleDateFormat sdf = new SimpleDateFormat(
+							"yyyyMMddHH:mm:ss");
+					Date startAsDate = null;
+					Date endAsDate = null;
+					try {
+						startAsDate = sdf.parse(startYear + startMonth
+								+ startDay + startHours);
+						endAsDate = sdf.parse(endYear + endMonth + endDay
+								+ endHours);
+					} catch (ParseException e) {
+						log.error(e.getMessage(), e);
+						continue;
+					}
+
+					ObjectNode eventNode = new ObjectNode();
+
+					eventNode.put("event", new TextNode(event));
+					eventNode.put("text", new TextNode(sent.getCoveredText()));
+
+					eventNode.put(
+							"start",
+							new TextNode((new Long(startAsDate.getTime()))
+									.toString()));
+					eventNode.put(
+							"end",
+							new TextNode((new Long(endAsDate.getTime()))
+									.toString()));
+
+					eventNode.put("is_timespan", new TextNode((new Boolean(
+							timeSpan)).toString()));
+					eventNode.put("is_personal", new TextNode((new Boolean(
+							personalTime)).toString()));
+
+					eventNode.put(
+							"range_start",
+							new TextNode((new Integer(sent.getBegin()))
+									.toString()));
+					eventNode.put(
+							"range_end",
+							new TextNode((new Integer(sent.getEnd()))
+									.toString()));
+
+					events.add(eventNode);
 				}
 			}
 		}
 
 		ObjectNode res = new ObjectNode();
-		res.put("events", this.events);
+		res.put("events", events);
 		InMemoryOutput.getOutputMap().put(this.key, res);
-	}
-
-	/**
-	 * This method adds the leading zero to month (or day) if it contains only
-	 * one digit.
-	 * 
-	 * @param monthOrDay
-	 * @return adjusted month (or day)
-	 */
-	private String adjustMonthAndDay(String monthOrDay) {
-		return monthOrDay.length() == 2 ? monthOrDay : "0" + monthOrDay;
-	}
-
-	/**
-	 * Add to Index
-	 */
-	private void addIndex(String jsonOutput) {
-		events.add(JsonConverter.string2JsonNode(jsonOutput));
-
 	}
 
 	private String calcMetaDay(String metaDay, String metaMonth,
@@ -405,7 +406,7 @@ public class JsonWriter extends org.uimafit.component.JCasAnnotator_ImplBase {
 		// zwischen 0 und 6, die einen Wochentag
 		// zwischen Samstag und Freitag repr�sentiert.
 
-		// grobe Z�hlung: Ganze Jahre +
+		// grobe Zählung: Ganze Jahre +
 		// Tage im aktuellen Monat + ganze Monate im aktuellen Jahr
 		String month = "312831303130313130313031";
 		int yyyy = Integer.parseInt(jahr);

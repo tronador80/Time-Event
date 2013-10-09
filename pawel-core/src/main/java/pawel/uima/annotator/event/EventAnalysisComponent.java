@@ -16,8 +16,9 @@ import org.uimafit.factory.TypeSystemDescriptionFactory;
 
 import pawel.sopremo.operator.TimeTaggerSopremoOperator;
 import pawel.uima.reader.JsonArrayReader;
+import pawel.uima.writer.EventsWriterNewer;
 import pawel.uima.writer.InMemoryOutput;
-import pawel.uima.writer.JsonWriter;
+import pawel.uima.writer.EventsWriterOlder;
 import de.dima.textmining.uima.annotators.DeepParserAE;
 import de.dima.textmining.uima.annotators.TimespanAnnotator;
 import eu.stratosphere.sopremo.type.ArrayNode;
@@ -52,7 +53,7 @@ public class EventAnalysisComponent {
 	 * @throws Exception
 	 */
 	public IJsonNode tagEvent(String inputText, int maxSentenceLength,
-			int minSentenceLength) throws Exception {
+			int minSentenceLength, boolean newer) throws Exception {
 		String key = "eac_" + Math.abs((new Random()).nextLong());
 
 		try {
@@ -75,8 +76,14 @@ public class EventAnalysisComponent {
 					maxSentenceLength, "MIN_SENTENCE_LENGTH",
 					minSentenceLength, "WriteCoNLL", false);
 
-			AnalysisEngineDescription dest = createPrimitiveDescription(
-					JsonWriter.class, JsonWriter.PARAM_KEY, key);
+			AnalysisEngineDescription dest = null;
+			if (newer) {
+				dest = createPrimitiveDescription(EventsWriterNewer.class,
+						EventsWriterNewer.PARAM_KEY, key);
+			} else {
+				dest = createPrimitiveDescription(EventsWriterOlder.class,
+						EventsWriterOlder.PARAM_KEY, key);
+			}
 
 			runPipeline(source, eventTranslator, timespanAnnotator, deepParse,
 					dest);
