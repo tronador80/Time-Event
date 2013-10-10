@@ -28,7 +28,7 @@ public class JsonConverterTest {
 	@Test
 	public void testJson2String() {
 
-		String exampleInput = "[{ \"start\": \"2013-2-14 00,00,00\", \"end\": \"2013-2-14 23,59,59\", \"timeSpan\": \"false\", \"personalTime\": \"false\", \"content\": \"Today is\", \"text\": \"Today is Monday. \" }]";
+		String exampleInput = "[{ \"start\": \"2013-2-14 00,00,00\", \"end\": \"2013-2-14 23,59,59\", \"is_timespan\": \"false\", \"is_personal\": \"false\", \"event\": \"Today is\", \"text\": \"Today is Monday. \" }]";
 
 		IJsonNode json = JsonConverter.string2Json(exampleInput);
 
@@ -45,8 +45,8 @@ public class JsonConverterTest {
 		Assert.assertTrue(jsonArray.get(0) instanceof ObjectNode);
 		ObjectNode eventNode = (ObjectNode) jsonArray.get(0);
 
-		Assert.assertFalse(eventNode.get("content") instanceof MissingNode);
-		Assert.assertEquals("Today is", eventNode.get("content").toString());
+		Assert.assertFalse(eventNode.get("event") instanceof MissingNode);
+		Assert.assertEquals("Today is", eventNode.get("event").toString());
 
 		Assert.assertFalse(eventNode.get("start") instanceof MissingNode);
 		Assert.assertEquals("2013-2-14 00,00,00", eventNode.get("start")
@@ -56,19 +56,19 @@ public class JsonConverterTest {
 		Assert.assertEquals("2013-2-14 23,59,59", eventNode.get("end")
 				.toString());
 
-		Assert.assertFalse(eventNode.get("personalTime") instanceof MissingNode);
-		Assert.assertEquals("false", eventNode.get("personalTime").toString());
+		Assert.assertFalse(eventNode.get("is_personal") instanceof MissingNode);
+		Assert.assertEquals("false", eventNode.get("is_personal").toString());
 
 		Assert.assertFalse(eventNode.get("text") instanceof MissingNode);
 		Assert.assertEquals("Today is Monday. ", eventNode.get("text")
 				.toString());
 
-		Assert.assertFalse(eventNode.get("timeSpan") instanceof MissingNode);
-		Assert.assertEquals("false", eventNode.get("timeSpan").toString());
+		Assert.assertFalse(eventNode.get("is_timespan") instanceof MissingNode);
+		Assert.assertEquals("false", eventNode.get("is_timespan").toString());
 
 		String resultString = JsonConverter.json2String(eventNode);
 		Assert.assertEquals(
-				"{\"content\" : \"Today is\",\"end\" : \"2013-2-14 23,59,59\",\"personalTime\" : \"false\",\"start\" : \"2013-2-14 00,00,00\",\"text\" : \"Today is Monday. \",\"timeSpan\" : \"false\"}",
+				"{\"end\" : \"2013-2-14 23,59,59\",\"event\" : \"Today is\",\"is_personal\" : \"false\",\"is_timespan\" : \"false\",\"start\" : \"2013-2-14 00,00,00\",\"text\" : \"Today is Monday. \"}",
 				resultString);
 	}
 
@@ -100,7 +100,7 @@ public class JsonConverterTest {
 
 	@Test
 	public void testString2Json() {
-		String exampleInput = "[{ \"start\": \"2013-2-14 00,00,00\", \"end\": \"2013-2-14 23,59,59\", \"timeSpan\": \"false\", \"personalTime\": \"false\", \"content\": \"Today is\", \"text\": \"Today is Monday. \" }]";
+		String exampleInput = "[{ \"start\": \"2013-2-14 00,00,00\", \"end\": \"2013-2-14 23,59,59\", \"is_timespan\": \"false\", \"is_personal\": \"false\", \"event\": \"Today is\", \"text\": \"Today is Monday. \" }]";
 
 		IJsonNode json = JsonConverter.string2Json(exampleInput);
 
@@ -117,8 +117,8 @@ public class JsonConverterTest {
 		Assert.assertTrue(jsonArray.get(0) instanceof ObjectNode);
 		ObjectNode eventNode = (ObjectNode) jsonArray.get(0);
 
-		Assert.assertFalse(eventNode.get("content") instanceof MissingNode);
-		Assert.assertEquals("Today is", eventNode.get("content").toString());
+		Assert.assertFalse(eventNode.get("event") instanceof MissingNode);
+		Assert.assertEquals("Today is", eventNode.get("event").toString());
 
 		Assert.assertFalse(eventNode.get("start") instanceof MissingNode);
 		Assert.assertEquals("2013-2-14 00,00,00", eventNode.get("start")
@@ -128,15 +128,15 @@ public class JsonConverterTest {
 		Assert.assertEquals("2013-2-14 23,59,59", eventNode.get("end")
 				.toString());
 
-		Assert.assertFalse(eventNode.get("personalTime") instanceof MissingNode);
-		Assert.assertEquals("false", eventNode.get("personalTime").toString());
+		Assert.assertFalse(eventNode.get("is_personal") instanceof MissingNode);
+		Assert.assertEquals("false", eventNode.get("is_personal").toString());
 
 		Assert.assertFalse(eventNode.get("text") instanceof MissingNode);
 		Assert.assertEquals("Today is Monday. ", eventNode.get("text")
 				.toString());
 
-		Assert.assertFalse(eventNode.get("timeSpan") instanceof MissingNode);
-		Assert.assertEquals("false", eventNode.get("timeSpan").toString());
+		Assert.assertFalse(eventNode.get("is_timespan") instanceof MissingNode);
+		Assert.assertEquals("false", eventNode.get("is_timespan").toString());
 
 	}
 
@@ -310,7 +310,7 @@ public class JsonConverterTest {
 
 	@Test
 	public void testEventNode2Sentence() {
-		String exampleInput = "[{ \"start\": \"2013-2-14 00,00,00\", \"end\": \"2013-2-14 23,59,59\", \"timeSpan\": \"false\", \"personalTime\": \"false\", \"content\": \"Today is\", \"text\": \"Today is Monday. \" }]";
+		String exampleInput = "[{ \"start\": \"2013-2-14 00,00,00\", \"end\": \"2013-2-14 23,59,59\", \"is_timespan\": \"false\", \"is_personal\": \"false\", \"event\": \"Today is\", \"text\": \"Today is Monday. \" }]";
 
 		IJsonNode json = JsonConverter.string2Json(exampleInput);
 		Assert.assertNotNull(json);

@@ -277,16 +277,14 @@ public class EventsWriterOlder extends
 							+ startHours + "\", \"end\": \"" + endYear + "-"
 							+ this.adjustMonthAndDay(endMonth) + "-"
 							+ this.adjustMonthAndDay(endDay) + " " + endHours
-							+ "\", \"timeSpan\": \"" + timeSpan
-							+ "\", \"personalTime\": \"" + personalTime
-							+ "\", \"content\": \""
-							+ event.replaceAll("\"", "") + "\", \"text\": \""
+							+ "\", \"is_timespan\": \"" + timeSpan
+							+ "\", \"is_personal\": \"" + personalTime
+							+ "\", \"event\": \"" + event.replaceAll("\"", "")
+							+ "\", \"text\": \""
 							+ sent.getCoveredText().replaceAll("\"", "")
-							+ "\" }";
+							+ "\", \"range_start\": \"" + sent.getBegin()
+							+ "\", \"range_end\": \"" + sent.getEnd() + "\"}";
 					String output = timeText.replaceAll("\\n|\\r|\\t", " ")
-							.replaceAll(" +", " ");
-					event = event.replaceAll("\"", "")
-							.replaceAll("\\n|\\r|\\t", " ")
 							.replaceAll(" +", " ");
 
 					events.add(JsonConverter.string2JsonNode(output));

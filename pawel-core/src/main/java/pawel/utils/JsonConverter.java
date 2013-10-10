@@ -392,14 +392,12 @@ public class JsonConverter {
 							new TextNode(jsonObject.get("start").toString()));
 					resultObject.put("end", new TextNode(jsonObject.get("end")
 							.toString()));
-					resultObject
-							.put("timeSpan",
-									new TextNode(jsonObject.get("timeSpan")
-											.toString()));
-					resultObject.put("personalTime", new TextNode(jsonObject
-							.get("personalTime").toString()));
-					resultObject.put("content",
-							new TextNode(jsonObject.get("content").toString()));
+					resultObject.put("is_timespan", new TextNode(jsonObject
+							.get("is_timespan").toString()));
+					resultObject.put("is_personal", new TextNode(jsonObject
+							.get("is_personal").toString()));
+					resultObject.put("event",
+							new TextNode(jsonObject.get("event").toString()));
 					resultObject.put("text", new TextNode(jsonObject
 							.get("text").toString()));
 

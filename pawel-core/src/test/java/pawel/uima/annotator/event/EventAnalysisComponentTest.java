@@ -69,14 +69,15 @@ public class EventAnalysisComponentTest {
 
 			Assert.assertFalse(eventObject.get("start") instanceof MissingNode);
 			Assert.assertFalse(eventObject.get("end") instanceof MissingNode);
-			Assert.assertFalse(eventObject.get("timeSpan") instanceof MissingNode);
-			Assert.assertFalse(eventObject.get("personalTime") instanceof MissingNode);
-			Assert.assertFalse(eventObject.get("content") instanceof MissingNode);
+			Assert.assertFalse(eventObject.get("is_timespan") instanceof MissingNode);
+			Assert.assertFalse(eventObject.get("is_personal") instanceof MissingNode);
+			Assert.assertFalse(eventObject.get("event") instanceof MissingNode);
 			Assert.assertFalse(eventObject.get("text") instanceof MissingNode);
-			Assert.assertFalse(eventObject.get("start") instanceof MissingNode);
+			Assert.assertFalse(eventObject.get("range_start") instanceof MissingNode);
+			Assert.assertFalse(eventObject.get("range_end") instanceof MissingNode);
 
 			Assert.assertTrue(expectedEventContents.remove(eventObject.get(
-					"content").toString()));
+					"event").toString()));
 			Assert.assertTrue(expectedEventStartTime.remove(eventObject.get(
 					"start").toString()));
 			Assert.assertTrue(expectedEventEndTime.remove(eventObject
@@ -125,14 +126,15 @@ public class EventAnalysisComponentTest {
 
 		Assert.assertFalse(eventObject.get("start") instanceof MissingNode);
 		Assert.assertFalse(eventObject.get("end") instanceof MissingNode);
-		Assert.assertFalse(eventObject.get("timeSpan") instanceof MissingNode);
-		Assert.assertFalse(eventObject.get("personalTime") instanceof MissingNode);
-		Assert.assertFalse(eventObject.get("content") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("is_timespan") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("is_personal") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("event") instanceof MissingNode);
 		Assert.assertFalse(eventObject.get("text") instanceof MissingNode);
-		Assert.assertFalse(eventObject.get("start") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("range_start") instanceof MissingNode);
+		Assert.assertFalse(eventObject.get("range_end") instanceof MissingNode);
 
-		Assert.assertTrue(expectedEventContents.remove(eventObject.get(
-				"content").toString()));
+		Assert.assertTrue(expectedEventContents.remove(eventObject.get("event")
+				.toString()));
 	}
 
 	@Test
