@@ -10,6 +10,8 @@ https://github.com/TU-Berlin/dopa-vm.git
 
 You will find installation details for the VM in the main folder of the project.
 
+To start the VM, run `vagrant up`. You don't need to change the roles of the VM.
+
 ## Stratosphere
 
 You need to clone Stratosphere from the following github project:
@@ -30,7 +32,7 @@ and copy it to the folder pawel-model/src/main/resources/edu/stanford/nlp/models
 Download the file from http://code.google.com/p/mate-tools/downloads/detail?name=CoNLL2009-ST-English-ALL.anna-3.3.parser.model
 and copy it to the folder pawel-model/src/main/resources/models/mate .
 
-Execute Maven with mvn -DskipTests install
+Execute Maven with `mvn -DskipTests install` .
 
 a) Put the jars (sopremo-pawel.jar and pawel-model.jar and anna-3.3.jar 
 and index-import.jar) in the "lib" directory there where the stratosphere is installed...
