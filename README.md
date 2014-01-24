@@ -38,3 +38,16 @@ a) Put the jars (sopremo-pawel.jar and pawel-model.jar and anna-3.3.jar
 and index-import.jar) in the "lib" directory there where the stratosphere is installed...
 
 b) Also put the nephele-server-0.2.1.jar in "lib" (replace existing). 
+
+## Execution of Meteor queries
+
+1. The paths inside the queries need to be adapted.
+2. Start of Jobmanager and SopremoServer:
+
+`start-local.sh` and `start-sopremo-server.sh`
+
+3. Execution of exemplary Meteor script:
+
+`./meteor-client.sh /dopa-vm/time/dopa-samples/on
+lyReuters.meteor --configDir ../conf/ --updateTime 1000 --wait`
+
