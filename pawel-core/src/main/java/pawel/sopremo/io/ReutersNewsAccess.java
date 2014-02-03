@@ -449,9 +449,7 @@ public class ReutersNewsAccess extends ElementaryOperator<LuceneIndexAccess> {
 		}
 
 		/**
-		 * Method creates input splits that represent part of lucene index (each
-		 * split contains start and end document index - all document within
-		 * this split should be processed).
+		 * Method creates input splits based on XML documents. Each split contains same number of documents
 		 * 
 		 * @param minNumSplits
 		 *            minimal number of splits that should be created
