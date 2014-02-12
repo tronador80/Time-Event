@@ -58,4 +58,5 @@ If you are working e.g. with Eclipse in Windows, you need to adapt the paths in 
 For further information, see:
 
 https://github.com/stratosphere/bigdataclass.org/issues/1
+
 https://github.com/stratosphere/stratosphere/issues/217
