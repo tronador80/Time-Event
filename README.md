@@ -51,3 +51,11 @@ b) Also put the nephele-server-0.2.1.jar in "lib" (replace existing).
 `./meteor-client.sh /dopa-vm/time/dopa-samples/on
 lyReuters.meteor --configDir ../conf/ --updateTime 1000 --wait`
 
+## For Windows
+
+If you are working e.g. with Eclipse in Windows, you need to adapt the paths in JunitTests:
+
+For further information, see:
+
+https://github.com/stratosphere/bigdataclass.org/issues/1
+https://github.com/stratosphere/stratosphere/issues/217
