@@ -47,8 +47,14 @@ public class TextAccess extends ElementaryOperator<TextAccess>{
 	private static Logger log = Logger.getLogger(TextAccess.class);
 	
 	protected static final String DOCUMENT_NAME = "document_id";
+	protected static final String TIME_STAMP = "time_st";
 	
 	private String documentName;
+	
+	/**
+	 * this String contains the current timestamp of the news cluster
+	 */
+	private String timeStampValue;
 	
 	public static class TextInputFormat extends GenericInputFormat {
 		
@@ -91,6 +97,11 @@ public class TextAccess extends ElementaryOperator<TextAccess>{
 		 */
 		private List<String> newsToProcess;
 		
+		/**
+		 * 
+		 */
+		private String timeSt;
+		
 		@Override
 		public void configure(
 				eu.stratosphere.nephele.configuration.Configuration parameters) {
@@ -100,6 +111,8 @@ public class TextAccess extends ElementaryOperator<TextAccess>{
 			this.schema = this.context.getOutputSchema(0);
 			this.docName = (String) SopremoUtil.getObject(parameters,
 					DOCUMENT_NAME, null);
+			this.timeSt = (String) SopremoUtil.getObject(parameters,
+					TIME_STAMP, null);
 			if (this.newsToProcess == null){
 			this.newsToProcess = new ArrayList<String>();
 			}
@@ -262,8 +275,26 @@ public class TextAccess extends ElementaryOperator<TextAccess>{
 					System.out.println("value of fullText:" + fullText.toString());
 					fullText.put("Text", this.string2TextNode(textNewsFileContent));
 //					fullText.put("Text",new TextNode(textNewsFileContent));
-					annotations.add(fullText);
+					
+					fullText.put("byline", this.string2TextNode(""));  // Test for sentence splitting
 				
+					fullText.put("copyright", this.string2TextNode(""));  // Test for sentence splitting
+				
+					fullText.put("date", this.string2TextNode(this.timeSt));  // Test for sentence splitting
+				
+					fullText.put("dateline", this.string2TextNode(""));  // Test for sentence splitting
+					
+					fullText.put("headline", this.string2TextNode(""));  // Test for sentence splitting
+				
+					fullText.put("id", this.string2TextNode(""));  // Test for sentence splitting
+				
+					fullText.put("itemId", this.string2TextNode(""));  // Test for sentence splitting
+					
+					fullText.put("lang", this.string2TextNode(""));  // Test for sentence splitting
+					
+					fullText.put("title", this.string2TextNode(""));  // Test for sentence splitting
+					annotations.add(fullText);
+					
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}
@@ -334,6 +365,8 @@ public class TextAccess extends ElementaryOperator<TextAccess>{
 					context);
 			SopremoUtil.setObject(contract.getParameters(), DOCUMENT_NAME,
 					this.documentName);
+			SopremoUtil.setObject(contract.getParameters(), TIME_STAMP,
+					this.timeStampValue);
 			pactModule.getOutput(0).setInput(contract);
 			System.out.println("print contract:"+ contract.toString());
 			return pactModule;	
@@ -345,5 +378,9 @@ public class TextAccess extends ElementaryOperator<TextAccess>{
 			this.documentName = documentName.toString().replace("\"", "")
 					.replace("\'", "");
 		}
-
+		@Property(flag = true)
+		@Name(noun = "timestamp")
+		public void setTimestamp(EvaluationExpression timeSt) {
+			this.timeStampValue = timeSt.toString();
+		}
 }
